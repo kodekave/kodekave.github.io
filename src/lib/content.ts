@@ -15,7 +15,7 @@ export const stats = [
   { value: "4", label: "Countries — India, Maldives, US, UK" },
   { value: "$2.1M+", label: "Raised by ventures I supported" },
   { value: "250%", label: "Revenue growth driven" },
-  { value: "70+", label: "Multinational team coordinated" },
+  { value: "17", label: "Multinational team coordinated" },
   { value: "5,000+", label: "Students & guests reached" },
 ];
 
@@ -78,7 +78,7 @@ export const ventures: Venture[] = [
     summary:
       "An international investment firm with a multi-business portfolio, including hospitality. I ran day-to-day operations so the founder could focus on external relationships and expansion.",
     highlights: [
-      "Coordinated a 70+-employee multinational team across the founder's business portfolio.",
+      "Coordinated a 17-employee multinational team across the founder's business portfolio.",
       "Built operational tracking, information architecture, and cross-border compliance processes from the ground up.",
       "Grew tourism and guest-experience revenue by 250% through redesigned service operations and high-ticket travel packages averaging $2,000 per booking.",
       "Designed automated reporting systems that cut leadership's manual data-retrieval time by 10+ hours a week.",

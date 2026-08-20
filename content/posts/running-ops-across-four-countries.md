@@ -17,7 +17,7 @@ Managing a ~₹1 Cr monthly budget across currencies taught me this the hard way
 
 ## 3. The team doesn't need you to have the answer — they need you to close the loop
 
-Coordinating a 70+-person multinational team in the Maldives, or a 6-person cross-border team for a robotics startup, taught me that most operational chaos isn't a knowledge problem. It's a follow-up problem. People start things. Someone has to make sure they finish.
+Coordinating a 17-person multinational team in the Maldives, or a 6-person cross-border team for a robotics startup, taught me that most operational chaos isn't a knowledge problem. It's a follow-up problem. People start things. Someone has to make sure they finish.
 
 ## What I'd tell someone starting this kind of role tomorrow
 
