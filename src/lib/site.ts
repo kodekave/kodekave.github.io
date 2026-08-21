@@ -20,18 +20,17 @@ export const GOOGLE_SITE_VERIFICATION =
   "gzpm78azL7E4dmq05tdiU-EXhGg8i8D-SeeVgTSwioE";
 
 /**
- * Substack destination for the newsletter form.
+ * Substack publication for the newsletter form.
  *
- * Note this is a Substack *profile* (substack.com/@handle), not a publication
- * (handle.substack.com). Profiles have no `/subscribe?email=` endpoint, so the
- * form cannot prefill an address against one — it links out instead, and the
- * visitor subscribes on Substack. If a publication is created later, put its
- * URL here and the prefill path below starts working automatically.
+ * The `?params=[object Object]` query on the URL Substack's UI produced is a
+ * bug in their share widget, not part of the address — stripped, along with
+ * any r=/utm_* tracking, which belongs on links shared elsewhere rather than
+ * on a link from the author's own site.
  *
- * Tracking parameters (r=, utm_*) are stripped: they belong on links shared
- * elsewhere, not on a link from the author's own site.
+ * This is a publication (handle.substack.com), so the form can prefill the
+ * visitor's address and they only have to confirm.
  */
-export const SUBSTACK_URL = "https://substack.com/@komalkedarnath";
+export const SUBSTACK_URL = "https://komalkedarnath.substack.com";
 
 /** True when SUBSTACK_URL is a publication rather than a reader profile. */
 function isPublication(url: string): boolean {
@@ -40,8 +39,8 @@ function isPublication(url: string): boolean {
 
 /**
  * Where the newsletter form sends people. A publication gets the address
- * prefilled so the visitor only has to confirm; a profile cannot, so it just
- * links out rather than appending a parameter Substack would ignore.
+ * prefilled; a reader profile (substack.com/@handle) has no
+ * `/subscribe?email=` endpoint, so that case links out instead.
  */
 export function substackSubscribeUrl(email: string): string | null {
   if (!SUBSTACK_URL) return null;
