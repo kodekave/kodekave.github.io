@@ -58,7 +58,9 @@ export default function Portrait({
         onError={() => setFailed(true)}
         style={{
           objectPosition,
-          filter: tinted ? "saturate(0.8) contrast(1.05)" : undefined,
+          filter: tinted
+            ? "grayscale(1) contrast(1.15) brightness(1.1)"
+            : undefined,
         }}
         className={`absolute inset-0 h-full w-full object-cover ${
           kenBurns ? "animate-slow-zoom" : ""
@@ -67,17 +69,13 @@ export default function Portrait({
       {tinted && (
         <>
           <div
-            className="absolute inset-0 mix-blend-multiply"
-            style={{ background: "var(--color-accent-deep)", opacity: 0.22 }}
-          />
-          <div
-            className="absolute inset-0 mix-blend-soft-light"
+            className="absolute inset-0 mix-blend-color"
             style={{
               background:
-                "linear-gradient(155deg, transparent 40%, #c0b283 100%)",
-              opacity: 0.55,
+                "linear-gradient(160deg, #192231 0%, #404a42 45%, #c0b283 100%)",
             }}
           />
+          <div className="absolute inset-0 bg-cream/15" />
         </>
       )}
     </div>
