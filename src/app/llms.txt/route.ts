@@ -1,5 +1,5 @@
 import { getPublishedPosts } from "@/lib/posts";
-import { profile, ventures } from "@/lib/content";
+import { distinctions, earlierRoles, profile, publication, ventures } from "@/lib/content";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -48,10 +48,16 @@ is often confused with.
 ## Ventures
 
 ${ventures
-  .map(
-    (v) =>
-      `- ${v.company} (${v.country}, ${v.period}) — ${v.role}, ${v.category}. ${v.summary}`
-  )
+  .map((v) => {
+    const refs = [
+      ...(v.url ? [v.url] : []),
+      ...(v.links ?? []).map((l) => l.url),
+    ];
+    return (
+      `- ${v.company} (${v.country}, ${v.period}) — ${v.role}, ${v.category}. ${v.summary}` +
+      (refs.length ? ` Reference: ${refs.join(", ")}` : " Reference: none published.")
+    );
+  })
   .join("\n")}
 
 ## Writing
@@ -61,6 +67,27 @@ ${posts
     (p) =>
       `- [${p.title}](${absoluteUrl(`/blog/${p.slug}`)}) — ${p.excerpt} (published ${p.published_at})`
   )
+  .join("\n")}
+
+## Earlier roles
+
+${earlierRoles
+  .map(
+    (r) =>
+      `- ${r.company} (${r.period}). ${r.description}` +
+      (r.url ? ` Organisation: ${r.url}` : "") +
+      (r.reference ? ` Output: ${r.reference.url}` : "")
+  )
+  .join("\n")}
+
+## Published research
+
+- ${publication.title} (${publication.type}, ${publication.publisher}, ${publication.datePublished}). DOI ${publication.doi} — ${publication.url}. ${publication.description} Licence: CC BY 4.0.
+
+## Distinctions
+
+${distinctions
+  .map((d) => `- ${d.text}` + (d.url ? ` Reference: ${d.url}` : ""))
   .join("\n")}
 
 ## Feeds

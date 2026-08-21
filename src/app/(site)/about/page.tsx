@@ -1,7 +1,14 @@
 import Portrait from "@/components/Portrait";
 import Reveal from "@/components/Reveal";
-import { distinctions, earlierRoles, journey, profile } from "@/lib/content";
 import {
+  distinctions,
+  earlierRoles,
+  journey,
+  profile,
+  publication,
+} from "@/lib/content";
+import {
+  PERSON_ID,
   breadcrumbSchema,
   buildMetadata,
   jsonLdGraph,
@@ -22,7 +29,33 @@ export default function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(
-          jsonLdGraph(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about" }]))
+          jsonLdGraph(
+            breadcrumbSchema([
+              { name: "Home", path: "/" },
+              { name: "About", path: "/about" },
+            ]),
+            {
+              // A DOI is a persistent identifier, which makes this the most
+              // durable corroboration on the site. Worth stating explicitly
+              // so the Person entity is linked to a citable output.
+              "@type": "Report",
+              "@id": publication.url,
+              name: publication.title,
+              headline: publication.title,
+              description: publication.description,
+              author: { "@id": PERSON_ID },
+              datePublished: publication.datePublished,
+              publisher: { "@type": "Organization", name: publication.publisher },
+              identifier: {
+                "@type": "PropertyValue",
+                propertyID: "DOI",
+                value: publication.doi,
+              },
+              url: publication.url,
+              license: publication.license,
+              inLanguage: "en",
+            }
+          )
         )}
       />
 
@@ -75,12 +108,37 @@ export default function AboutPage() {
             {earlierRoles.map((role) => (
               <div key={role.company}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-medium text-ink">{role.company}</p>
+                  <p className="font-medium text-ink">
+                    {role.url ? (
+                      <a
+                        href={role.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-accent-deep"
+                      >
+                        {role.company}
+                      </a>
+                    ) : (
+                      role.company
+                    )}
+                  </p>
                   <p className="text-xs text-ink-faint">{role.period}</p>
                 </div>
                 <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                   {role.description}
                 </p>
+                {role.reference && (
+                  <p className="mt-2 text-sm">
+                    <a
+                      href={role.reference.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-deep underline underline-offset-2 hover:text-ink"
+                    >
+                      {role.reference.label}
+                    </a>
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -94,9 +152,24 @@ export default function AboutPage() {
           </h2>
           <ul className="mt-5 space-y-3">
             {distinctions.map((d) => (
-              <li key={d} className="flex gap-3 text-sm text-ink-soft">
+              <li key={d.text} className="flex gap-3 text-sm text-ink-soft">
                 <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                {d}
+                <span>
+                  {d.text}
+                  {d.url && (
+                    <>
+                      {" "}
+                      <a
+                        href={d.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent-deep underline underline-offset-2 hover:text-ink"
+                      >
+                        {d.linkLabel ?? "Reference"}
+                      </a>
+                    </>
+                  )}
+                </span>
               </li>
             ))}
           </ul>

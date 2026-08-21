@@ -59,6 +59,11 @@ export type Venture = {
    * TODO(komal): paste URLs here.
    */
   url?: string;
+  /**
+   * Additional corroborating links for a venture that covers more than one
+   * entity or has a public listing separate from its site.
+   */
+  links?: { label: string; url: string }[];
   role: string;
   period: string;
   location: string;
@@ -90,7 +95,7 @@ export const ventures: Venture[] = [
   },
   {
     slug: "neuralzome-cybernetics",
-    url: "",
+    url: "https://www.neuralzome.com/",
     company: "Neuralzome Cybernetics",
     role: "Head of International Operations (Founder's Office)",
     period: "Feb 2025 — Feb 2026",
@@ -126,7 +131,13 @@ export const ventures: Venture[] = [
   },
   {
     slug: "genex-space-spacecat",
-    url: "",
+    url: "https://genex.space/",
+    links: [
+      {
+        label: "SpaceCat on Tripadvisor",
+        url: "https://www.tripadvisor.in/Attraction_Review-g298571-d26937142-Reviews-Space_Cat_Astrotourism-Male.html",
+      },
+    ],
     company: "Genex Space & SpaceCat",
     role: "International Business and Ops (Founder's Office)",
     period: "Feb 2022 — Aug 2023",
@@ -143,27 +154,75 @@ export const ventures: Venture[] = [
   },
 ];
 
-export const earlierRoles = [
+export type EarlierRole = {
+  company: string;
+  period: string;
+  description: string;
+  /** Organisation site, where one exists. */
+  url?: string;
+  /** A citable output from the role — the strongest kind of proof. */
+  reference?: { label: string; url: string };
+};
+
+export const earlierRoles: EarlierRole[] = [
   {
     company: "Independent Researcher — IIT Bombay (FOSSEE)",
     period: "Nov 2020 — Feb 2022",
     description:
       "Conducted independent computational fluid dynamics research, running OpenFOAM simulations in a sandboxed Linux environment on resource-constrained hardware — published through IIT Bombay's FOSSEE open-source initiative.",
+    url: "https://fossee.in/",
+    reference: {
+      label: "Running OpenFOAM on Android — A Workflow Study (DOI)",
+      url: "https://doi.org/10.5281/zenodo.6044898",
+    },
   },
   {
     company: "PR/Publications Manager (R&D) — SSERD",
     period: "Dec 2019 — Nov 2020",
     description:
       "Managed PR and content strategy for space-education research publications at the Society for Space Education Research & Development, my first role working directly with founders on zero-to-one ideas.",
+    url: "https://www.sserd.org/",
   },
 ];
 
-export const distinctions = [
-  "Valid US B1/B2 visa, with a multi-country travel and remote-work history across the US, Maldives, and India",
-  "Multi-country work-visa experience in the Maldives, including cross-border compliance navigation",
-  "TOEFL iBT: 105/120",
-  "AFCAT cleared twice, advanced to the Services Selection Board (SSB) interview stage",
-  "Winning team member, CERN Webfest 2021 (CERN openlab's global open-web-technology hackathon), Geneva",
+/**
+ * Published research output. A DOI is a persistent identifier, which makes
+ * this the most durable corroboration on the site — worth surfacing in
+ * structured data as well as on the page.
+ */
+export const publication = {
+  title: "Running OpenFOAM on Android — A Workflow Study",
+  type: "Report",
+  publisher: "Zenodo",
+  datePublished: "2022-01-20",
+  doi: "10.5281/zenodo.6044898",
+  url: "https://doi.org/10.5281/zenodo.6044898",
+  license: "https://creativecommons.org/licenses/by/4.0/",
+  description:
+    "A step-by-step workflow study of running OpenFOAM on Android, worked through with a simple elbow case.",
+};
+
+export const distinctions: {
+  text: string;
+  url?: string;
+  /** Descriptive anchor text — "Reference" tells a crawler nothing. */
+  linkLabel?: string;
+}[] = [
+  {
+    text: "Valid US B1/B2 visa, with a multi-country travel and remote-work history across the US, Maldives, and India",
+  },
+  {
+    text: "Multi-country work-visa experience in the Maldives, including cross-border compliance navigation",
+  },
+  { text: "TOEFL iBT: 105/120" },
+  {
+    text: "AFCAT cleared twice, advanced to the Services Selection Board (SSB) interview stage",
+  },
+  {
+    text: "Winning team member, CERN Webfest 2021 (CERN openlab's global open-web-technology hackathon), Geneva",
+    url: "https://webfest-online.web.cern.ch/",
+    linkLabel: "CERN Webfest",
+  },
 ];
 
 export const journey = [

@@ -42,6 +42,9 @@ export default function WorkPage() {
                   name: v.company,
                   description: v.summary,
                   ...(v.url ? { url: v.url } : {}),
+                  ...(v.links?.length
+                    ? { sameAs: v.links.map((l) => l.url) }
+                    : {}),
                   address: {
                     "@type": "PostalAddress",
                     addressCountry: v.country,
@@ -114,6 +117,22 @@ export default function WorkPage() {
               <p className="mt-4 text-lg leading-relaxed text-ink-soft">
                 {v.summary}
               </p>
+              {v.links && v.links.length > 0 && (
+                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+                  {v.links.map((l) => (
+                    <li key={l.url}>
+                      <a
+                        href={l.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-accent-deep underline underline-offset-2 hover:text-ink"
+                      >
+                        {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <ul className="mt-5 space-y-3">
                 {v.highlights.map((h) => (
                   <li key={h} className="flex gap-3 text-sm text-ink-soft">
