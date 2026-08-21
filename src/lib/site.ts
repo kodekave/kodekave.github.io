@@ -9,34 +9,34 @@
 export const SITE_URL = "https://kodekave.github.io";
 
 /**
- * Substack publication URL, without a trailing slash.
+ * Substack destination for the newsletter form.
  *
- * TODO(komal): replace with your real publication, e.g.
- *   "https://kodekave.substack.com"
- * Until this is set, the newsletter form tells the visitor that signup
- * isn't live yet instead of pretending to have subscribed them.
+ * Note this is a Substack *profile* (substack.com/@handle), not a publication
+ * (handle.substack.com). Profiles have no `/subscribe?email=` endpoint, so the
+ * form cannot prefill an address against one — it links out instead, and the
+ * visitor subscribes on Substack. If a publication is created later, put its
+ * URL here and the prefill path below starts working automatically.
+ *
+ * Tracking parameters (r=, utm_*) are stripped: they belong on links shared
+ * elsewhere, not on a link from the author's own site.
  */
-export const SUBSTACK_URL = "";
+export const SUBSTACK_URL = "https://substack.com/@komalkedarnath";
 
-/** Where the newsletter form sends people, with their email prefilled. */
-export function substackSubscribeUrl(email: string): string | null {
-  if (!SUBSTACK_URL) return null;
-  return `${SUBSTACK_URL}/subscribe?email=${encodeURIComponent(email)}`;
+/** True when SUBSTACK_URL is a publication rather than a reader profile. */
+function isPublication(url: string): boolean {
+  return /^https?:\/\/[a-z0-9-]+\.substack\.com/i.test(url);
 }
 
 /**
- * Google Search Console verification token (the `content` value from the
- * "HTML tag" method, NOT the whole <meta> tag).
- *
- * Chosen over the HTML-file method because it lives in version control and
- * survives a rebuild — a file dropped in public/ is easy to lose in a future
- * cleanup, and losing it silently un-verifies the property.
- *
- * TODO(komal): paste the token, then deploy BEFORE clicking Verify in Search
- * Console — Google fetches the live page at the moment you click.
+ * Where the newsletter form sends people. A publication gets the address
+ * prefilled so the visitor only has to confirm; a profile cannot, so it just
+ * links out rather than appending a parameter Substack would ignore.
  */
-export const GOOGLE_SITE_VERIFICATION =
-  "gzpm78azL7E4dmq05tdiU-EXhGg8i8D-SeeVgTSwioE";
+export function substackSubscribeUrl(email: string): string | null {
+  if (!SUBSTACK_URL) return null;
+  if (!isPublication(SUBSTACK_URL)) return SUBSTACK_URL;
+  return `${SUBSTACK_URL}/subscribe?email=${encodeURIComponent(email)}`;
+}
 
 /** Absolute URL for a site-relative path. Keeps trailing slashes consistent. */
 export function absoluteUrl(path = "/"): string {

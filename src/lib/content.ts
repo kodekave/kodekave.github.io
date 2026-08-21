@@ -188,19 +188,6 @@ export const earlierRoles: EarlierRole[] = [
       "Managed PR and content strategy for space-education research publications at the Society for Space Education Research & Development, my first role working directly with founders on zero-to-one ideas.",
     url: "https://www.sserd.org/",
   },
-  {
-    company: "Mechanical Design Intern — Aria Aerotech",
-    period: "Jul — Aug 2018",
-    description:
-      "One-month mechanical design internship at an early-stage Bangalore aerospace startup, working on design assignments the team could build on directly.",
-  },
-  {
-    company: "Internship Trainee — Vestas Wind Technology India",
-    period: "Jan 2018",
-    description:
-      "Service department internship at the Indian arm of Vestas, the Danish wind-energy manufacturer — my first exposure to operations inside a large multinational.",
-    url: "https://www.vestas.com/en",
-  },
 ];
 
 /**

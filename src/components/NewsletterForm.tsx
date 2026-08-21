@@ -74,7 +74,7 @@ export default function NewsletterForm({
         )}
         {state === "idle" &&
           (SUBSTACK_URL
-            ? "One click to confirm on Substack. No spam, unsubscribe anytime."
+            ? "Opens Substack to confirm. No spam, unsubscribe anytime."
             : "Launching shortly.")}
       </p>
     </div>
