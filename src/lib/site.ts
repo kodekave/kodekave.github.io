@@ -35,7 +35,8 @@ export function substackSubscribeUrl(email: string): string | null {
  * TODO(komal): paste the token, then deploy BEFORE clicking Verify in Search
  * Console — Google fetches the live page at the moment you click.
  */
-export const GOOGLE_SITE_VERIFICATION = "";
+export const GOOGLE_SITE_VERIFICATION =
+  "gzpm78azL7E4dmq05tdiU-EXhGg8i8D-SeeVgTSwioE";
 
 /** Absolute URL for a site-relative path. Keeps trailing slashes consistent. */
 export function absoluteUrl(path = "/"): string {
