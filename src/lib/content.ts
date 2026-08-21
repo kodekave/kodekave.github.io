@@ -1,21 +1,21 @@
 export const profile = {
   name: "Komal Kedarnath G",
   shortName: "Komal",
-  role: "Founder's Office & Business Development Leader",
+  role: "Founder's Office Operator & GTM Strategist",
   tagline: "Helping founders build and scale — from idea to operations.",
   subTagline:
-    "4 ventures. 4 countries. One founder's office. I've spent 6+ years working directly alongside founders — turning early-stage vision into GTM, revenue, and systems that hold.",
+    "A founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — turning early-stage vision into go-to-market execution, revenue, and operating systems that hold.",
   email: "kmailstation@gmail.com",
   linkedin: "https://linkedin.com/in/komalkedarnath",
   location: "India (open to relocation / remote)",
 };
 
 export const stats = [
-  { value: "6+", label: "Years in founder's offices" },
+  { value: "6+", label: "Years as a founder's-office operator" },
   { value: "4", label: "Countries — India, Maldives, US, UK" },
-  { value: "$2.1M+", label: "Raised by ventures I supported" },
-  { value: "250%", label: "Revenue growth driven" },
-  { value: "17", label: "Multinational team coordinated" },
+  { value: "$2.1M+", label: "Raised by ventures I've operated for" },
+  { value: "250%", label: "Revenue growth delivered" },
+  { value: "17", label: "Cross-border team members led" },
   { value: "5,000+", label: "Students & guests reached" },
 ];
 
@@ -59,7 +59,7 @@ export const ventures: Venture[] = [
     country: "United States",
     category: "AI / Robotics",
     summary:
-      "A 20-person, VC-backed AI/robotics startup ($2.1M raised). I was the primary link between the founder's office and global operations, managing a 6-person cross-border team.",
+      "Led international operations for a 20-person, VC-backed AI/robotics startup that raised $2.1M — the primary link between the founder's office and global operations, managing a 6-person cross-border team.",
     highlights: [
       "Drove US market entry and customer acquisition end-to-end: entity setup, ODI compliance, US banking, vendor network, and logistics — closing the company's first US customers and initial revenue.",
       "Owned financial operations across a ~₹1 Cr monthly budget, building centralized cross-border billing and metrics dashboards for 100% accuracy in multi-currency monthly close.",
@@ -76,7 +76,7 @@ export const ventures: Venture[] = [
     country: "Maldives",
     category: "Hospitality & Investments",
     summary:
-      "An international investment firm with a multi-business portfolio, including hospitality. I ran day-to-day operations so the founder could focus on external relationships and expansion.",
+      "Ran day-to-day operations for an international investment firm's multi-business portfolio, including hospitality — freeing the founder to focus on external relationships and expansion.",
     highlights: [
       "Coordinated a 17-employee multinational team across the founder's business portfolio.",
       "Built operational tracking, information architecture, and cross-border compliance processes from the ground up.",
@@ -93,7 +93,7 @@ export const ventures: Venture[] = [
     country: "Maldives",
     category: "Space-Tech",
     summary:
-      "Two international space-tech ventures I worked with from inception — building core business infrastructure and fundraising materials alongside their founding teams.",
+      "Built core business infrastructure and fundraising materials from inception for two international space-tech ventures, working directly alongside their founding teams.",
     highlights: [
       "Built investor proposals — data rooms, financial memos, and decks — that directly closed angel funding rounds alongside the founders.",
       "Delivered international astronomy and stargazing programs reaching 5,000+ students and guests, in partnership with Finland International School (Malé) and premium resort operators.",
@@ -143,7 +143,7 @@ export const sponsorTiers = [
     name: "Blog Sponsorship",
     price: "From $250 / post",
     description:
-      "Sponsor a blog post — your product or service featured alongside original writing on scaling, ops, and working with founders.",
+      "Feature your product or service alongside original writing on startup scaling, operations, and founder's-office work.",
   },
   {
     name: "Ongoing Partnership",

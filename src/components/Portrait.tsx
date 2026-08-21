@@ -10,6 +10,7 @@ export default function Portrait({
   rounded = "rounded-3xl",
   objectPosition = "50% 30%",
   tinted = true,
+  kenBurns = false,
 }: {
   src: string;
   alt: string;
@@ -20,6 +21,8 @@ export default function Portrait({
   objectPosition?: string;
   /** Blend the photo toward the brand palette (navy shadows, khaki highlights). */
   tinted?: boolean;
+  /** Slow, subtle zoom for a more immersive feel. Use sparingly — one hero shot, not every thumbnail. */
+  kenBurns?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -57,7 +60,9 @@ export default function Portrait({
           objectPosition,
           filter: tinted ? "saturate(0.8) contrast(1.05)" : undefined,
         }}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full object-cover ${
+          kenBurns ? "animate-slow-zoom" : ""
+        }`}
       />
       {tinted && (
         <>

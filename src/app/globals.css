@@ -106,3 +106,20 @@ body {
   border-radius: 12px;
   margin: 1.5em 0;
 }
+
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+.animate-slow-zoom {
+  animation: slow-zoom 24s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-slow-zoom {
+    animation: none;
+  }
+}

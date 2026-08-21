@@ -54,7 +54,7 @@ export default function SponsorForm() {
             required
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm focus:border-accent focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
           />
         </div>
         <div>
@@ -67,7 +67,7 @@ export default function SponsorForm() {
             required
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm focus:border-accent focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
           />
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function SponsorForm() {
           id="company"
           value={form.company}
           onChange={(e) => setForm({ ...form, company: e.target.value })}
-          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm focus:border-accent focus:outline-none"
+          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
         />
       </div>
       <div>
@@ -91,12 +91,12 @@ export default function SponsorForm() {
           rows={4}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm focus:border-accent focus:outline-none"
+          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
         />
       </div>
       <button
         type="submit"
-        className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-cream transition-colors hover:bg-accent-deep"
+        className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-cream transition hover:-translate-y-0.5 hover:bg-accent-deep hover:shadow-sm"
       >
         Send inquiry
       </button>
