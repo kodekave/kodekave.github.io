@@ -11,6 +11,7 @@ export default function Portrait({
   objectPosition = "50% 30%",
   tinted = true,
   kenBurns = false,
+  windowGrid = false,
 }: {
   src: string;
   alt: string;
@@ -23,6 +24,8 @@ export default function Portrait({
   tinted?: boolean;
   /** Slow, subtle zoom for a more immersive feel. Use sparingly — one hero shot, not every thumbnail. */
   kenBurns?: boolean;
+  /** Thin architectural mullion lines over the photo. Use sparingly — one hero shot, not every thumbnail. */
+  windowGrid?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -77,6 +80,38 @@ export default function Portrait({
           />
           <div className="absolute inset-0 bg-cream/15" />
         </>
+      )}
+      {windowGrid && (
+        <svg
+          className="absolute inset-0 h-full w-full"
+          preserveAspectRatio="none"
+          aria-hidden
+        >
+          <line
+            x1="23%"
+            y1="0"
+            x2="23%"
+            y2="100%"
+            stroke="var(--color-cream)"
+            strokeOpacity="0.4"
+          />
+          <line
+            x1="70%"
+            y1="0"
+            x2="70%"
+            y2="100%"
+            stroke="var(--color-cream)"
+            strokeOpacity="0.25"
+          />
+          <line
+            x1="0"
+            y1="17%"
+            x2="100%"
+            y2="17%"
+            stroke="var(--color-cream)"
+            strokeOpacity="0.3"
+          />
+        </svg>
       )}
     </div>
   );

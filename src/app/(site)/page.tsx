@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Portrait from "@/components/Portrait";
+import FrameCorners from "@/components/FrameCorners";
 import Reveal from "@/components/Reveal";
 import RouteMap from "@/components/RouteMap";
 import Stamp from "@/components/Stamp";
@@ -41,18 +42,22 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal delay={150} direction="none">
-            <Portrait
-              src="/images/hero.jpg"
-              alt={`${profile.name}, ${profile.role}`}
-              className="aspect-[4/5] w-full shadow-sm"
-              kenBurns
-            />
+            <div className="relative">
+              <Portrait
+                src="/images/hero.jpg"
+                alt={`${profile.name}, ${profile.role}`}
+                className="aspect-[4/5] w-full shadow-sm"
+                kenBurns
+                windowGrid
+              />
+              <FrameCorners />
+            </div>
           </Reveal>
         </div>
       </section>
 
       {/* Operating record — the one dark, bold moment */}
-      <section className="bg-ink">
+      <section className="bg-ink bg-grid-lines">
         <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
           <Reveal>
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-khaki">

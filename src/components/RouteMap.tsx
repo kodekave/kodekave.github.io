@@ -19,8 +19,10 @@ export default function RouteMap() {
               className="flex flex-none flex-col items-center gap-2 text-center"
             >
               <span
-                className={`h-2.5 w-2.5 rounded-full bg-khaki ${
-                  isLast ? "ring-2 ring-khaki/40 ring-offset-2 ring-offset-ink" : ""
+                className={`h-2.5 w-2.5 rounded-full ${
+                  isLast
+                    ? "bg-khaki ring-2 ring-khaki/40 ring-offset-2 ring-offset-ink"
+                    : "border-2 border-khaki bg-transparent"
                 }`}
                 aria-hidden
               />
