@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
-import { SITE_URL } from "@/lib/site";
+import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
 import {
   jsonLdGraph,
   jsonLdScript,
@@ -44,6 +44,10 @@ export const metadata: Metadata = {
   authors: [{ name: profile.name, url: `${SITE_URL}/` }],
   creator: profile.name,
   publisher: profile.name,
+  // Omitted entirely when the token is unset, so no empty meta tag ships.
+  ...(GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
+    : {}),
   robots: {
     index: true,
     follow: true,

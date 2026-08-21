@@ -24,6 +24,19 @@ export function substackSubscribeUrl(email: string): string | null {
   return `${SUBSTACK_URL}/subscribe?email=${encodeURIComponent(email)}`;
 }
 
+/**
+ * Google Search Console verification token (the `content` value from the
+ * "HTML tag" method, NOT the whole <meta> tag).
+ *
+ * Chosen over the HTML-file method because it lives in version control and
+ * survives a rebuild — a file dropped in public/ is easy to lose in a future
+ * cleanup, and losing it silently un-verifies the property.
+ *
+ * TODO(komal): paste the token, then deploy BEFORE clicking Verify in Search
+ * Console — Google fetches the live page at the moment you click.
+ */
+export const GOOGLE_SITE_VERIFICATION = "";
+
 /** Absolute URL for a site-relative path. Keeps trailing slashes consistent. */
 export function absoluteUrl(path = "/"): string {
   if (path === "/") return `${SITE_URL}/`;
