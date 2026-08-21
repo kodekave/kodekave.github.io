@@ -28,7 +28,7 @@ export default function BlogIndexPage() {
       </Reveal>
 
       {posts.length === 0 ? (
-        <div className="mt-16 rounded-2xl border border-dashed border-line bg-paper p-10 text-center">
+        <div className="mt-16 rounded-xl border border-dashed border-line bg-paper p-10 text-center">
           <p className="text-ink-soft">
             First post is on its way. Subscribe below and it&rsquo;ll land in
             your inbox.
@@ -45,7 +45,7 @@ export default function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 className="group block py-8 transition-transform first:pt-0 hover:translate-x-1"
               >
-                <p className="text-xs text-ink-faint">
+                <p className="font-mono text-xs text-ink-faint">
                   {new Date(
                     post.published_at ?? post.created_at
                   ).toLocaleDateString("en-US", {

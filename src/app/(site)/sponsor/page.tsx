@@ -29,9 +29,9 @@ export default function SponsorPage() {
       <div className="mt-14 grid gap-6 sm:grid-cols-3">
         {sponsorTiers.map((tier, i) => (
           <Reveal key={tier.name} delay={i * 80}>
-            <div className="h-full rounded-2xl border border-line bg-paper p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md">
+            <div className="h-full rounded-xl border border-line bg-paper p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md">
               <h3 className="font-display text-lg text-ink">{tier.name}</h3>
-              <p className="mt-1 text-sm font-medium text-accent-deep">
+              <p className="mt-1 font-mono text-sm font-medium text-accent-deep">
                 {tier.price}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
@@ -43,7 +43,7 @@ export default function SponsorPage() {
       </div>
 
       <Reveal delay={100}>
-        <div className="mt-16 rounded-2xl border border-line bg-cream p-8">
+        <div className="mt-16 rounded-xl border border-line bg-cream p-8">
           <h2 className="font-display text-2xl text-ink">Get in touch</h2>
           <p className="mt-2 text-ink-soft">
             Tell me a bit about what you&rsquo;re building and what

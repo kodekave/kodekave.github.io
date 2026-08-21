@@ -53,7 +53,7 @@ export default function AboutPage() {
       </div>
 
       <Reveal>
-        <div className="mt-16 rounded-2xl border border-line bg-paper p-8 transition hover:border-accent/60">
+        <div className="mt-16 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
           <h2 className="font-display text-xl text-ink">Earlier roles</h2>
           <div className="mt-5 space-y-5">
             {earlierRoles.map((role) => (
@@ -72,7 +72,7 @@ export default function AboutPage() {
       </Reveal>
 
       <Reveal delay={80}>
-        <div className="mt-10 rounded-2xl border border-line bg-paper p-8 transition hover:border-accent/60">
+        <div className="mt-10 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
           <h2 className="font-display text-xl text-ink">
             Distinctions & mobility
           </h2>
@@ -88,7 +88,7 @@ export default function AboutPage() {
       </Reveal>
 
       <Reveal delay={160}>
-        <div className="mt-10 rounded-2xl border border-line bg-paper p-8 transition hover:border-accent/60">
+        <div className="mt-10 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
           <h2 className="font-display text-xl text-ink">Off the clock</h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             Sketching & design · music — piano, guitar, and songwriting ·

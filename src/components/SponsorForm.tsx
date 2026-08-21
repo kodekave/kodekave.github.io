@@ -32,7 +32,7 @@ export default function SponsorForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-line bg-cream p-8 text-center">
+      <div className="rounded-xl border border-line bg-cream p-8 text-center">
         <p className="font-display text-xl text-ink">Thanks — got it.</p>
         <p className="mt-2 text-ink-soft">
           This opens your email client with your details filled in — send it

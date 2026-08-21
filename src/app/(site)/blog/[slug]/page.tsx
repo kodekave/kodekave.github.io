@@ -66,7 +66,7 @@ export default async function BlogPostPage({
           ← All writing
         </Link>
 
-        <p className="mt-6 text-sm text-ink-faint">
+        <p className="mt-6 font-mono text-sm text-ink-faint">
           {new Date(post.published_at ?? post.created_at).toLocaleDateString(
             "en-US",
             { month: "long", day: "numeric", year: "numeric" }
@@ -92,7 +92,7 @@ export default async function BlogPostPage({
       </Reveal>
 
       <Reveal delay={100}>
-        <div className="mt-16 rounded-2xl border border-line bg-paper p-8 transition hover:border-accent/60">
+        <div className="mt-16 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
           <h3 className="font-display text-xl text-ink">
             Enjoyed this? Get the next one.
           </h3>

@@ -132,6 +132,24 @@ export const journey = [
   },
 ];
 
+export const route = [
+  { code: "IN", label: "India", years: "2019–22" },
+  { code: "MV", label: "Maldives", years: "2022–24" },
+  { code: "US", label: "United States", years: "2025–26" },
+  { code: "UK", label: "United Kingdom", years: "2026–" },
+];
+
+const countryCodes: Record<string, string> = {
+  India: "IN",
+  Maldives: "MV",
+  "United States": "US",
+  "United Kingdom": "UK",
+};
+
+export function countryCode(country: string): string {
+  return countryCodes[country] ?? country.slice(0, 2).toUpperCase();
+}
+
 export const sponsorTiers = [
   {
     name: "Newsletter Mention",

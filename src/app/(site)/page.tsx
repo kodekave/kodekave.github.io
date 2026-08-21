@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Portrait from "@/components/Portrait";
 import Reveal from "@/components/Reveal";
-import { profile, stats, ventures } from "@/lib/content";
+import RouteMap from "@/components/RouteMap";
+import Stamp from "@/components/Stamp";
+import { countryCode, profile, stats, ventures } from "@/lib/content";
 import { getPublishedPosts } from "@/lib/posts";
 
 export default function HomePage() {
@@ -16,7 +18,7 @@ export default function HomePage() {
             <p className="mb-5 inline-block rounded-full border border-line bg-paper px-4 py-1.5 text-xs font-medium uppercase tracking-wide text-accent-deep">
               Founder&rsquo;s Office · GTM Strategy · Cross-Border Ops
             </p>
-            <h1 className="font-display text-4xl leading-[1.1] text-ink sm:text-5xl md:text-[3.4rem]">
+            <h1 className="font-display text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-[4rem]">
               {profile.tagline}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-ink-soft">
@@ -49,19 +51,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-y border-line bg-paper">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-3 md:grid-cols-6">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 60}>
-              <p className="font-display text-2xl text-accent-deep sm:text-3xl">
-                {s.value}
-              </p>
-              <p className="mt-1 text-xs text-ink-faint sm:text-sm">
-                {s.label}
-              </p>
-            </Reveal>
-          ))}
+      {/* Operating record — the one dark, bold moment */}
+      <section className="bg-ink">
+        <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
+          <Reveal>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-khaki">
+              Operating record
+            </p>
+            <h2 className="mt-3 max-w-lg font-display text-2xl text-cream sm:text-3xl">
+              Four countries, one operating career.
+            </h2>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div className="mt-14">
+              <RouteMap />
+            </div>
+          </Reveal>
+
+          <div className="mt-14 grid grid-cols-2 gap-8 border-t border-cream/10 pt-10 sm:grid-cols-3 md:grid-cols-6">
+            {stats.map((s, i) => (
+              <Reveal key={s.label} delay={i * 60}>
+                <p className="font-mono text-2xl text-khaki sm:text-3xl">
+                  {s.value}
+                </p>
+                <p className="mt-1 text-xs text-cream/60 sm:text-sm">
+                  {s.label}
+                </p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -91,13 +110,11 @@ export default function HomePage() {
             <Reveal key={v.slug} delay={i * 70}>
               <Link
                 href={`/work#${v.slug}`}
-                className="group block h-full rounded-2xl border border-line bg-paper p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md"
+                className="group block h-full rounded-xl border border-line bg-paper p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md"
               >
                 <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-deep">
-                    {v.category}
-                  </span>
-                  <span className="text-xs text-ink-faint">{v.country}</span>
+                  <Stamp>{v.category}</Stamp>
+                  <Stamp>{countryCode(v.country)}</Stamp>
                 </div>
                 <h3 className="mt-4 font-display text-xl text-ink group-hover:text-accent-deep">
                   {v.company}
@@ -147,9 +164,9 @@ export default function HomePage() {
                 <Reveal key={post.slug} delay={i * 70}>
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="group block h-full rounded-2xl border border-line bg-cream p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md"
+                    className="group block h-full rounded-xl border border-line bg-cream p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md"
                   >
-                    <p className="text-xs text-ink-faint">
+                    <p className="font-mono text-xs text-ink-faint">
                       {new Date(
                         post.published_at ?? post.created_at
                       ).toLocaleDateString("en-US", {
