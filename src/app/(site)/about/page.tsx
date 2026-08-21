@@ -3,9 +3,11 @@ import Reveal from "@/components/Reveal";
 import {
   distinctions,
   earlierRoles,
+  education,
   journey,
   profile,
   publication,
+  recognition,
 } from "@/lib/content";
 import {
   PERSON_ID,
@@ -142,6 +144,57 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
+          <p className="mt-6 border-t border-line pt-5 text-sm text-ink-soft">
+            Engineering degree from{" "}
+            <a
+              href={education.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent-deep underline underline-offset-2 hover:text-ink"
+            >
+              {education.institution}
+            </a>
+            .
+          </p>
+        </div>
+      </Reveal>
+
+      <Reveal delay={60}>
+        <div className="mt-10 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
+          <h2 className="font-display text-xl text-ink">
+            Recognition & research
+          </h2>
+          <ul className="mt-5 space-y-6">
+            {recognition.map((r) => (
+              <li key={r.title}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="font-medium text-ink">{r.title}</p>
+                  <p className="font-mono text-xs text-ink-faint">{r.period}</p>
+                </div>
+                <p className="mt-0.5 text-sm text-ink-faint">{r.org}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+                  {r.detail}
+                </p>
+                {r.url && (
+                  <p className="mt-1.5 text-sm">
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent-deep underline underline-offset-2 hover:text-ink"
+                    >
+                      {r.linkLabel ?? "Reference"}
+                    </a>
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-xs leading-relaxed text-ink-faint">
+            Certificates for each of the above are available on request.
+            They are not published here because they carry third-party names
+            and contact details.
+          </p>
         </div>
       </Reveal>
 

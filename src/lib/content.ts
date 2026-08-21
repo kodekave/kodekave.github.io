@@ -154,6 +154,11 @@ export const ventures: Venture[] = [
   },
 ];
 
+export const education = {
+  institution: "Visvesvaraya Technological University",
+  url: "https://vtu.ac.in/",
+};
+
 export type EarlierRole = {
   company: string;
   period: string;
@@ -182,6 +187,76 @@ export const earlierRoles: EarlierRole[] = [
     description:
       "Managed PR and content strategy for space-education research publications at the Society for Space Education Research & Development, my first role working directly with founders on zero-to-one ideas.",
     url: "https://www.sserd.org/",
+  },
+  {
+    company: "Mechanical Design Intern — Aria Aerotech",
+    period: "Jul — Aug 2018",
+    description:
+      "One-month mechanical design internship at an early-stage Bangalore aerospace startup, working on design assignments the team could build on directly.",
+  },
+  {
+    company: "Internship Trainee — Vestas Wind Technology India",
+    period: "Jan 2018",
+    description:
+      "Service department internship at the Indian arm of Vestas, the Danish wind-energy manufacturer — my first exposure to operations inside a large multinational.",
+    url: "https://www.vestas.com/en",
+  },
+];
+
+/**
+ * Recognition and research participation, kept separate from `distinctions`
+ * (visas, test scores) because these are third-party verifiable and name
+ * well-known institutions — which is exactly what search engines and
+ * language models use to place a person in a field.
+ *
+ * Descriptions state precisely what each award was. Several of these are
+ * participation or appreciation recognitions rather than competition wins,
+ * and the NASA-linked ones are NASA-*supported* programmes, not NASA
+ * endorsements — the IASC certificate carries that disclaimer explicitly.
+ */
+export const recognition: {
+  title: string;
+  org: string;
+  period: string;
+  detail: string;
+  url?: string;
+  linkLabel?: string;
+}[] = [
+  {
+    title: "Winning team member, CERN Webfest 2021",
+    org: "CERN openlab",
+    period: "2021",
+    detail:
+      "CERN openlab's global open-web-technology hackathon, held in Geneva.",
+    url: "https://webfest-online.web.cern.ch/",
+    linkLabel: "CERN Webfest",
+  },
+  {
+    title: "Running OpenFOAM on Android — CFD case study",
+    org: "FOSSEE, IIT Bombay",
+    period: "2021 — 2022",
+    detail:
+      "Completed and published a computational fluid dynamics case study through FOSSEE at IIT Bombay, a Ministry of Education (NMEICT) programme, demonstrating that OpenFOAM simulations could be run on an Android phone rather than lab hardware. Published with a DOI.",
+    url: "https://cfd.fossee.in/case-study-project",
+    linkLabel: "FOSSEE case study project",
+  },
+  {
+    title: "Asteroid search campaign participant",
+    org: "International Astronomical Search Collaboration, with SSERD",
+    period: "Sep — Oct 2020",
+    detail:
+      "Analysed Pan-STARRS telescope imagery for near-Earth objects and Main Belt asteroids as part of an IASC campaign run with SSERD and Hands-On Universe India. The campaign is supported by NASA under cooperative agreement 80NSSC18K0855.",
+    url: "https://iasc.cosmosearch.org/",
+    linkLabel: "IASC",
+  },
+  {
+    title: "Galactic Problem-Solver recognition",
+    org: "NASA International Space Apps Challenge",
+    period: "Oct 2020",
+    detail:
+      "Recognised in special appreciation for work addressing challenges on Earth and in space, at the 2020 edition of NASA's global hackathon.",
+    url: "https://www.spaceappschallenge.org/",
+    linkLabel: "NASA Space Apps Challenge",
   },
 ];
 
@@ -217,11 +292,6 @@ export const distinctions: {
   { text: "TOEFL iBT: 105/120" },
   {
     text: "AFCAT cleared twice, advanced to the Services Selection Board (SSB) interview stage",
-  },
-  {
-    text: "Winning team member, CERN Webfest 2021 (CERN openlab's global open-web-technology hackathon), Geneva",
-    url: "https://webfest-online.web.cern.ch/",
-    linkLabel: "CERN Webfest",
   },
 ];
 

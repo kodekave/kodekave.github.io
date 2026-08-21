@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_URL, absoluteUrl } from "@/lib/site";
-import { profile } from "@/lib/content";
+import { education, profile, recognition } from "@/lib/content";
 
 /**
  * Builds a complete, self-contained metadata object for one route.
@@ -101,11 +101,27 @@ export function personSchema() {
         "UK accessibility-technology company improving urban mobility for blind and low-vision commuters.",
       ...(profile.currentEmployerUrl ? { url: profile.currentEmployerUrl } : {}),
     },
-    alumniOf: {
+    alumniOf: [
+      {
+        "@type": "CollegeOrUniversity",
+        name: education.institution,
+        url: education.url,
+      },
+      {
+        "@type": "Organization",
+        name: "FOSSEE, Indian Institute of Technology Bombay",
+        url: "https://fossee.in/",
+      },
+    ],
+    // Named recognitions from well-known institutions. Co-occurrence with
+    // established entities (CERN, NASA, IIT Bombay, IASC) is a large part of
+    // how search engines and language models place a person in a field.
+    award: recognition.map((r) => `${r.title} — ${r.org}, ${r.period}`),
+    affiliation: recognition.map((r) => ({
       "@type": "Organization",
-      name: "Indian Institute of Technology Bombay (FOSSEE)",
-      url: "https://fossee.in/",
-    },
+      name: r.org,
+      ...(r.url ? { url: r.url } : {}),
+    })),
     hasOccupation: {
       "@type": "Occupation",
       name: "Founder's Office Operator",

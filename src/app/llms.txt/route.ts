@@ -1,5 +1,13 @@
 import { getPublishedPosts } from "@/lib/posts";
-import { distinctions, earlierRoles, profile, publication, ventures } from "@/lib/content";
+import {
+  distinctions,
+  earlierRoles,
+  education,
+  profile,
+  publication,
+  recognition,
+  ventures,
+} from "@/lib/content";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -79,6 +87,20 @@ ${earlierRoles
       (r.reference ? ` Output: ${r.reference.url}` : "")
   )
   .join("\n")}
+
+## Recognition and research participation
+
+${recognition
+  .map(
+    (r) =>
+      `- ${r.title} — ${r.org} (${r.period}). ${r.detail}` +
+      (r.url ? ` Reference: ${r.url}` : "")
+  )
+  .join("\n")}
+
+## Education
+
+- ${education.institution} — ${education.url}
 
 ## Published research
 
