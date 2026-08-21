@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const links = [
+  { href: "/services", label: "Services" },
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
@@ -43,8 +44,9 @@ export default function Nav() {
         </nav>
 
         <button
-          className="md:hidden"
+          className="-mr-2.5 flex h-11 w-11 items-center justify-center md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={open}
           onClick={() => setOpen(!open)}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">

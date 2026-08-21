@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
+import {
+  jsonLdGraph,
+  jsonLdScript,
+  personSchema,
+  websiteSchema,
+} from "@/lib/seo";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["opsz", "SOFT", "WONK"],
 });
 
 const inter = Inter({
@@ -17,77 +23,61 @@ const inter = Inter({
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
 });
 
-const siteUrl = "https://kodekave.github.io";
-
+/**
+ * Root metadata deliberately sets NO `alternates`, `openGraph` or `twitter`.
+ *
+ * Those keys are inherited by every child route, and Next merges metadata
+ * shallowly — so a single `alternates.canonical` here resolved to the
+ * homepage on all seven pages and told Google to de-index the other six.
+ * Each page now builds its own complete set via `buildMetadata()`.
+ */
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: `${profile.name} — ${profile.tagline}`,
-    template: `%s — ${profile.name}`,
+    default: `${profile.name} — ${profile.role}`,
+    template: `%s — ${profile.shortName} Kedarnath`,
   },
-  description:
-    "Komal Kedarnath is a founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — from early-stage idea to operating revenue.",
-  keywords: [
-    "founder's office operator",
-    "GTM strategist",
-    "startup operations consultant",
-    "cross-border operations",
-    "business development leader",
-    "founder's office",
-    "startup scaling",
-  ],
-  authors: [{ name: profile.name, url: siteUrl }],
+  description: profile.schemaDescription,
+  authors: [{ name: profile.name, url: `${SITE_URL}/` }],
   creator: profile.name,
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    url: siteUrl,
-    siteName: profile.name,
-    title: `${profile.name} — ${profile.tagline}`,
-    description: profile.subTagline,
-    images: [{ url: "/images/hero.jpg", width: 832, height: 1248 }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${profile.name} — ${profile.tagline}`,
-    description: profile.subTagline,
-    images: ["/images/hero.jpg"],
+  publisher: profile.name,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: profile.name,
-  jobTitle: profile.role,
-  url: siteUrl,
-  image: `${siteUrl}/images/hero.jpg`,
-  email: profile.email,
-  sameAs: [profile.linkedin],
-  knowsAbout: [
-    "Founder's Office Operations",
-    "Go-to-Market Strategy",
-    "Cross-Border Business Operations",
-    "Startup Scaling",
-    "Business Development",
-  ],
-};
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
+        {/*
+          One @graph containing the Person and WebSite nodes, cross-referenced
+          by @id so consumers resolve them as a single connected entity rather
+          than duplicate look-alike nodes. Page-level scripts add their own
+          nodes (BlogPosting, BreadcrumbList, FAQPage) that point back here.
+        */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={jsonLdScript(
+            jsonLdGraph(personSchema(), websiteSchema())
+          )}
         />
         {children}
       </body>

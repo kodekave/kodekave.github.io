@@ -3,6 +3,20 @@ import { profile } from "@/lib/content";
 import NewsletterForm from "./NewsletterForm";
 import Reveal from "./Reveal";
 
+/**
+ * Footer navigation. Beyond usability this is the crawl path to the guide
+ * pages, which are otherwise only reachable from in-body links.
+ */
+const footerLinks = [
+  { href: "/services", label: "Services" },
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Writing" },
+  { href: "/founders-office-guide", label: "Founder's office guide" },
+  { href: "/cross-border-operations", label: "Cross-border ops" },
+  { href: "/sponsor", label: "Sponsor" },
+];
+
 export default function Footer() {
   return (
     <footer className="border-t border-line bg-paper">
@@ -13,9 +27,9 @@ export default function Footer() {
         <Reveal>
           <div className="grid gap-10 md:grid-cols-2 md:items-start">
             <div>
-              <h3 className="font-display text-2xl text-ink">
+              <h2 className="font-display text-2xl text-ink">
                 Get the next issue.
-              </h3>
+              </h2>
               <p className="mt-2 max-w-sm text-ink-soft">
                 Notes on founder&rsquo;s-office operations, GTM strategy, and
                 building across borders — sent when there&rsquo;s something
@@ -32,23 +46,35 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} {profile.name}
           </p>
-          <div className="flex gap-6">
-            <Link href="/work" className="transition-colors hover:text-accent-deep">
-              Work
-            </Link>
-            <Link href="/blog" className="transition-colors hover:text-accent-deep">
-              Writing
-            </Link>
-            <Link href="/sponsor" className="transition-colors hover:text-accent-deep">
-              Sponsor
-            </Link>
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
+            {footerLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-accent-deep"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {/*
+              rel="me" marks these as profiles belonging to the same person as
+              the site, which is the HTML-level counterpart to schema sameAs.
+            */}
             <a
               href={profile.linkedin}
               target="_blank"
-              rel="noreferrer"
+              rel="me noopener noreferrer"
               className="transition-colors hover:text-accent-deep"
             >
               LinkedIn
+            </a>
+            <a
+              href="https://github.com/kodekave"
+              target="_blank"
+              rel="me noopener noreferrer"
+              className="transition-colors hover:text-accent-deep"
+            >
+              GitHub
             </a>
             <a
               href={`mailto:${profile.email}`}
@@ -56,7 +82,13 @@ export default function Footer() {
             >
               Email
             </a>
-          </div>
+            <a
+              href="/feed.xml"
+              className="transition-colors hover:text-accent-deep"
+            >
+              RSS
+            </a>
+          </nav>
         </div>
       </div>
     </footer>

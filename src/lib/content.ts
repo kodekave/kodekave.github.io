@@ -1,13 +1,43 @@
 export const profile = {
   name: "Komal Kedarnath G",
   shortName: "Komal",
+  /**
+   * Name variants that appear across the site and the wider web. Published
+   * in `alternateName` so search engines and language models resolve every
+   * spelling to the same person rather than treating them as separate people.
+   */
+  alternateNames: ["Komal Kedarnath", "kodekave"],
   role: "Founder's Office Operator & GTM Strategist",
   tagline: "Helping founders build and scale — from idea to operations.",
   subTagline:
     "A founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — turning early-stage vision into go-to-market execution, revenue, and operating systems that hold.",
+  /** One-sentence entity description, used in structured data. */
+  schemaDescription:
+    "Founder's-office operator and GTM strategist with 6+ years building and scaling four early-stage ventures across India, the Maldives, the United States, and the United Kingdom — covering go-to-market execution, cross-border operations, financial operations, and fundraising support.",
   email: "kmailstation@gmail.com",
-  linkedin: "https://linkedin.com/in/komalkedarnath",
+  linkedin: "https://www.linkedin.com/in/komalkedarnath",
   location: "India (open to relocation / remote)",
+  /**
+   * Verified profiles for schema `sameAs`. This is the strongest single
+   * signal for entity consolidation, so add every profile you control.
+   */
+  sameAs: [
+    "https://www.linkedin.com/in/komalkedarnath",
+    "https://github.com/kodekave",
+    "https://orcid.org/0000-0003-4980-5945",
+  ],
+  knowsAbout: [
+    "Founder's Office Operations",
+    "Go-to-Market Strategy",
+    "Cross-Border Business Operations",
+    "International Market Entry",
+    "Startup Financial Operations",
+    "Fundraising Support",
+    "Program Management",
+    "Startup Scaling",
+  ],
+  /** TODO(komal): paste the Travel Hands UK site URL to strengthen worksFor. */
+  currentEmployerUrl: "",
 };
 
 export const stats = [
@@ -22,6 +52,13 @@ export const stats = [
 export type Venture = {
   slug: string;
   company: string;
+  /**
+   * Official site or LinkedIn company page. Linking these turns four
+   * unverifiable claims into corroborated ones, which is the main E-E-A-T
+   * lever on this site. Empty string renders as plain text, no broken link.
+   * TODO(komal): paste URLs here.
+   */
+  url?: string;
   role: string;
   period: string;
   location: string;
@@ -35,6 +72,7 @@ export type Venture = {
 export const ventures: Venture[] = [
   {
     slug: "travel-hands-uk",
+    url: "",
     company: "Travel Hands UK",
     role: "Founder's Office Associate",
     period: "Apr 2026 — Present",
@@ -52,6 +90,7 @@ export const ventures: Venture[] = [
   },
   {
     slug: "neuralzome-cybernetics",
+    url: "",
     company: "Neuralzome Cybernetics",
     role: "Head of International Operations (Founder's Office)",
     period: "Feb 2025 — Feb 2026",
@@ -69,6 +108,7 @@ export const ventures: Venture[] = [
   },
   {
     slug: "uduvilla-investments",
+    url: "",
     company: "Uduvilla Investments",
     role: "International Business and Ops (Founder's Office)",
     period: "Nov 2023 — Nov 2024",
@@ -86,6 +126,7 @@ export const ventures: Venture[] = [
   },
   {
     slug: "genex-space-spacecat",
+    url: "",
     company: "Genex Space & SpaceCat",
     role: "International Business and Ops (Founder's Office)",
     period: "Feb 2022 — Aug 2023",

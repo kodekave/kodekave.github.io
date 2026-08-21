@@ -12,7 +12,18 @@ export default function Portrait({
   tinted = true,
   kenBurns = false,
   windowGrid = false,
+  sizes = "(max-width: 768px) 90vw, 430px",
+  priority = false,
 }: {
+  /**
+   * Base path with no extension or density suffix, e.g. "/images/hero".
+   * The component expects pre-generated variants beside it:
+   *   <base>-1x.avif  <base>-2x.avif
+   *   <base>-1x.webp  <base>-2x.webp
+   *   <base>-1x.jpg   <base>-2x.jpg   (fallback)
+   * `output: "export"` disables the Next image optimiser, so variants are
+   * generated at commit time rather than on request. See README.
+   */
   src: string;
   alt: string;
   initials?: string;
@@ -26,17 +37,37 @@ export default function Portrait({
   kenBurns?: boolean;
   /** Thin architectural mullion lines over the photo. Use sparingly — one hero shot, not every thumbnail. */
   windowGrid?: boolean;
+  /** Rendered width at each breakpoint, so the browser picks the right file. */
+  sizes?: string;
+  /** Set on the above-the-fold hero only — this is the LCP element there. */
+  priority?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
   // An <img> that 404s before React hydrates fires its error event with no
-  // listener attached yet, so check the already-settled state on mount too.
+  // listener attached yet, so the already-settled state has to be checked on
+  // mount too. But "complete with no intrinsic width" is ambiguous inside a
+  // <picture>: it also describes an image whose selected <source> simply has
+  // not finished decoding. Treating that as a failure hid the photo behind
+  // the initials placeholder, so confirm with a probe before giving up.
   useEffect(() => {
     const el = imgRef.current;
-    if (el && el.complete && el.naturalWidth === 0) {
-      setFailed(true);
-    }
+    if (!el || !el.complete || el.naturalWidth !== 0) return;
+
+    const url = el.currentSrc || el.src;
+    if (!url) return;
+
+    let cancelled = false;
+    const probe = new Image();
+    probe.onerror = () => {
+      if (!cancelled) setFailed(true);
+    };
+    probe.src = url;
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (failed) {
@@ -53,22 +84,40 @@ export default function Portrait({
 
   return (
     <div className={`relative overflow-hidden ${rounded} ${className}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        onError={() => setFailed(true)}
-        style={{
-          objectPosition,
-          filter: tinted
-            ? "grayscale(1) contrast(1.15) brightness(1.1)"
-            : undefined,
-        }}
-        className={`absolute inset-0 h-full w-full object-cover ${
-          kenBurns ? "animate-slow-zoom" : ""
-        }`}
-      />
+      <picture>
+        <source
+          type="image/avif"
+          sizes={sizes}
+          srcSet={`${src}-1x.avif 416w, ${src}-2x.avif 832w`}
+        />
+        <source
+          type="image/webp"
+          sizes={sizes}
+          srcSet={`${src}-1x.webp 416w, ${src}-2x.webp 832w`}
+        />
+        <img
+          ref={imgRef}
+          src={`${src}-2x.jpg`}
+          srcSet={`${src}-1x.jpg 416w, ${src}-2x.jpg 832w`}
+          sizes={sizes}
+          alt={alt}
+          width={832}
+          height={1248}
+          decoding={priority ? "sync" : "async"}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          onError={() => setFailed(true)}
+          style={{
+            objectPosition,
+            filter: tinted
+              ? "grayscale(1) contrast(1.15) brightness(1.1)"
+              : undefined,
+          }}
+          className={`absolute inset-0 h-full w-full object-cover ${
+            kenBurns ? "animate-slow-zoom" : ""
+          }`}
+        />
+      </picture>
       {tinted && (
         <>
           <div

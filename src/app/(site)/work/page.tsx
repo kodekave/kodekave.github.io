@@ -1,16 +1,69 @@
 import Reveal from "@/components/Reveal";
 import Stamp from "@/components/Stamp";
 import { countryCode, ventures } from "@/lib/content";
+import { absoluteUrl } from "@/lib/site";
+import {
+  PERSON_ID,
+  breadcrumbSchema,
+  buildMetadata,
+  jsonLdGraph,
+  jsonLdScript,
+} from "@/lib/seo";
 
-export const metadata = {
-  title: "Work",
+export const metadata = buildMetadata({
+  path: "/work",
+  title: "Four Ventures, Four Countries: AI, Space-Tech, Hospitality",
   description:
-    "Four ventures across four countries — AI/robotics, space-tech, hospitality and investments, and accessibility-tech — each run through a founder's office handling GTM, operations, and fundraising.",
-};
+    "The four early-stage ventures I have run a founder's office for — AI/robotics, space-tech, hospitality and investments, and accessibility tech."
+});
 
 export default function WorkPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(
+          jsonLdGraph(
+            breadcrumbSchema([
+              { name: "Home", path: "/" },
+              { name: "Work", path: "/work" },
+            ]),
+            {
+              "@type": "ItemList",
+              "@id": `${absoluteUrl("/work")}#ventures`,
+              name: "Ventures operated for",
+              itemListOrder: "https://schema.org/ItemListOrderDescending",
+              numberOfItems: ventures.length,
+              itemListElement: ventures.map((v, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                item: {
+                  "@type": "Organization",
+                  name: v.company,
+                  description: v.summary,
+                  ...(v.url ? { url: v.url } : {}),
+                  address: {
+                    "@type": "PostalAddress",
+                    addressCountry: v.country,
+                  },
+                },
+              })),
+            },
+            ...ventures.map((v) => ({
+              "@type": "OrganizationRole",
+              roleName: v.role,
+              startDate: v.period,
+              member: { "@id": PERSON_ID },
+              memberOf: {
+                "@type": "Organization",
+                name: v.company,
+                ...(v.url ? { url: v.url } : {}),
+              },
+            }))
+          )
+        )}
+      />
+
       <Reveal>
         <p className="text-sm font-medium uppercase tracking-wide text-accent-deep">
           Work
@@ -44,7 +97,18 @@ export default function WorkPage() {
             <div>
               <Stamp>{v.category}</Stamp>
               <h2 className="mt-4 font-display text-2xl text-ink sm:text-3xl">
-                {v.company}
+                {v.url ? (
+                  <a
+                    href={v.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-accent-deep"
+                  >
+                    {v.company}
+                  </a>
+                ) : (
+                  v.company
+                )}
               </h2>
               <p className="mt-1 text-ink-faint">{v.role}</p>
               <p className="mt-4 text-lg leading-relaxed text-ink-soft">

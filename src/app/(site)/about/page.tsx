@@ -1,16 +1,31 @@
 import Portrait from "@/components/Portrait";
 import Reveal from "@/components/Reveal";
 import { distinctions, earlierRoles, journey, profile } from "@/lib/content";
+import {
+  breadcrumbSchema,
+  buildMetadata,
+  jsonLdGraph,
+  jsonLdScript,
+} from "@/lib/seo";
 
-export const metadata = {
-  title: "About",
+export const metadata = buildMetadata({
+  path: "/about",
+  type: "profile",
+  title: "About Komal Kedarnath: Cross-Border Startup Operator",
   description:
-    "How Komal Kedarnath became a founder's-office operator across four countries — from an engineering scholarship to running GTM and operations for AI, space-tech, hospitality, and accessibility-tech ventures.",
-};
+    "How Komal Kedarnath became a founder's-office operator across four countries — from CFD research at IIT Bombay to running GTM and ops for four ventures.",
+});
 
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(
+          jsonLdGraph(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about" }]))
+        )}
+      />
+
       <Reveal>
         <p className="text-sm font-medium uppercase tracking-wide text-accent-deep">
           About
@@ -23,11 +38,12 @@ export default function AboutPage() {
       <Reveal delay={100}>
         <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-start">
           <Portrait
-            src="/images/hero.jpg"
-            alt={profile.name}
+            src="/images/hero"
+            alt={`${profile.name}, ${profile.role}`}
             className="h-40 w-40 shrink-0"
             rounded="rounded-2xl"
             objectPosition="50% 20%"
+            sizes="160px"
           />
           <p className="text-lg leading-relaxed text-ink-soft">
             I&rsquo;m {profile.shortName} — a founder&rsquo;s-office operator

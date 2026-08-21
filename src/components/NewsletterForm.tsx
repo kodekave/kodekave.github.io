@@ -1,35 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import { profile } from "@/lib/content";
+import { useId, useState } from "react";
+import { SUBSTACK_URL, substackSubscribeUrl } from "@/lib/site";
 
+/**
+ * Newsletter signup.
+ *
+ * Substack rejects cross-origin form POSTs, so a static site cannot subscribe
+ * someone inline without embedding Substack's iframe. Instead this keeps the
+ * site's own form styling and hands off to the Substack subscribe page with
+ * the address prefilled, where the visitor confirms in one click.
+ *
+ * Previously this opened a `mailto:` asking the visitor to email a request to
+ * be added, then reported success whether or not anything was sent.
+ */
 export default function NewsletterForm({
   compact = false,
 }: {
   compact?: boolean;
 }) {
+  // This component renders more than once per page (footer plus post CTA),
+  // so the input id has to be unique or the labels point at the wrong field.
+  const fieldId = useId();
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [state, setState] = useState<"idle" | "sent" | "unconfigured">("idle");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = "Newsletter signup";
-    const body = `Please add ${email} to the newsletter list.`;
-    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
-    setSubmitted(true);
+    const target = substackSubscribeUrl(email);
+    if (!target) {
+      setState("unconfigured");
+      return;
+    }
+    setState("sent");
+    window.location.href = target;
   }
 
   return (
     <div className={compact ? "" : "sm:max-w-md"}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
-        <label htmlFor="email" className="sr-only">
+        <label htmlFor={fieldId} className="sr-only">
           Email address
         </label>
         <input
-          id="email"
+          id={fieldId}
           type="email"
+          name="email"
+          autoComplete="email"
           required
           placeholder="you@company.com"
           value={email}
@@ -43,12 +60,23 @@ export default function NewsletterForm({
           Subscribe
         </button>
       </form>
-      {submitted && (
-        <p className="mt-3 text-sm text-accent-deep">
-          This opens your email client to notify me directly — a proper
-          signup form is coming soon.
-        </p>
-      )}
+
+      <p aria-live="polite" className="mt-3 text-sm text-ink-faint">
+        {state === "sent" && (
+          <span className="text-accent-deep">
+            Taking you to Substack to confirm&hellip;
+          </span>
+        )}
+        {state === "unconfigured" && (
+          <span className="text-accent-deep">
+            Signup isn&rsquo;t live yet — the newsletter launches shortly.
+          </span>
+        )}
+        {state === "idle" &&
+          (SUBSTACK_URL
+            ? "One click to confirm on Substack. No spam, unsubscribe anytime."
+            : "Launching shortly.")}
+      </p>
     </div>
   );
 }

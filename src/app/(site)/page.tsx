@@ -6,6 +6,14 @@ import RouteMap from "@/components/RouteMap";
 import Stamp from "@/components/Stamp";
 import { countryCode, profile, stats, ventures } from "@/lib/content";
 import { getPublishedPosts } from "@/lib/posts";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  path: "/",
+  title: "Founder's Office Operator & GTM Strategist — Komal Kedarnath",
+  description:
+    "Komal Kedarnath is a founder's-office operator and GTM strategist who has scaled four ventures across India, the Maldives, the US, and the UK.",
+});
 
 export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 3);
@@ -44,9 +52,11 @@ export default function HomePage() {
           <Reveal delay={150} direction="none">
             <div className="relative">
               <Portrait
-                src="/images/hero.jpg"
+                src="/images/hero"
                 alt={`${profile.name}, ${profile.role}`}
                 className="aspect-[4/5] w-full shadow-sm"
+                sizes="(max-width: 768px) 90vw, 430px"
+                priority
                 kenBurns
                 windowGrid
               />
