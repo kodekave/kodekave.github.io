@@ -9,6 +9,17 @@
 export const SITE_URL = "https://kodekave.github.io";
 
 /**
+ * Google Search Console verification token (the `content` value from the
+ * "HTML tag" method, NOT the whole <meta> tag).
+ *
+ * Kept in version control rather than as a file in public/, because a stray
+ * verification file is easy to remove in a future cleanup and that silently
+ * un-verifies the property.
+ */
+export const GOOGLE_SITE_VERIFICATION =
+  "gzpm78azL7E4dmq05tdiU-EXhGg8i8D-SeeVgTSwioE";
+
+/**
  * Substack destination for the newsletter form.
  *
  * Note this is a Substack *profile* (substack.com/@handle), not a publication
