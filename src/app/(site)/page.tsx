@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Portrait from "@/components/Portrait";
 import FrameCorners from "@/components/FrameCorners";
+import FieldMesh from "@/components/FieldMesh";
 import Reveal from "@/components/Reveal";
 import RouteMap from "@/components/RouteMap";
 import Stamp from "@/components/Stamp";
@@ -21,7 +22,14 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="mx-auto max-w-5xl px-6 pb-16 pt-14 sm:pt-20">
+      <section className="relative overflow-hidden">
+        {/*
+          Decorative backdrop. Absolutely positioned and pointer-events-none
+          so it never intercepts a click, and masked to near-nothing behind
+          the headline so type contrast is unaffected.
+        */}
+        <FieldMesh className="pointer-events-none absolute inset-0 h-full w-full" />
+        <div className="relative mx-auto max-w-5xl px-6 pb-16 pt-14 sm:pt-20">
         <div className="grid items-center gap-12 md:grid-cols-[1.3fr_0.9fr]">
           <Reveal>
             <p className="mb-5 inline-block rounded-full border border-line bg-paper px-4 py-1.5 text-xs font-medium uppercase tracking-wide text-accent-deep">
@@ -63,6 +71,7 @@ export default function HomePage() {
               <FrameCorners />
             </div>
           </Reveal>
+        </div>
         </div>
       </section>
 

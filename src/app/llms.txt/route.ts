@@ -1,4 +1,5 @@
 import { getPublishedPosts } from "@/lib/posts";
+import { getBookshelf } from "@/lib/books";
 import {
   distinctions,
   earlierRoles,
@@ -22,6 +23,7 @@ export const dynamic = "force-static";
  */
 export function GET() {
   const posts = getPublishedPosts();
+  const shelf = getBookshelf();
 
   const body = `# ${profile.name}
 
@@ -51,6 +53,7 @@ is often confused with.
 - [Cross-border startup operations](${absoluteUrl("/cross-border-operations")}): field guide to running ops across multiple countries.
 - [Fractional COO vs founder's office vs chief of staff](${absoluteUrl("/fractional-coo-vs-founders-office")}): comparison of the three roles.
 - [Writing](${absoluteUrl("/blog")}): all essays.
+- [Bookshelf](${absoluteUrl("/bookshelf")}): book recommendations.
 - [Sponsor](${absoluteUrl("/sponsor")}): newsletter and blog sponsorship, with pricing.
 
 ## Ventures
@@ -110,6 +113,16 @@ ${recognition
 
 ${distinctions
   .map((d) => `- ${d.text}` + (d.url ? ` Reference: ${d.url}` : ""))
+  .join("\n")}
+
+## Bookshelf
+
+${shelf.books
+  .map(
+    (b) =>
+      `- ${b.title} — ${b.author}${b.year ? ` (${b.year})` : ""}` +
+      (b.note ? `. ${b.note}` : "")
+  )
   .join("\n")}
 
 ## Feeds

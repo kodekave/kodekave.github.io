@@ -12,6 +12,7 @@ const footerLinks = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
+  { href: "/bookshelf", label: "Bookshelf" },
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
   { href: "/sponsor", label: "Sponsor" },

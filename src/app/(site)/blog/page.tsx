@@ -94,6 +94,13 @@ export default function BlogIndexPage() {
           >
             RSS
           </a>
+          . Book recommendations live on the{" "}
+          <Link
+            href="/bookshelf"
+            className="font-medium text-accent-deep underline underline-offset-2"
+          >
+            bookshelf
+          </Link>
           .
         </p>
       </Reveal>

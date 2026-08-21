@@ -161,3 +161,24 @@ body {
     animation: none;
   }
 }
+
+/* Slow drift along the deformed streamlines in FieldMesh. Decorative only. */
+@keyframes stream-drift {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+.fm-stream {
+  stroke-dasharray: 3 13;
+  animation: stream-drift 18s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-stream {
+    animation: none;
+  }
+}
