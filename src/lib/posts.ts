@@ -61,7 +61,8 @@ function getAllPosts(): Post[] {
   if (!fs.existsSync(POSTS_DIR)) return [];
   return fs
     .readdirSync(POSTS_DIR)
-    .filter((f) => f.endsWith(".md"))
+    // `_`-prefixed files are templates and scratch drafts, never posts.
+    .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
     .map(readPost)
     .sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
 }

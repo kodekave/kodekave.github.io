@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/validate-content.mjs && next build",
     "serve": "npx serve out",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate": "node scripts/validate-content.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

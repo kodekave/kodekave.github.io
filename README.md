@@ -92,6 +92,55 @@ Search the repo for `TODO(komal)`:
   are named but unlinked, which is the biggest remaining trust gap.
 - `currentEmployerUrl` in `profile` — strengthens the `worksFor` schema.
 
+## Publishing from the browser
+
+No CMS, no admin login, no extra service to keep alive — GitHub's own editor
+is the admin panel. It works on a phone.
+
+**Write a new post**
+
+1. [Open `content/posts` and add a file](https://github.com/kodekave/kodekave.github.io/new/main/content/posts)
+2. Name it `lowercase-words-with-hyphens.md` — the filename becomes the URL
+   (`/blog/lowercase-words-with-hyphens/`)
+3. Paste the frontmatter from [`content/posts/_template.md`](https://github.com/kodekave/kodekave.github.io/blob/main/content/posts/_template.md)
+   and write below it
+4. "Commit changes" at the bottom. The site rebuilds and deploys itself in
+   about two minutes.
+
+**Edit an existing post** —
+[browse the folder](https://github.com/kodekave/kodekave.github.io/tree/main/content/posts)
+and click the pencil icon on any file.
+
+**Edit the bookshelf** —
+[open `content/books.md`](https://github.com/kodekave/kodekave.github.io/edit/main/content/books.md)
+and append to the `books:` list. Each entry needs `title` and `author`;
+`year`, `category`, `url`, `blurb` and `note` are optional. `note` is your own
+take and replaces `blurb` on the page when filled in.
+
+**Full editor** — press <kbd>.</kbd> on any GitHub page of this repo to open
+VS Code in the browser, with the whole repo and a file tree. Better on a
+laptop than the single-file editor; poor on a phone.
+
+**Drafts** — set `published: false` to keep something out of the build without
+deleting it. Files starting with `_` are ignored entirely.
+
+### If a commit breaks something
+
+`npm run build` runs `scripts/validate-content.mjs` first, so a malformed post
+fails the deploy instead of publishing something broken. The Actions log names
+the file and the problem, for example:
+
+```
+error    content/posts/my-post.md: date must be quoted YYYY-MM-DD, got `2026-1-5`
+```
+
+The live site keeps serving the last good version until you fix it and commit
+again. Run `npm run validate` locally to check before pushing.
+
+Validation also warns (without failing) when an excerpt drifts outside
+150–160 characters or a post is under 300 words — the excerpt becomes the
+page's meta description, so length matters there.
+
 ## Deploying
 
 Every push to `main` triggers `.github/workflows/deploy.yml`, which runs
