@@ -185,7 +185,7 @@ export const earlierRoles: EarlierRole[] = [
     company: "Publications (R&D) — SSERD",
     period: "Dec 2019 — Nov 2020",
     description:
-      "Managed PR and content strategy for space-education research publications at the Society for Space Education Research & Development, my first role working directly with founders on zero-to-one ideas.",
+      "Ran publications and content strategy for space-education research at the Society for Space Education Research & Development — my first role working directly with founders on zero-to-one ideas.",
     url: "https://www.sserd.org/",
   },
 ];
