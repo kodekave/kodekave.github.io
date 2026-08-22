@@ -5,7 +5,7 @@ import FieldMesh from "@/components/FieldMesh";
 import Reveal from "@/components/Reveal";
 import RouteMap from "@/components/RouteMap";
 import Stamp from "@/components/Stamp";
-import { countryCode, profile, stats, ventures } from "@/lib/content";
+import { countryCode, engagements, profile, stats, ventures } from "@/lib/content";
 import { getPublishedPosts } from "@/lib/posts";
 import { buildMetadata } from "@/lib/seo";
 
@@ -43,16 +43,16 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/work"
+                href="/services"
                 className="rounded-full bg-ink px-6 py-3 text-sm font-medium text-cream transition hover:-translate-y-0.5 hover:bg-accent-deep hover:shadow-md"
               >
-                See the ventures
+                See what an engagement covers
               </Link>
               <Link
-                href="/about"
+                href="/work"
                 className="rounded-full border border-line bg-paper px-6 py-3 text-sm font-medium text-ink transition hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
               >
-                Read my story
+                See the ventures
               </Link>
             </div>
           </Reveal>
@@ -158,6 +158,63 @@ export default function HomePage() {
         >
           All the work →
         </Link>
+      </section>
+
+      {/* Work with me — the commercial page needs a route in from the homepage */}
+      <section className="border-t border-line bg-paper">
+        <div className="mx-auto max-w-5xl px-6 py-20">
+          <Reveal>
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-wide text-accent-deep">
+                  Work with me
+                </p>
+                <h2 className="mt-2 max-w-xl font-display text-3xl text-ink">
+                  What an engagement covers.
+                </h2>
+                <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink-soft">
+                  A founder&rsquo;s office, without hiring one. Most
+                  engagements are one of these, or an ongoing arrangement that
+                  absorbs several.
+                </p>
+              </div>
+              <Link
+                href="/services"
+                className="hidden shrink-0 rounded-full bg-ink px-6 py-3 text-sm font-medium text-cream transition hover:-translate-y-0.5 hover:bg-accent-deep hover:shadow-md sm:block"
+              >
+                How this works &rarr;
+              </Link>
+            </div>
+          </Reveal>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {engagements.map((e, i) => (
+              <Reveal key={e.name} delay={i * 70}>
+                <Link
+                  href="/services"
+                  className="group block h-full rounded-xl border border-line bg-cream p-6 transition hover:-translate-y-1 hover:border-accent hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="font-display text-xl text-ink group-hover:text-accent-deep">
+                      {e.name}
+                    </h3>
+                    <Stamp>{e.stamp}</Stamp>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                    {e.summary}
+                  </p>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+
+          <Link
+            href="/services"
+            className="mt-8 block rounded-full bg-ink px-6 py-3 text-center text-sm font-medium text-cream sm:hidden"
+          >
+            How this works &rarr;
+          </Link>
+        </div>
       </section>
 
       {/* Latest writing */}

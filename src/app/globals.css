@@ -162,6 +162,46 @@ body {
   }
 }
 
+/*
+ * FieldMesh readability masks. The inline streamline layer has to fade the
+ * same way the static grid file does, or it would sit at full strength behind
+ * the headline. Landscape fades across, portrait fades down — matching the
+ * gradients baked into each SVG variant by scripts/generate-mesh.py.
+ */
+.fm-fade-x {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgb(0 0 0 / 4%) 0%,
+    rgb(0 0 0 / 22%) 32%,
+    rgb(0 0 0 / 80%) 58%,
+    rgb(0 0 0 / 95%) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgb(0 0 0 / 4%) 0%,
+    rgb(0 0 0 / 22%) 32%,
+    rgb(0 0 0 / 80%) 58%,
+    rgb(0 0 0 / 95%) 100%
+  );
+}
+
+.fm-fade-y {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 8%) 0%,
+    rgb(0 0 0 / 20%) 34%,
+    rgb(0 0 0 / 55%) 72%,
+    rgb(0 0 0 / 85%) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 8%) 0%,
+    rgb(0 0 0 / 20%) 34%,
+    rgb(0 0 0 / 55%) 72%,
+    rgb(0 0 0 / 85%) 100%
+  );
+}
+
 /* Slow drift along the deformed streamlines in FieldMesh. Decorative only. */
 @keyframes stream-drift {
   from {

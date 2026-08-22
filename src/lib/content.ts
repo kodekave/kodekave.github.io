@@ -307,6 +307,66 @@ export function countryCode(country: string): string {
   return countryCodes[country] ?? country.slice(0, 2).toUpperCase();
 }
 
+/**
+ * The four shapes an engagement takes. Shared between /services and the
+ * homepage summary, so the offer is described once.
+ */
+export const engagements: {
+  name: string;
+  stamp: string;
+  summary: string;
+  includes: string[];
+}[] = [
+  {
+    name: "Founder's office",
+    stamp: "Ongoing",
+    summary:
+      "I become the person you hand a half-formed idea to. You stay on product, fundraising and customers; I turn priorities into execution plans, then own them through to a result.",
+    includes: [
+      "Translating leadership priorities into OKRs and execution plans",
+      "Running the operating cadence — reviews, reporting, follow-through",
+      "Standing in for the founder with vendors, partners and internal teams",
+      "Closing the loop: staying with a plan until it meets a real customer",
+    ],
+  },
+  {
+    name: "Go-to-market execution",
+    stamp: "Project",
+    summary:
+      "Not a GTM deck. The launch itself — sequencing, owners, dates, and the unglamorous follow-through that turns a launch plan into first revenue.",
+    includes: [
+      "Launch program management across product, sales and ops",
+      "First-customer acquisition and early pipeline construction",
+      "Pricing and packaging support for a new market or segment",
+      "Post-launch instrumentation so you can see what actually worked",
+    ],
+  },
+  {
+    name: "Cross-border market entry",
+    stamp: "Project",
+    summary:
+      "Entering a country you have never operated in, without a local team. This is the work most operators have never touched, and where things quietly go wrong.",
+    includes: [
+      "Entity setup, banking and compliance sequencing",
+      "Outbound-investment and remittance filings (e.g. ODI from India)",
+      "Vendor, logistics and payment-rail selection in the new market",
+      "Multi-currency billing and a monthly close that reconciles",
+    ],
+  },
+  {
+    name: "Fundraise support",
+    stamp: "Project",
+    summary:
+      "The operator half of a raise. I do not pitch for you — I build the material and the data room that survives diligence, alongside you.",
+    includes: [
+      "Data room construction and diligence readiness",
+      "Financial memos and operating models",
+      "Investor-facing deck support and narrative pressure-testing",
+      "Post-raise reporting cadence for new investors",
+    ],
+  },
+];
+
 export const sponsorTiers = [
   {
     name: "Newsletter Mention",

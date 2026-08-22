@@ -8,8 +8,8 @@ import Reveal from "./Reveal";
  * pages, which are otherwise only reachable from in-body links.
  */
 const footerLinks = [
-  { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
+  { href: "/services", label: "Work with me" },
+  { href: "/work", label: "Ventures" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
   { href: "/bookshelf", label: "Bookshelf" },
