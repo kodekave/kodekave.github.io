@@ -125,7 +125,7 @@ export const ventures: Venture[] = [
     highlights: [
       "Coordinated a 17-employee multinational team across the founder's business portfolio.",
       "Built operational tracking, information architecture, and cross-border compliance processes from the ground up.",
-      "Grew tourism and guest-experience revenue by 250% through redesigned service operations and high-ticket travel packages averaging $2,000 per booking.",
+      "Grew tourism and guest-experience revenue by 250% through redesigned service operations and high-ticket travel packages.",
       "Designed automated reporting systems that cut leadership's manual data-retrieval time by 10+ hours a week.",
     ],
   },
@@ -182,7 +182,7 @@ export const earlierRoles: EarlierRole[] = [
     },
   },
   {
-    company: "PR/Publications Manager (R&D) — SSERD",
+    company: "Publications (R&D) — SSERD",
     period: "Dec 2019 — Nov 2020",
     description:
       "Managed PR and content strategy for space-education research publications at the Society for Space Education Research & Development, my first role working directly with founders on zero-to-one ideas.",
