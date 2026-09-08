@@ -16,120 +16,24 @@
     --ink-soft:#6b4e34;
     --accent:#7c2a2a;
     --gold:#a9822f;
+    --turn:.95s;
   }
   *{box-sizing:border-box;}
+  html,body{height:100%;}
   body{
     margin:0;
-    min-height:100vh;
-    background:radial-gradient(ellipse at center, #2a1d13 0%, #120c08 100%);
-    display:flex;
+    background:radial-gradient(ellipse at 50% 40%, #2e2015 0%, #14100b 62%, #0b0806 100%);
+    display:grid;
+    grid-template-rows:1fr auto;
+    justify-items:center;
     align-items:center;
-    justify-content:center;
-    padding:44px 14px;
+    overflow:hidden;
     font-family:'EB Garamond', serif;
     color:var(--ink);
-  }
-  .sheet{
-    position:relative;
-    width:min(940px, 100%);
-    background:
-      radial-gradient(circle at 14% 18%, rgba(120,90,40,0.16), transparent 40%),
-      radial-gradient(circle at 86% 78%, rgba(120,90,40,0.13), transparent 45%),
-      radial-gradient(circle at 60% 8%, rgba(90,60,20,0.10), transparent 35%),
-      radial-gradient(circle at 30% 90%, rgba(90,60,20,0.10), transparent 40%),
-      var(--paper);
-    box-shadow:0 30px 70px rgba(0,0,0,0.55);
-    border:3px solid var(--ink);
-    padding:10px;
-    animation:reveal 1.2s ease-out both;
-  }
-  .frame{
-    position:relative;
-    border:1px solid var(--gold);
-    padding:38px 32px 30px;
-  }
-  .corner{position:absolute; width:56px; height:56px; color:var(--gold); opacity:0.9;}
-  .corner.tl{top:5px; left:5px;}
-  .corner.tr{top:5px; right:5px; transform:scaleX(-1);}
-  .corner.bl{bottom:5px; left:5px; transform:scaleY(-1);}
-  .corner.br{bottom:5px; right:5px; transform:scale(-1,-1);}
-
-  .title-block{text-align:center; margin-bottom:26px;}
-  h1{
-    font-family:'Cinzel Decorative', serif;
-    font-size:clamp(1.9rem, 5vw, 3.1rem);
-    color:var(--accent);
-    letter-spacing:2px;
-    margin:0;
-    text-shadow:1px 1px 0 rgba(0,0,0,0.12);
-  }
-  .subtitle{
-    font-style:italic;
-    color:var(--ink-soft);
-    letter-spacing:0.5px;
-    margin:10px 0 0;
-    font-size:1.08rem;
-  }
-  .divider{display:block; width:300px; max-width:70%; height:22px; margin:16px auto 0; color:var(--gold);}
-
-  .plates{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:30px 26px;
-    margin:30px 0 34px;
-  }
-  .plate{text-align:center; margin:0;}
-  .plate-frame{
-    border:1px solid var(--ink-soft);
-    background:var(--paper-deep);
-    padding:7px;
-    box-shadow:inset 0 0 18px rgba(58,40,24,0.13);
-  }
-  .plate-frame > div{border:1px solid rgba(169,130,47,0.55); padding:3px;}
-  .plate-frame svg{width:100%; height:auto; display:block; color:var(--ink);}
-  figcaption{margin-top:12px;}
-  .plate-number{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:9px;
-    font-family:'Cinzel Decorative', serif;
-    font-size:0.7rem;
-    letter-spacing:2.5px;
-    color:var(--accent);
-    margin-bottom:5px;
-  }
-  .plate-number::before,.plate-number::after{
-    content:"";
-    height:1px; width:24px;
-    background:linear-gradient(to right, transparent, var(--gold), transparent);
-  }
-  blockquote{
-    margin:4px 6px 0;
-    font-style:italic;
-    font-size:0.9rem;
-    color:var(--ink-soft);
-    line-height:1.5;
-  }
-  .caption-line{
-    margin:4px 6px 0;
-    font-style:italic;
-    font-size:0.9rem;
-    color:var(--ink-soft);
+    -webkit-tap-highlight-color:transparent;
   }
 
-  .closing{text-align:center; margin-top:8px;}
-  .wax-seal{width:72px; height:72px; margin:0 auto 10px; color:var(--accent);}
-  .closing p{
-    font-style:italic;
-    color:var(--ink-soft);
-    font-size:1.04rem;
-    margin:0 auto;
-    max-width:440px;
-    line-height:1.55;
-  }
-
-  /* ---- engraver's stroke ladder ---- */
+  /* ---------- engraver's stroke ladder (shared by every drawing) ---------- */
   .s1,.s2,.s3,.s4{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}
   .o1,.o2,.o3{fill:var(--paper-deep);stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}
   .s1,.o1{stroke-width:2.1;}
@@ -143,12 +47,11 @@
   .hx{fill:url(#p-hatch);stroke:none;}
   .hx2{fill:url(#p-hatch2);stroke:none;}
   .hs{fill:url(#p-stone);stroke:none;}
-  #ink-defs{color:var(--ink);}
+  .xh{fill:url(#p-cross);stroke:none;}
+  .st{fill:url(#p-stip);stroke:none;}
+  .st2{fill:url(#p-stip2);stroke:none;}
+  #ink-defs,#cast-defs,#book-defs{color:var(--ink);}
 
-  @keyframes reveal{
-    from{opacity:0; transform:scale(0.98) translateY(14px);}
-    to{opacity:1; transform:scale(1) translateY(0);}
-  }
   @keyframes twinkle{
     0%,100%{opacity:0.3; transform:scale(0.8) rotate(0deg);}
     50%{opacity:1; transform:scale(1.08) rotate(12deg);}
@@ -191,16 +94,211 @@
   .d1{animation-delay:-0.45s;} .d2{animation-delay:-0.95s;} .d3{animation-delay:-1.5s;}
   .d4{animation-delay:-2.1s;} .d5{animation-delay:-2.7s;} .d6{animation-delay:-3.3s;}
 
+  /* ---------- the book ---------- */
+  .book{
+    position:relative;
+    aspect-ratio:4/5;
+    /* drive the size from width only: with an explicit height, a max-width
+       clamp cannot be corrected by aspect-ratio and the page distorts. */
+    width:min(92vw, calc(86svh * 0.8), 752px);
+    perspective:1800px;
+    margin:0 auto;
+  }
+  .edge{position:absolute; top:1.5%; bottom:1.5%; pointer-events:none; z-index:0;}
+  .edge-r{
+    left:100%;
+    width:calc(2px + var(--right,0) * 2.1px);
+    background:repeating-linear-gradient(to right, rgba(58,40,24,.42) 0 1px, rgba(236,223,192,.92) 1px 2.6px);
+    box-shadow:3px 3px 12px rgba(0,0,0,.55);
+    border-radius:0 4px 4px 0;
+  }
+  .edge-l{
+    right:100%;
+    width:calc(2px + var(--left,0) * 2.1px);
+    background:repeating-linear-gradient(to left, rgba(58,40,24,.42) 0 1px, rgba(236,223,192,.92) 1px 2.6px);
+    box-shadow:-3px 3px 12px rgba(0,0,0,.55);
+    border-radius:4px 0 0 4px;
+  }
+
+  .leaf{
+    position:absolute; inset:0;
+    transform-origin:left center;
+    transform-style:preserve-3d;
+    transition:transform var(--turn) cubic-bezier(.36,.02,.22,1), visibility 0s linear;
+  }
+  .leaf.turned{
+    transform:rotateY(-180deg);
+    visibility:hidden;
+    transition:transform var(--turn) cubic-bezier(.36,.02,.22,1), visibility 0s linear calc(var(--turn) * .52);
+  }
+  .leaf.turning{z-index:500 !important;}
+
+  .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    overflow:hidden;
+    container-type:size;
+    border:3px solid var(--ink);
+    background:
+      radial-gradient(circle at 14% 18%, rgba(120,90,40,0.15), transparent 42%),
+      radial-gradient(circle at 86% 78%, rgba(120,90,40,0.12), transparent 46%),
+      radial-gradient(circle at 62% 8%, rgba(90,60,20,0.09), transparent 36%),
+      radial-gradient(circle at 28% 92%, rgba(90,60,20,0.09), transparent 40%),
+      var(--paper);
+    box-shadow:0 18px 50px rgba(0,0,0,.5);
+  }
+  .face.back{transform:rotateY(180deg);}
+  /* binding shadow along the spine */
+  .face::before{
+    content:""; position:absolute; inset:0; z-index:6; pointer-events:none;
+    background:linear-gradient(to right, rgba(46,30,16,.34) 0, rgba(46,30,16,.10) 4.5%, rgba(46,30,16,0) 12%);
+  }
+  .face.back::before{
+    background:linear-gradient(to left, rgba(46,30,16,.34) 0, rgba(46,30,16,.10) 4.5%, rgba(46,30,16,0) 12%);
+  }
+  /* light sweeping across the leaf as it turns */
+  .sheen{
+    position:absolute; inset:0; z-index:7; pointer-events:none; opacity:0;
+    background:linear-gradient(105deg, rgba(255,246,224,.42) 0%, rgba(255,246,224,0) 34%, rgba(40,26,14,.30) 82%, rgba(40,26,14,.52) 100%);
+  }
+  .leaf.turning .sheen{animation:sheen var(--turn) ease-in-out;}
+  @keyframes sheen{0%{opacity:0} 40%{opacity:.85} 100%{opacity:0}}
+
+  /* ---------- shared page furniture ---------- */
+  .pg{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; padding:7.4% 8.4% 5.4%;}
+  .ruled::before{content:""; position:absolute; inset:2.7%; border:1px solid rgba(169,130,47,.72); pointer-events:none;}
+  .ruled::after{content:""; position:absolute; inset:3.9%; border:1px solid rgba(169,130,47,.30); pointer-events:none;}
+  .cnr{position:absolute; width:10.5%; color:var(--gold); opacity:.92; pointer-events:none;}
+  .cnr.tl{top:3.2%; left:3.2%;}
+  .cnr.tr{top:3.2%; right:3.2%; transform:scaleX(-1);}
+  .cnr.bl{bottom:3.2%; left:3.2%; transform:scaleY(-1);}
+  .cnr.br{bottom:3.2%; right:3.2%; transform:scale(-1,-1);}
+
+  /* ---------- plate pages ---------- */
+  .fleur{width:30%; color:var(--gold); display:block;}
+  .plate-number{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    font-family:'Cinzel Decorative', serif;
+    font-size:2cqw; letter-spacing:.32em; color:var(--accent);
+    margin:1.1cqh 0 0;
+  }
+  .plate-number::before,.plate-number::after{
+    content:""; height:1px; width:3.4cqw;
+    background:linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .art{
+    width:100%; margin:2.4cqh 0 0;
+    background:var(--paper-deep);
+    border:1px solid var(--ink-soft);
+    padding:1.5%;
+    box-shadow:inset 0 0 18px rgba(58,40,24,.13);
+  }
+  .art > div{border:1px solid rgba(169,130,47,.55); padding:.6%;}
+  .art svg{width:100%; height:auto; display:block; color:var(--ink);}
+  .cap-rule{width:42%; color:var(--gold); margin:2.6cqh 0 1.9cqh; display:block;}
+  .cap{
+    font-style:italic; font-size:2.6cqw; line-height:1.52;
+    color:var(--ink-soft); text-align:center; max-width:90%; margin:0;
+  }
+  .marg{margin-top:auto; height:7.2cqh; max-width:26%; width:auto; color:var(--ink-soft); opacity:.7;}
+
+  /* ---------- cover ---------- */
+  .pg-cover{
+    background:
+      radial-gradient(ellipse at 30% 22%, #543a22 0%, rgba(84,58,34,0) 55%),
+      radial-gradient(ellipse at 74% 82%, #4a3220 0%, rgba(74,50,32,0) 58%),
+      #33220f;
+    padding:6% 6%;
+    justify-content:center;
+  }
+  .grain{position:absolute; inset:0; width:100%; height:100%; color:#c9a86a; opacity:.16; pointer-events:none;}
+  .cover-rule{position:absolute; inset:4.4%; border:2px solid rgba(200,162,88,.78); pointer-events:none;}
+  .cover-rule2{position:absolute; inset:6.2%; border:1px solid rgba(200,162,88,.42); pointer-events:none;}
+  .cover-cnr{position:absolute; width:12%; color:#c8a258; opacity:.85; pointer-events:none;}
+  .cover-cart{width:62%; color:#c8a258; position:relative; z-index:2;}
+  .cover-cart text{font-family:'Cinzel Decorative', serif; fill:#e6c98a;}
+
+  /* ---------- endpaper ---------- */
+  .pg-endpaper{padding:0;}
+  .damask{position:absolute; inset:0; width:100%; height:100%; color:var(--ink-soft); opacity:.3;}
+  .ep-rule{position:absolute; inset:5.5%; border:1px solid rgba(107,78,52,.5); pointer-events:none;}
+
+  /* ---------- title & closing ---------- */
+  .pg-title{justify-content:center; text-align:center;}
+  h1{
+    font-family:'Cinzel Decorative', serif;
+    font-size:6.6cqw; color:var(--accent); letter-spacing:.04em;
+    margin:2.4cqh 0 0; line-height:1.12;
+    text-shadow:1px 1px 0 rgba(0,0,0,.12);
+  }
+  .tp-names{font-size:3.4cqw; color:var(--ink); margin:2.6cqh 0 0; letter-spacing:.05em;}
+  .tp-sub{font-style:italic; font-size:2.7cqw; color:var(--ink-soft); margin:.9cqh 0 0;}
+  .tp-rule{width:52%; color:var(--gold); margin:3.4cqh 0 0; display:block;}
+  .tp-note{font-style:italic; font-size:2.2cqw; color:var(--ink-soft); margin:3cqh 0 0; letter-spacing:.06em;}
+  .tail{width:34%; color:var(--gold); margin:3.4cqh 0 0; display:block;}
+
+  .pg-close{justify-content:center; text-align:center;}
+  .seal{width:26%; color:var(--accent); display:block; margin:0 auto;}
+  .inscription{
+    font-style:italic; font-size:3cqw; line-height:1.56;
+    color:var(--ink-soft); max-width:78%; margin:4cqh auto 0;
+  }
+
+  /* ---------- verso ---------- */
+  .verso{position:absolute; inset:0; display:grid; place-items:center; overflow:hidden;}
+  .ghost{width:88%; opacity:.075; filter:blur(.7px); color:var(--ink);}
+  .verso-tex{position:absolute; inset:0; width:100%; height:100%; color:var(--ink-soft); opacity:.07;}
+
+  /* ---------- controls ---------- */
+  .controls{
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    padding:14px 0 20px; color:#c8a258;
+    font-family:'EB Garamond', serif; font-size:.95rem; letter-spacing:.08em;
+  }
+  .controls button{
+    font:inherit; letter-spacing:.1em;
+    background:transparent; color:#c8a258;
+    border:1px solid rgba(200,162,88,.5); border-radius:2px;
+    padding:7px 15px; cursor:pointer;
+    transition:background .2s, border-color .2s, color .2s;
+  }
+  .controls button:hover:not(:disabled){background:rgba(200,162,88,.14); border-color:rgba(200,162,88,.9);}
+  .controls button:disabled{opacity:.3; cursor:default;}
+  .controls button:focus-visible{outline:2px solid #e6c98a; outline-offset:3px;}
+  #counter{min-width:5.5em; text-align:center; opacity:.75; font-variant-numeric:tabular-nums;}
+  .hint{position:absolute; bottom:100%; left:50%; transform:translateX(-50%); margin-bottom:13px;
+        white-space:nowrap; font-style:italic; opacity:.6; animation:pulse 2.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.35} 50%{opacity:.8}}
+  .controls-wrap{position:relative;}
+
+  @media (max-width:560px){
+    .book{width:min(94vw, calc(78svh * 0.8), 752px);}
+    .controls{gap:10px; font-size:.85rem;}
+    .controls button{padding:6px 11px;}
+  }
+
   @media (prefers-reduced-motion: reduce){
-    *{animation:none !important; transition:none !important;}
+    .leaf, .leaf.turned{transition:none;}
+    .leaf.turned{transform:none; opacity:0; visibility:hidden;}
+    .leaf.turning .sheen{animation:none;}
+    .hint{animation:none;}
+    #ink-defs *, .art *{animation:none !important;}
   }
-  @media (max-width:620px){
-    .plates{grid-template-columns:1fr;}
-    .frame{padding:28px 16px 22px;}
-  }
+
   @media print{
-    body{background:#fff; padding:0;}
-    .sheet{box-shadow:none;}
+    body{background:#fff; display:block; overflow:visible; margin:0;}
+    .book{position:static; width:100%; max-width:none; height:auto; aspect-ratio:auto;
+          perspective:none; margin:0;}
+    /* each leaf becomes one sheet; position:relative keeps the faces inside it */
+    .leaf{position:relative; inset:auto; display:block; width:100%; height:auto;
+          aspect-ratio:4/5; margin:0; transform:none !important; visibility:visible !important;
+          opacity:1 !important; transform-style:flat;
+          break-after:page; page-break-after:always; break-inside:avoid;}
+    .leaf:last-child{break-after:auto; page-break-after:auto;}
+    .face{position:absolute; inset:0; backface-visibility:visible; box-shadow:none; border-width:1px;}
+    .face::before{display:none;}
+    .face.back{display:none;}
+    .edge, .controls, .controls-wrap, .sheen, #live{display:none !important;}
     *{animation:none !important;}
   }
 </style>
@@ -484,6 +582,7 @@
     <path d="M48,56 C50,53 53,53 55,55" class="s3"/>
     <path d="M51,59 C54,57 58,58 59,61 C59,63.4 56,64.4 53,63 C51,62 50,60 51,59 Z" class="o2"/>
     <path d="M54,60.2 C56,60.2 57,61 57,62 M53,61.6 C55,61.6 56,62.4 56,63.2" class="s4"/>
+      <path d="M12.5,82 C13.8,91 14,99 13.2,104.4 M15.4,77 C16.8,88 17,97 16.2,103.4 M19,87 C20,95 20.2,101 19.6,104.4 M22,93 C22.8,99 23,103 22.6,105" class="s4"/><path d="M20.4,34 C21,46 21,58 20.6,68 M23.4,30 C24,44 24,58 23.6,68.6" class="s4"/>
   </symbol>
 
   <!-- K K: seated, facing right. Same frame as a-sit. -->
@@ -503,6 +602,7 @@
     <path d="M49,56 C51,53 54,53 56,55" class="s3"/>
     <path d="M52,59 C55,57 59,58 60,61 C60,63.4 57,64.4 54,63 C52,62 51,60 52,59 Z" class="o2"/>
     <path d="M55,60.2 C57,60.2 58,61 58,62 M54,61.6 C56,61.6 57,62.4 57,63.2" class="s4"/>
+      <path d="M12.5,82 C13.8,91 14,99 13.2,104.4 M15.4,77 C16.8,88 17,97 16.2,103.4 M19,87 C20,95 20.2,101 19.6,104.4 M22,93 C22.8,99 23,103 22.6,105" class="s4"/><path d="M20.4,34 C21,46 21,58 20.6,68 M23.4,30 C24,44 24,58 23.6,68.6" class="s4"/>
   </symbol>
 
   <!-- Archana: standing, facing right. Feet at y=117. -->
@@ -525,6 +625,7 @@
     <path d="M43,78 C45,76.4 48,76.6 49,79" class="s3"/>
     <path d="M44,81 C47,79 51,80.4 51,84 C51,87.4 47,88.4 44,86.4 C42,85 42,82 44,81 Z" class="o2"/>
     <path d="M46,83 C48,82.6 50,83.4 50,85 M45,85 C47,84.6 49,85.4 49,86.6" class="s4"/>
+      <path d="M16.6,74 C17.4,86 17.6,98 17,109 M19.6,62 C20.4,78 20.6,94 20.2,109 M22.6,84 C23.2,94 23.4,102 23,109 M14.6,88 C15.2,97 15.4,104 15,109.4" class="s4"/>
   </symbol>
 
 
@@ -546,6 +647,7 @@
     <path d="M33,54 C35,52 38,52.6 39,55" class="s3"/>
     <path d="M32,56 C36,54 40,56 40,60 C40,63.4 35,64.4 32,62 C29,60.4 29,57.4 32,56 Z" class="o2"/>
     <path d="M34,58 C36,57.6 38,58.4 38,60 M33,60 C35,59.6 37,60.4 37,61.6" class="s4"/>
+      <path d="M12.5,82 C13.8,91 14,99 13.2,104.4 M15.4,77 C16.8,88 17,97 16.2,103.4 M19,87 C20,95 20.2,101 19.6,104.4 M22,93 C22.8,99 23,103 22.6,105" class="s4"/><path d="M20.4,34 C21,46 21,58 20.6,68 M23.4,30 C24,44 24,58 23.6,68.6" class="s4"/>
   </symbol>
 
   <symbol id="k-lap" viewBox="0 0 76 112">
@@ -564,28 +666,188 @@
     <path d="M34,54 C36,52 39,52.6 40,55" class="s3"/>
     <path d="M33,56 C37,54 41,56 41,60 C41,63.4 36,64.4 33,62 C30,60.4 30,57.4 33,56 Z" class="o2"/>
     <path d="M35,58 C37,57.6 39,58.4 39,60 M34,60 C36,59.6 38,60.4 38,61.6" class="s4"/>
+      <path d="M12.5,82 C13.8,91 14,99 13.2,104.4 M15.4,77 C16.8,88 17,97 16.2,103.4 M19,87 C20,95 20.2,101 19.6,104.4 M22,93 C22.8,99 23,103 22.6,105" class="s4"/><path d="M20.4,34 C21,46 21,58 20.6,68 M23.4,30 C24,44 24,58 23.6,68.6" class="s4"/>
   </symbol>
 </defs>
 </svg>
 
-<div class="sheet">
-  <div class="frame">
-    <svg class="corner tl" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
-    <svg class="corner tr" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
-    <svg class="corner bl" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
-    <svg class="corner br" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
+<svg id="book-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;overflow:hidden">
+<defs>
+  <pattern id="p-cross" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+    <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+    <line x1="0" y1="0" x2="6" y2="0" stroke="currentColor" stroke-width="0.6" opacity="0.5"/>
+  </pattern>
+  <pattern id="p-stip" width="5" height="5" patternUnits="userSpaceOnUse">
+    <circle cx="1.2" cy="1.2" r="0.55" fill="currentColor" opacity="0.55"/>
+    <circle cx="3.7" cy="3.7" r="0.45" fill="currentColor" opacity="0.42"/>
+  </pattern>
+  <pattern id="p-stip2" width="3.4" height="3.4" patternUnits="userSpaceOnUse">
+    <circle cx="0.9" cy="0.9" r="0.5" fill="currentColor" opacity="0.6"/>
+    <circle cx="2.5" cy="2.5" r="0.4" fill="currentColor" opacity="0.5"/>
+  </pattern>
+  <pattern id="p-grain" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+    <circle cx="1.4" cy="1.8" r="0.7" fill="currentColor" opacity="0.5"/>
+    <circle cx="4.9" cy="5.2" r="0.55" fill="currentColor" opacity="0.4"/>
+    <circle cx="5.6" cy="1.2" r="0.4" fill="currentColor" opacity="0.3"/>
+  </pattern>
 
-    <header class="title-block">
-      <h1>Happy Anniversary</h1>
-      <p class="subtitle">Archana &amp; K K &mdash; Till the End of Time</p>
-      <svg class="divider" viewBox="0 0 300 22" aria-hidden="true"><use href="#i-rule"/></svg>
-    </header>
+  <!-- endpaper damask: one quatrefoil tile -->
+  <pattern id="p-damask" width="88" height="88" patternUnits="userSpaceOnUse">
+    <g fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round">
+      <path d="M44,10 C52,21 52,32 44,44 C36,32 36,21 44,10 Z"/>
+      <path d="M44,44 C52,56 52,67 44,78 C36,67 36,56 44,44 Z"/>
+      <path d="M10,44 C21,36 32,36 44,44 C32,52 21,52 10,44 Z"/>
+      <path d="M44,44 C56,36 67,36 78,44 C67,52 56,52 44,44 Z"/>
+      <path d="M22,22 C30,26 34,30 38,38 M66,22 C58,26 54,30 50,38"/>
+      <path d="M22,66 C30,62 34,58 38,50 M66,66 C58,62 54,58 50,50"/>
+      <circle cx="44" cy="44" r="3.6"/>
+      <circle cx="44" cy="0" r="2.2"/><circle cx="44" cy="88" r="2.2"/>
+      <circle cx="0" cy="44" r="2.2"/><circle cx="88" cy="44" r="2.2"/>
+      <path d="M0,0 C7,7 7,15 0,22 M88,0 C81,7 81,15 88,22 M0,88 C7,81 7,73 0,66 M88,88 C81,81 81,73 88,66"/>
+    </g>
+  </pattern>
 
-    <div class="plates">
+  <!-- page corner: elbowed rules with an acanthus scroll -->
+  <symbol id="b-corner" viewBox="0 0 120 120">
+    <path d="M5,116 L5,29 C5,15.6 15.6,5 29,5 L116,5" class="s2"/>
+    <path d="M13,116 L13,31 C13,21.6 21.6,13 31,13 L116,13" class="s3"/>
+    <path d="M13,64 C27,61 36,50 38,35 C40,22 49,15 62,15" class="s2"/>
+    <path d="M38,35 C47,33 52,26 50,19 C48,13.4 40,13.6 39,20 C38.4,25 43,28 47,26" class="s2"/>
+    <path d="M21,76 C32,73 39,64 39,53 C32,55 24,62 21,76 Z" class="s3"/>
+    <path d="M56,26 C67,24 76,27 80,34 C71,38 61,35 56,26 Z" class="s3"/>
+    <path d="M26,52 C33,47 36,41 36,34" class="s4"/>
+    <circle cx="62" cy="15" r="3.2" class="fk"/>
+    <circle cx="47" cy="26" r="2" class="fk"/>
+    <circle cx="80" cy="34" r="2" class="fk"/>
+    <path d="M5,29 C9,25 13.6,25 17,29 M29,5 C25,9 25,13.6 29,17" class="s4"/>
+  </symbol>
 
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="Two robed figures seated at opposite ends of a long candlelit table, an owl watching from a wall bracket, moonlight in the arched window behind.">
+  <!-- small centred ornament above the plate number -->
+  <symbol id="b-fleur" viewBox="0 0 140 28">
+    <path d="M70,4 C74.4,10 74.4,17 70,23 C65.6,17 65.6,10 70,4 Z" class="s2"/>
+    <path d="M70,13.5 C61,9 51,10 44,14.5 C51,19 61,19.4 70,13.5 Z" class="s3"/>
+    <path d="M70,13.5 C79,9 89,10 96,14.5 C89,19 79,19.4 70,13.5 Z" class="s3"/>
+    <circle cx="70" cy="13.5" r="2.4" class="fk"/>
+    <path d="M40,13.5 H12 M100,13.5 H128" class="s4"/>
+    <circle cx="9" cy="13.5" r="1.7" class="fk"/>
+    <circle cx="131" cy="13.5" r="1.7" class="fk"/>
+    <path d="M46,9 C43,7 40,7.6 38,10 M94,9 C97,7 100,7.6 102,10" class="s4"/>
+  </symbol>
+
+  <!-- tailpiece for the title and closing pages -->
+  <symbol id="b-tail" viewBox="0 0 170 46">
+    <path d="M85,5 C85,14 80,21 71,26 C62,30 53,28 49,21 C46.6,17 51,12.6 55,14.6 C58.4,16.4 58,20.4 54.6,21.4" class="s2"/>
+    <path d="M85,5 C85,14 90,21 99,26 C108,30 117,28 121,21 C123.4,17 119,12.6 115,14.6 C111.6,16.4 112,20.4 115.4,21.4" class="s2"/>
+    <path d="M85,3 C87.6,8 87.6,13 85,18 C82.4,13 82.4,8 85,3 Z" class="fk"/>
+    <path d="M66,31 C73,36 79,38.4 85,38.4 C91,38.4 97,36 104,31" class="s3"/>
+    <circle cx="85" cy="38.4" r="2.6" class="fk"/>
+    <path d="M44,22 C37,20 32,22.4 30,27 M126,22 C133,20 138,22.4 140,27" class="s4"/>
+    <circle cx="28" cy="28" r="1.8" class="fk"/>
+    <circle cx="142" cy="28" r="1.8" class="fk"/>
+  </symbol>
+
+  <!-- caption rule -->
+  <symbol id="b-caprule" viewBox="0 0 200 16">
+    <path d="M4,8 H82 M118,8 H196" class="s3"/>
+    <path d="M100,2 L107,8 L100,14 L93,8 Z" class="s3"/>
+    <circle cx="100" cy="8" r="1.7" class="fk"/>
+    <path d="M86,8 C88,5.6 91,5.6 93,8 C91,10.4 88,10.4 86,8 Z" class="s4"/>
+    <path d="M114,8 C112,5.6 109,5.6 107,8 C109,10.4 112,10.4 114,8 Z" class="s4"/>
+    <circle cx="4" cy="8" r="1.5" class="fk"/>
+    <circle cx="196" cy="8" r="1.5" class="fk"/>
+  </symbol>
+
+  <!-- cover cartouche -->
+  <symbol id="b-cover-cart" viewBox="0 0 300 300">
+    <ellipse cx="150" cy="150" rx="118" ry="131" fill="none" stroke="currentColor" stroke-width="2.6"/>
+    <ellipse cx="150" cy="150" rx="109" ry="121" fill="none" stroke="currentColor" stroke-width="0.9" opacity="0.75"/>
+    <ellipse cx="150" cy="150" rx="101" ry="112" fill="none" stroke="currentColor" stroke-width="2.6"
+             stroke-dasharray="0.1 8.4" stroke-linecap="round" opacity="0.85"/>
+    <path d="M150,12 C154.6,21 154.6,30 150,39 C145.4,30 145.4,21 150,12 Z" fill="currentColor"/>
+    <path d="M150,261 C154.6,270 154.6,279 150,288 C145.4,279 145.4,270 150,261 Z" fill="currentColor"/>
+    <path d="M16,150 C25,145.4 34,145.4 43,150 C34,154.6 25,154.6 16,150 Z" fill="currentColor"/>
+    <path d="M284,150 C275,145.4 266,145.4 257,150 C266,154.6 275,154.6 284,150 Z" fill="currentColor"/>
+    <path d="M108,166 H192" fill="none" stroke="currentColor" stroke-width="0.9" opacity="0.7"/>
+    <path d="M150,160 L155,166 L150,172 L145,166 Z" fill="currentColor" opacity="0.9"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="book" id="book" role="group" aria-label="Happy Anniversary — a book in ten pages">
+  <div class="edge edge-l" aria-hidden="true"></div>
+  <div class="edge edge-r" aria-hidden="true"></div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-cover">
+          <svg class="grain" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-grain)"/></svg>
+          <div class="cover-rule"></div>
+          <div class="cover-rule2"></div>
+          <svg class="cover-cnr" style="top:7.4%;left:7.4%" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="cover-cnr" style="top:7.4%;right:7.4%;transform:scaleX(-1)" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="cover-cnr" style="bottom:7.4%;left:7.4%;transform:scaleY(-1)" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="cover-cnr" style="bottom:7.4%;right:7.4%;transform:scale(-1,-1)" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="cover-cart" viewBox="0 0 300 300" role="img" aria-label="Happy Anniversary — Archana and K K">
+            <use href="#b-cover-cart"/>
+            <text x="150" y="104" text-anchor="middle" font-size="33">Happy</text>
+            <text x="150" y="142" text-anchor="middle" font-size="25.5">Anniversary</text>
+            <text x="150" y="215" text-anchor="middle" font-size="46">A&amp;K</text>
+            <text x="150" y="245" text-anchor="middle" font-size="14" letter-spacing="1.6">ARCHANA &amp; K K</text>
+          </svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="verso-tex" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-damask)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-endpaper">
+          <svg class="damask" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-damask)"/></svg>
+          <div class="ep-rule"></div>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="verso-tex" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-damask)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-title ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <h1>Happy<br>Anniversary</h1>
+          <p class="tp-names">Archana &amp; K K</p>
+          <p class="tp-sub">Till the End of Time</p>
+          <svg class="tp-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="tp-note">In six plates</p>
+          <svg class="tail" viewBox="0 0 170 46" aria-hidden="true"><use href="#b-tail"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="verso-tex" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-damask)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate I</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="Two robed figures seated at opposite ends of a long candlelit table, an owl watching from a wall bracket, moonlight in the arched window behind."><g id="sc-1">
+            <rect x="0" y="0" width="320" height="213" class="st" opacity="0.13"/>
             <use href="#i-moon" class="a-gl" x="176" y="106" width="26" height="26"/>
             <use href="#i-spark" class="a-tw" x="224" y="112" width="8" height="8"/>
             <use href="#i-spark" class="a-tw d2" x="240" y="128" width="6" height="6"/>
@@ -617,7 +879,7 @@
               <use href="#k-sit" x="-26" y="-72" width="76" height="112"/>
             </g>
 
-            <ellipse cx="167" cy="211" rx="100" ry="5" class="hx" opacity="0.3"/>
+            <ellipse cx="167" cy="211" rx="100" ry="5" class="xh" opacity="0.3"/>
             <path d="M86,178 L86,208 C86,210.6 88,212 90.6,212 L98,212 C100.6,212 102,210.6 102,208 L102,178 Z" class="o1"/>
             <path d="M232,178 L232,208 C232,210.6 233.4,212 236,212 L243.4,212 C246,212 248,210.6 248,208 L248,178 Z" class="o1"/>
             <path d="M94,198 H240 V203 H94 Z" class="o2"/>
@@ -644,17 +906,31 @@
 
             <path d="M0,213 H320" class="s1"/>
             <path d="M46,213 L34,231 M118,213 L110,231 M204,213 L210,231 M278,213 L290,231 M0,231 H320" class="s4"/>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate I</span>
-          <blockquote>&ldquo;Don't worry, I'll go easy on you&nbsp;&mdash; we just met.&rdquo;<br>&ldquo;Let's see where this goes.&rdquo;</blockquote>
-        </figcaption>
-      </figure>
-
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures pressed shoulder to shoulder at a single desk, heads bent over the same open book, a bookcase to one side and a tall arched window behind.">
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">&ldquo;Don't worry, I'll go easy on you&nbsp;&mdash; we just met.&rdquo;<br>&ldquo;Let's see where this goes.&rdquo;</p>
+          <svg class="marg" viewBox="0 0 52 65" aria-hidden="true"><use href="#i-owl"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-1" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate II</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="Two figures pressed shoulder to shoulder at a single desk, heads bent over the same open book, a bookcase to one side and a tall arched window behind."><g id="sc-2">
+            <rect x="0" y="0" width="320" height="222" class="st" opacity="0.12"/>
             <use href="#i-moon" class="a-gl" x="170" y="82" width="22" height="22"/>
             <use href="#i-spark" class="a-tw" x="128" y="124" width="7" height="7"/>
             <use href="#i-spark" class="a-tw d3" x="176" y="132" width="6" height="6"/>
@@ -710,7 +986,7 @@
               <use href="#k-sit" x="-26" y="-72" width="76" height="112"/>
             </g>
 
-            <ellipse cx="177" cy="219" rx="108" ry="5" class="hx" opacity="0.3"/>
+            <ellipse cx="177" cy="219" rx="108" ry="5" class="xh" opacity="0.3"/>
             <path d="M72,182 L72,216 C72,219 74,220.4 77,220.4 L85,220.4 C88,220.4 90,219 90,216 L90,182 Z" class="o1"/>
             <path d="M264,182 L264,216 C264,219 266,220.4 269,220.4 L277,220.4 C280,220.4 282,219 282,216 L282,182 Z" class="o1"/>
             <path d="M90,182 H264 V208 H90 Z" class="o1"/>
@@ -735,17 +1011,31 @@
 
             <path d="M0,222 H320" class="s1"/>
             <path d="M40,222 L36,238 M110,222 L108,238 M190,222 L194,238 M260,222 L268,238 M0,236 H320" class="s4"/>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate II</span>
-          <p class="caption-line">Two desks were never needed.</p>
-        </figcaption>
-      </figure>
-
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="One figure at an upright piano, the other standing beside it with a violin, notes drifting up between them.">
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">Two desks were never needed.</p>
+          <svg class="marg" viewBox="0 0 64 32" aria-hidden="true"><use href="#i-book-open"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-2" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate III</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="One figure at an upright piano, the other standing beside it with a violin, notes drifting up between them."><g id="sc-3">
+            <rect x="0" y="0" width="320" height="206" class="st" opacity="0.12"/>
             <use href="#i-moon" class="a-gl" x="36" y="84" width="18" height="18"/>
             <use href="#i-spark" class="a-tw d3" x="76" y="88" width="6" height="6"/>
             <use href="#i-spark" class="a-tw d5" x="88" y="100" width="5" height="5"/>
@@ -765,7 +1055,7 @@
 
             <path d="M0,206 H320" class="s1"/>
             <path d="M60,206 L52,232 M140,206 L138,232 M220,206 L226,232 M290,206 L300,232 M0,230 H320" class="s4"/>
-            <ellipse cx="168" cy="208" rx="118" ry="11" class="hx" opacity="0.26"/>
+            <ellipse cx="168" cy="208" rx="118" ry="11" class="xh" opacity="0.26"/>
 
             <use href="#i-piano" x="14" y="106" width="130" height="100"/>
             <use href="#i-candlestick" x="40" y="100" width="13" height="26"/>
@@ -825,17 +1115,31 @@
               <path d="M3.6,-2.6 L3.6,-13.4" class="s2"/>
               <path d="M3.6,-13.4 C6.4,-12.6 8.6,-10.4 8.6,-7.4" class="s2"/>
             </g></g>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate III</span>
-          <p class="caption-line">Every wrong note, right together.</p>
-        </figcaption>
-      </figure>
-
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="One figure on one knee holding up an open ring box, the other standing with a hand to her heart, the castle and lake behind them under a full moon.">
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">Every wrong note, right together.</p>
+          <svg class="marg" viewBox="0 0 40 100" aria-hidden="true"><use href="#i-violin"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-3" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate IV</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="One figure on one knee holding up an open ring box, the other standing with a hand to her heart, the castle and lake behind them under a full moon."><g id="sc-4">
+            <rect x="0" y="0" width="320" height="92" class="st2" opacity="0.13"/><rect x="0" y="92" width="320" height="66" class="st" opacity="0.1"/>
             <use href="#i-moon" class="a-gl" x="252" y="14" width="46" height="46"/>
             <use href="#i-spark" class="a-tw" x="60" y="26" width="10" height="10"/>
             <use href="#i-spark" class="a-tw d3" x="110" y="44" width="7" height="7"/>
@@ -903,17 +1207,31 @@
             <use href="#i-ringbox" x="158" y="130" width="28" height="28"/>
             <path d="M172,126 V119 M181,133 L186,128 M163,133 L158,128" class="s3"/>
             <use href="#i-spark" class="a-tw" x="166" y="133" width="13" height="13"/>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate IV</span>
-          <blockquote>&ldquo;Marry me?&rdquo;</blockquote>
-        </figcaption>
-      </figure>
-
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures riding one broom across the night sky, a cloak streaming out behind them, the castle small and far below.">
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">&ldquo;Marry me?&rdquo;</p>
+          <svg class="marg" viewBox="0 0 44 44" aria-hidden="true"><use href="#i-ringbox"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-4" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate V</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="Two figures riding one broom across the night sky, a cloak streaming out behind them, the castle small and far below."><g id="sc-5">
+            <rect x="0" y="0" width="320" height="112" class="st2" opacity="0.12"/><rect x="0" y="112" width="320" height="80" class="st" opacity="0.09"/>
             <use href="#i-moon" class="a-gl" x="246" y="12" width="56" height="56"/>
             <use href="#i-spark" class="a-tw" x="40" y="30" width="10" height="10"/>
             <use href="#i-spark" class="a-tw d3" x="90" y="18" width="7" height="7"/>
@@ -960,17 +1278,31 @@
               <path d="M58,2 C62,0 66,2 66,6 C66,9.4 61,10 58,7.4 C56,5.6 56,3 58,2 Z" class="o2"/>
             </g>
             </g>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate V</span>
-          <p class="caption-line">No broom needed to feel like flying.</p>
-        </figcaption>
-      </figure>
-
-      <figure class="plate">
-        <div class="plate-frame"><div>
-          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures on a settle by the fire with a kitten asleep across their laps, a cauldron hanging over the flames and their portrait on the mantel.">
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">No broom needed to feel like flying.</p>
+          <svg class="marg" viewBox="0 0 130 40" aria-hidden="true"><use href="#i-broom"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-5" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-plate ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="fleur" viewBox="0 0 140 28" aria-hidden="true"><use href="#b-fleur"/></svg>
+          <p class="plate-number">Plate VI</p>
+          <div class="art"><div>
+            <svg viewBox="0 0 320 240" role="img" aria-label="Two figures on a settle by the fire with a kitten asleep across their laps, a cauldron hanging over the flames and their portrait on the mantel."><g id="sc-6">
+            <rect x="0" y="0" width="320" height="204" class="st" opacity="0.12"/>
             <path d="M10,54 H102 V60 H10 Z" class="o1"/>
             <path d="M18,60 C20,66 24,69.4 30,70.4 M94,60 C92,66 88,69.4 82,70.4" class="s3"/>
             <path d="M16,36 H22 V54 H16 Z" class="o2"/>
@@ -1019,7 +1351,7 @@
 
             <path d="M0,204 H320" class="s1"/>
             <path d="M56,204 L48,232 M136,204 L134,232 M214,204 L220,232 M292,204 L302,232 M0,230 H320" class="s4"/>
-            <ellipse cx="130" cy="207" rx="112" ry="11" class="hx" opacity="0.26"/>
+            <ellipse cx="130" cy="207" rx="112" ry="11" class="xh" opacity="0.26"/>
 
             <path d="M62,120 H180 V127 H62 Z" class="o1"/>
             <path d="M70,127 V160 M84,127 V160 M98,127 V160 M112,127 V160 M126,127 V160 M140,127 V160 M154,127 V160 M168,127 V160" class="s2"/>
@@ -1046,22 +1378,131 @@
               <use href="#k-lap" x="-26" y="-72" width="76" height="112"/>
             </g>
             <use href="#i-cat" x="105" y="118" width="46" height="46"/>
-          </svg>
-        </div></div>
-        <figcaption>
-          <span class="plate-number">Plate VI</span>
-          <p class="caption-line">The family, now three.</p>
-        </figcaption>
-      </figure>
-
+          </g></svg>
+          </div></div>
+          <svg class="cap-rule" viewBox="0 0 200 16" aria-hidden="true"><use href="#b-caprule"/></svg>
+          <p class="cap">The family, now three.</p>
+          <svg class="marg" viewBox="0 0 60 60" aria-hidden="true"><use href="#i-cat"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="ghost" viewBox="0 0 320 240" aria-hidden="true"><use href="#sc-6" transform="translate(320,0) scale(-1,1)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
     </div>
-
-    <footer class="closing">
-      <svg class="wax-seal" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-seal"/></svg>
-      <p>Happy Anniversary, Archana &amp; K K &mdash; here's to every ordinary night that turned into something enchanted.</p>
-    </footer>
-  </div>
+    <div class="leaf">
+      <div class="face front">
+        <div class="pg pg-close ruled">
+      <svg class="cnr tl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr tr" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr bl" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+      <svg class="cnr br" viewBox="0 0 120 120" aria-hidden="true"><use href="#b-corner"/></svg>
+          <svg class="seal" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-seal"/></svg>
+          <p class="inscription">Happy Anniversary, Archana &amp; K K &mdash; here's to every ordinary night that turned into something enchanted.</p>
+          <svg class="tail" viewBox="0 0 170 46" aria-hidden="true"><use href="#b-tail"/></svg>
+        </div>
+        <div class="sheen"></div>
+      </div>
+      <div class="face back">
+        <div class="verso"><svg class="verso-tex" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-damask)"/></svg></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
 </div>
 
+<div class="controls-wrap">
+  <div class="controls">
+    <span class="hint" id="hint">Turn the page &rarr;</span>
+    <button id="prev" type="button">&larr; Back</button>
+    <span id="counter" aria-hidden="true">1 of 10</span>
+    <button id="next" type="button">Next &rarr;</button>
+  </div>
+</div>
+<p id="live" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></p>
+
+<script>
+(function(){
+  var book    = document.getElementById('book');
+  var leaves  = Array.prototype.slice.call(book.querySelectorAll('.leaf'));
+  var N       = leaves.length;
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var hint    = document.getElementById('hint');
+  var live    = document.getElementById('live');
+  var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /* with no animation there is nothing to wait for, so do not throttle */
+  function turnMs(){ return reduce.matches ? 0 : 950; }
+  var cur = 0, busy = false;
+
+  var NAMES = ['Cover','Endpaper','Title page','Plate I','Plate II','Plate III',
+               'Plate IV','Plate V','Plate VI','Closing'];
+
+  function apply(){
+    leaves.forEach(function(l, i){
+      var turned = i < cur;
+      l.classList.toggle('turned', turned);
+      l.style.zIndex = turned ? String(i + 1) : String(N - i + 1);
+      var off = (i !== cur);
+      l.setAttribute('aria-hidden', off ? 'true' : 'false');
+      if ('inert' in l) l.inert = off;
+    });
+    counter.textContent = (cur + 1) + ' of ' + N;
+    prevBtn.disabled = (cur === 0);
+    nextBtn.disabled = (cur === N - 1);
+    book.style.setProperty('--left', cur);
+    book.style.setProperty('--right', N - 1 - cur);
+    if (hint) hint.hidden = (cur !== 0);
+    live.textContent = NAMES[cur] || ('Page ' + (cur + 1));
+  }
+
+  function go(dir){
+    var target = cur + dir;
+    if (busy || target < 0 || target > N - 1) return;
+    var moving = leaves[dir > 0 ? cur : cur - 1];
+    busy = true;
+    moving.classList.add('turning');
+    cur = target;
+    apply();
+    window.setTimeout(function(){
+      moving.classList.remove('turning');
+      busy = false;
+    }, turnMs() + 40);
+  }
+
+  prevBtn.addEventListener('click', function(){ go(-1); });
+  nextBtn.addEventListener('click', function(){ go(1); });
+
+  book.addEventListener('click', function(e){
+    var r = book.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width;
+    if (x > 0.5) go(1); else go(-1);
+  });
+
+  document.addEventListener('keydown', function(e){
+    switch (e.key){
+      case 'ArrowRight': case 'PageDown': case ' ': go(1); e.preventDefault(); break;
+      case 'ArrowLeft':  case 'PageUp':          go(-1); e.preventDefault(); break;
+      case 'Home': if (!busy){ cur = 0;     apply(); } e.preventDefault(); break;
+      case 'End':  if (!busy){ cur = N - 1; apply(); } e.preventDefault(); break;
+    }
+  });
+
+  var tx = null, ty = null;
+  book.addEventListener('touchstart', function(e){
+    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
+  }, {passive:true});
+  book.addEventListener('touchend', function(e){
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    var dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+    tx = ty = null;
+  }, {passive:true});
+
+  apply();
+})();
+</script>
 </body>
 </html>
