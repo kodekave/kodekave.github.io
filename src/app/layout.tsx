@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Bodoni_Moda, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
@@ -10,14 +10,26 @@ import {
   websiteSchema,
 } from "@/lib/seo";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+/**
+ * Three faces, three jobs: a Didone for display, a text serif for reading,
+ * and a monospace for every label, date and control.
+ *
+ * `opsz` has to be requested explicitly — next/font ships only the weight
+ * axis by default — and it does the work a light weight would elsewhere:
+ * Bodoni Moda starts at 400, so the fine Didone hairlines in the name
+ * treatment come from driving optical size up, not from thinning the stroke.
+ */
+const bodoni = Bodoni_Moda({
+  variable: "--font-bodoni",
   subsets: ["latin"],
+  axes: ["opsz"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
+  axes: ["opsz"],
+  style: ["normal", "italic"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -68,9 +80,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${bodoni.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-cream text-ink">
+      <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*
           One @graph containing the Person and WebSite nodes, cross-referenced
           by @id so consumers resolve them as a single connected entity rather
