@@ -6,11 +6,12 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Happy Anniversary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#ecdfc0;
-    --paper-deep:#e0cea0;
+    --paper-deep:#e5d5ac;
     --ink:#3a2818;
     --ink-soft:#6b4e34;
     --accent:#7c2a2a;
@@ -24,12 +25,13 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:40px 14px;
+    padding:44px 14px;
     font-family:'EB Garamond', serif;
+    color:var(--ink);
   }
   .sheet{
     position:relative;
-    width:min(880px, 100%);
+    width:min(940px, 100%);
     background:
       radial-gradient(circle at 14% 18%, rgba(120,90,40,0.16), transparent 40%),
       radial-gradient(circle at 86% 78%, rgba(120,90,40,0.13), transparent 45%),
@@ -39,23 +41,23 @@
     box-shadow:0 30px 70px rgba(0,0,0,0.55);
     border:3px solid var(--ink);
     padding:10px;
-    animation:reveal 1.1s ease-out both;
+    animation:reveal 1.2s ease-out both;
   }
   .frame{
     position:relative;
     border:1px solid var(--gold);
-    padding:34px 30px 26px;
+    padding:38px 32px 30px;
   }
-  .corner{position:absolute; width:44px; height:44px; color:var(--gold); opacity:0.85;}
-  .corner.tl{top:6px; left:6px;}
-  .corner.tr{top:6px; right:6px; transform:scaleX(-1);}
-  .corner.bl{bottom:6px; left:6px; transform:scaleY(-1);}
-  .corner.br{bottom:6px; right:6px; transform:scale(-1,-1);}
+  .corner{position:absolute; width:56px; height:56px; color:var(--gold); opacity:0.9;}
+  .corner.tl{top:5px; left:5px;}
+  .corner.tr{top:5px; right:5px; transform:scaleX(-1);}
+  .corner.bl{bottom:5px; left:5px; transform:scaleY(-1);}
+  .corner.br{bottom:5px; right:5px; transform:scale(-1,-1);}
 
-  .title-block{text-align:center; margin-bottom:22px;}
+  .title-block{text-align:center; margin-bottom:26px;}
   h1{
     font-family:'Cinzel Decorative', serif;
-    font-size:clamp(1.9rem, 5vw, 3rem);
+    font-size:clamp(1.9rem, 5vw, 3.1rem);
     color:var(--accent);
     letter-spacing:2px;
     margin:0;
@@ -65,229 +67,585 @@
     font-style:italic;
     color:var(--ink-soft);
     letter-spacing:0.5px;
-    margin:8px 0 0;
-    font-size:1.05rem;
+    margin:10px 0 0;
+    font-size:1.08rem;
   }
-  .divider{display:block; width:260px; height:16px; margin:14px auto 0; color:var(--gold);}
+  .divider{display:block; width:300px; max-width:70%; height:22px; margin:16px auto 0; color:var(--gold);}
 
   .plates{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
-    gap:26px 22px;
-    margin:26px 0 30px;
+    gap:30px 26px;
+    margin:30px 0 34px;
   }
   .plate{text-align:center; margin:0;}
   .plate-frame{
     border:1px solid var(--ink-soft);
     background:var(--paper-deep);
-    padding:8px;
-    box-shadow:inset 0 0 14px rgba(0,0,0,0.10);
+    padding:7px;
+    box-shadow:inset 0 0 18px rgba(58,40,24,0.13);
   }
+  .plate-frame > div{border:1px solid rgba(169,130,47,0.55); padding:3px;}
   .plate-frame svg{width:100%; height:auto; display:block; color:var(--ink);}
-  figcaption{margin-top:10px;}
+  figcaption{margin-top:12px;}
   .plate-number{
-    display:block;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
     font-family:'Cinzel Decorative', serif;
-    font-size:0.72rem;
+    font-size:0.7rem;
     letter-spacing:2.5px;
     color:var(--accent);
-    margin-bottom:3px;
+    margin-bottom:5px;
+  }
+  .plate-number::before,.plate-number::after{
+    content:"";
+    height:1px; width:24px;
+    background:linear-gradient(to right, transparent, var(--gold), transparent);
   }
   blockquote{
     margin:4px 6px 0;
     font-style:italic;
-    font-size:0.86rem;
+    font-size:0.9rem;
     color:var(--ink-soft);
-    line-height:1.45;
+    line-height:1.5;
   }
   .caption-line{
     margin:4px 6px 0;
     font-style:italic;
-    font-size:0.86rem;
+    font-size:0.9rem;
     color:var(--ink-soft);
   }
 
-  .closing{text-align:center; margin-top:6px;}
-  .wax-seal{width:60px; height:60px; margin:0 auto 8px; color:var(--accent);}
+  .closing{text-align:center; margin-top:8px;}
+  .wax-seal{width:72px; height:72px; margin:0 auto 10px; color:var(--accent);}
   .closing p{
     font-style:italic;
     color:var(--ink-soft);
-    font-size:1.02rem;
+    font-size:1.04rem;
     margin:0 auto;
-    max-width:420px;
-    line-height:1.5;
+    max-width:440px;
+    line-height:1.55;
   }
 
+  /* ---- engraver's stroke ladder ---- */
+  .s1,.s2,.s3,.s4{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}
+  .o1,.o2,.o3{fill:var(--paper-deep);stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}
+  .s1,.o1{stroke-width:2.1;}
+  .s2,.o2{stroke-width:1.4;}
+  .s3,.o3{stroke-width:0.9;}
+  .s4{stroke-width:0.55; opacity:0.55;}
+  .lp{fill:none;stroke:var(--paper-deep);stroke-width:0.9;stroke-linecap:round;}
+  .fk{fill:currentColor;stroke:none;}
+  .fs{fill:currentColor;stroke:none;opacity:0.5;}
+  .fp{fill:var(--paper-deep);stroke:none;}
+  .hx{fill:url(#p-hatch);stroke:none;}
+  .hx2{fill:url(#p-hatch2);stroke:none;}
+  .hs{fill:url(#p-stone);stroke:none;}
+  #ink-defs{color:var(--ink);}
+
   @keyframes reveal{
-    from{opacity:0; transform:scale(0.97) translateY(12px);}
+    from{opacity:0; transform:scale(0.98) translateY(14px);}
     to{opacity:1; transform:scale(1) translateY(0);}
   }
   @keyframes twinkle{
-    0%,100%{opacity:0.35; transform:scale(0.85);}
-    50%{opacity:1; transform:scale(1.05);}
+    0%,100%{opacity:0.3; transform:scale(0.8) rotate(0deg);}
+    50%{opacity:1; transform:scale(1.08) rotate(12deg);}
   }
   @keyframes flicker{
     0%,100%{transform:scaleY(1) scaleX(1); opacity:1;}
-    25%{transform:scaleY(1.08) scaleX(0.94); opacity:0.9;}
-    50%{transform:scaleY(0.92) scaleX(1.06); opacity:1;}
-    75%{transform:scaleY(1.05) scaleX(0.97); opacity:0.94;}
+    22%{transform:scaleY(1.1) scaleX(0.92) translateX(0.2px); opacity:0.88;}
+    47%{transform:scaleY(0.9) scaleX(1.07); opacity:1;}
+    71%{transform:scaleY(1.06) scaleX(0.96) translateX(-0.2px); opacity:0.93;}
   }
   @keyframes moonglow{
-    0%,100%{filter:drop-shadow(0 0 3px rgba(255,255,255,0.35));}
-    50%{filter:drop-shadow(0 0 9px rgba(255,255,255,0.7));}
+    0%,100%{filter:drop-shadow(0 0 2px rgba(255,252,240,0.30));}
+    50%{filter:drop-shadow(0 0 8px rgba(255,252,240,0.62));}
   }
   @keyframes bob{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-6px);}
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    50%{transform:translateY(-7px) rotate(-1.2deg);}
   }
   @keyframes wag{
     0%,100%{transform:rotate(0deg);}
-    50%{transform:rotate(10deg);}
+    50%{transform:rotate(-9deg);}
   }
   @keyframes notefloat{
-    0%,100%{transform:translateY(0); opacity:0.55;}
-    50%{transform:translateY(-6px); opacity:0.85;}
+    0%{transform:translate(0,4px) rotate(-6deg); opacity:0;}
+    22%{opacity:0.9;}
+    100%{transform:translate(6px,-22px) rotate(8deg); opacity:0;}
   }
-  use[href="#s-star"]{transform-box:fill-box; transform-origin:center; animation:twinkle 2.3s ease-in-out infinite;}
-  use[href="#s-candle"]{transform-box:fill-box; transform-origin:center bottom; animation:flicker 1.9s ease-in-out infinite;}
-  use[href="#s-moon"]{transform-box:fill-box; transform-origin:center; animation:moonglow 3.2s ease-in-out infinite;}
-  .broom-fly{animation:bob 2.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center;}
-  .tail{transform-box:fill-box; transform-origin:0% 50%; animation:wag 2.1s ease-in-out infinite;}
-  .note-float{transform-box:fill-box; transform-origin:center; animation:notefloat 2.4s ease-in-out infinite;}
+  @keyframes steam{
+    0%{transform:translateY(2px) scaleY(0.9); opacity:0;}
+    35%{opacity:0.7;}
+    100%{transform:translateY(-12px) scaleY(1.25); opacity:0;}
+  }
+  .a-tw{transform-box:fill-box; transform-origin:center; animation:twinkle 2.8s ease-in-out infinite;}
+  .a-fl{transform-box:fill-box; transform-origin:center bottom; animation:flicker 1.8s ease-in-out infinite;}
+  .a-gl{animation:moonglow 4.4s ease-in-out infinite;}
+  .a-bob{transform-box:fill-box; transform-origin:center; animation:bob 3.4s ease-in-out infinite;}
+  .a-wag{transform-box:fill-box; transform-origin:0% 100%; animation:wag 2.6s ease-in-out infinite;}
+  .a-note{transform-box:fill-box; transform-origin:center; animation:notefloat 3.6s ease-in-out infinite;}
+  .a-steam{transform-box:fill-box; transform-origin:center bottom; animation:steam 4.4s ease-in-out infinite;}
+  .d1{animation-delay:-0.45s;} .d2{animation-delay:-0.95s;} .d3{animation-delay:-1.5s;}
+  .d4{animation-delay:-2.1s;} .d5{animation-delay:-2.7s;} .d6{animation-delay:-3.3s;}
 
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important; transition:none !important;}
   }
-
-  @media (max-width:560px){
+  @media (max-width:620px){
     .plates{grid-template-columns:1fr;}
+    .frame{padding:28px 16px 22px;}
   }
   @media print{
     body{background:#fff; padding:0;}
     .sheet{box-shadow:none;}
+    *{animation:none !important;}
   }
 </style>
 </head>
 <body>
 
-<svg style="display:none" aria-hidden="true">
+<svg id="ink-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;overflow:hidden">
 <defs>
-  <symbol id="s-flourish" viewBox="0 0 100 100">
-    <path d="M8,92 C8,60 40,60 40,32 C40,12 68,12 92,8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="92" cy="8" r="5" fill="currentColor"/>
-    <circle cx="8" cy="92" r="5" fill="currentColor"/>
-    <path d="M40,32 C46,26 54,26 58,20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <pattern id="p-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="5" stroke="currentColor" stroke-width="0.7" opacity="0.5"/>
+  </pattern>
+  <pattern id="p-hatch2" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="3" stroke="currentColor" stroke-width="0.6" opacity="0.55"/>
+  </pattern>
+  <pattern id="p-stone" width="22" height="11" patternUnits="userSpaceOnUse">
+    <path d="M0,0.5 H22 M0,6 H22 M6,0.5 V6 M16,6 V11.5" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.42"/>
+  </pattern>
+
+  <!-- corner scroll: acanthus curl with leaf and berry -->
+  <symbol id="i-corner" viewBox="0 0 100 100">
+    <path d="M5,95 C5,72 12,56 30,46 C46,37 56,26 60,6" class="s1"/>
+    <path d="M60,6 C63,15 70,20 82,20 C74,26 71,34 73,44" class="s2"/>
+    <path d="M73,44 C68,40 62,40 58,44" class="s3"/>
+    <path d="M30,46 C37,42 39,33 33,30 C28,28 25,34 30,37" class="s2"/>
+    <path d="M18,58 C24,58 29,62 30,68 C24,68 19,65 18,58 Z" class="s3"/>
+    <path d="M44,32 C50,30 55,32 57,37 C51,39 46,37 44,32 Z" class="s3"/>
+    <circle cx="60" cy="6" r="3.4" class="fk"/>
+    <circle cx="83" cy="20" r="2.2" class="fk"/>
+    <circle cx="5" cy="95" r="3" class="fk"/>
+    <path d="M9,88 C14,86 17,88 18,92" class="s3"/>
   </symbol>
-  <symbol id="s-candle" viewBox="0 0 40 90">
-    <rect x="14" y="34" width="12" height="48" rx="2" fill="currentColor"/>
-    <ellipse cx="20" cy="34" rx="7" ry="3" fill="currentColor"/>
-    <path d="M20,6 C14,16 14,22 20,28 C26,22 26,16 20,6 Z" fill="currentColor"/>
+
+  <!-- header rule: tapering scrolls flanking a lozenge -->
+  <symbol id="i-rule" viewBox="0 0 300 22">
+    <path d="M4,11 H108" class="s3"/>
+    <path d="M108,11 C118,11 122,6 130,6 C136,6 138,10 136,12 C134,14 130,13 130,10" class="s3"/>
+    <path d="M196,11 C186,11 182,6 174,6 C168,6 166,10 168,12 C170,14 174,13 174,10" class="s3"/>
+    <path d="M196,11 H296" class="s3"/>
+    <path d="M152,3 L160,11 L152,19 L144,11 Z" class="s2"/>
+    <circle cx="152" cy="11" r="2.2" class="fk"/>
+    <circle cx="119" cy="11" r="1.4" class="fk"/>
+    <circle cx="185" cy="11" r="1.4" class="fk"/>
+    <path d="M140,11 H132 M164,11 H172" class="s4"/>
   </symbol>
-  <symbol id="s-owl" viewBox="0 0 60 60">
-    <ellipse cx="30" cy="34" rx="17" ry="21" fill="currentColor"/>
-    <path d="M13,16 L20,27 L26,17 Z" fill="currentColor"/>
-    <path d="M47,16 L40,27 L34,17 Z" fill="currentColor"/>
-    <circle cx="23" cy="31" r="4" fill="var(--paper-deep)"/>
-    <circle cx="37" cy="31" r="4" fill="var(--paper-deep)"/>
-    <path d="M27,37 L33,37 L30,42 Z" fill="var(--paper-deep)"/>
+
+  <!-- wax seal with beaded rim and ribbon -->
+  <symbol id="i-seal" viewBox="0 0 100 100">
+    <path d="M34,66 L22,96 L34,90 L40,98 Z" class="fk" opacity="0.75"/>
+    <path d="M66,66 L78,96 L66,90 L60,98 Z" class="fk" opacity="0.75"/>
+    <circle cx="50" cy="50" r="42" class="fk"/>
+    <circle cx="50" cy="50" r="37.5" fill="none" stroke="var(--paper)" stroke-width="2.6" stroke-dasharray="0.1 7.26" stroke-linecap="round" opacity="0.85"/>
+    <circle cx="50" cy="50" r="30" fill="none" stroke="var(--paper)" stroke-width="1" opacity="0.7"/>
+    <text x="50" y="60" text-anchor="middle" font-family="Cinzel Decorative, serif" font-size="25" fill="var(--paper)">A&amp;K</text>
+    <path d="M32,72 C40,76 60,76 68,72" fill="none" stroke="var(--paper)" stroke-width="1" opacity="0.55"/>
   </symbol>
-  <symbol id="s-moon" viewBox="0 0 60 60">
-    <path d="M40,8 A22,22 0 1,0 40,52 A16,16 0 1,1 40,8 Z" fill="currentColor"/>
+
+  <!-- flame: outline with a solid core -->
+  <symbol id="i-flame" viewBox="0 0 12 24">
+    <path d="M6,1.5 C9,7 10.4,10 10.4,13.8 C10.4,18.4 8.5,21.6 6,21.6 C3.5,21.6 1.6,18.4 1.6,13.8 C1.6,10 3,7 6,1.5 Z" class="s2"/>
+    <path d="M6,9 C7.4,12.2 8,13.8 8,15.6 C8,17.9 7.1,19.2 6,19.2 C4.9,19.2 4,17.9 4,15.6 C4,13.8 4.6,12.2 6,9 Z" class="fk"/>
   </symbol>
-  <symbol id="s-star" viewBox="0 0 20 20">
-    <path d="M10,0 L12,8 L20,10 L12,12 L10,20 L8,12 L0,10 L8,8 Z" fill="currentColor"/>
+
+  <!-- floating taper -->
+  <symbol id="i-taper" viewBox="0 0 16 40">
+    <path d="M5,7 C5.8,5.2 10.2,5.2 11,7 L11,37 C11,38.8 5,38.8 5,37 Z" class="o2"/>
+    <path d="M5,14 C3.4,16.6 3.8,20.4 5.2,22.4" class="s3"/>
+    <path d="M11,22 C12.6,24.4 12.4,27.6 11,29.4" class="s3"/>
+    <path d="M5.4,30 C7,31 9,31 10.6,30" class="s4"/>
   </symbol>
-  <symbol id="s-castle" viewBox="0 0 300 160">
-    <rect x="10" y="70" width="34" height="90" fill="currentColor"/>
-    <rect x="4" y="52" width="46" height="20" fill="currentColor"/>
-    <rect x="4" y="44" width="8" height="10" fill="currentColor"/>
-    <rect x="18" y="44" width="8" height="10" fill="currentColor"/>
-    <rect x="32" y="44" width="8" height="10" fill="currentColor"/>
-    <rect x="42" y="44" width="6" height="10" fill="currentColor"/>
-    <rect x="122" y="26" width="56" height="134" fill="currentColor"/>
-    <polygon points="150,0 182,26 118,26" fill="currentColor"/>
-    <rect x="256" y="60" width="34" height="100" fill="currentColor"/>
-    <rect x="250" y="42" width="46" height="20" fill="currentColor"/>
-    <rect x="44" y="120" width="78" height="40" fill="currentColor"/>
-    <rect x="178" y="120" width="78" height="40" fill="currentColor"/>
+
+  <!-- candlestick -->
+  <symbol id="i-candlestick" viewBox="0 0 26 52">
+    <path d="M9.4,4 C10.2,2.4 15.8,2.4 16.6,4 L16.6,26 L9.4,26 Z" class="o2"/>
+    <path d="M9.4,11 C7.8,14 8.4,17.4 9.8,19.2" class="s3"/>
+    <path d="M4,26.4 C4,23.6 22,23.6 22,26.4 C22,29 4,29 4,26.4 Z" class="o2"/>
+    <path d="M11,29 C11,33 10.4,35 10.4,39 M15,29 C15,33 15.6,35 15.6,39" class="s2"/>
+    <ellipse cx="13" cy="34" rx="4.4" ry="2.6" class="o3"/>
+    <path d="M5,48.4 C5,43.6 21,43.6 21,48.4 C21,50.4 5,50.4 5,48.4 Z" class="o2"/>
+    <path d="M7,46 C11,44.6 15,44.6 19,46" class="s4"/>
   </symbol>
-  <symbol id="s-broom" viewBox="0 0 110 34">
-    <rect x="0" y="14" width="76" height="6" rx="3" fill="currentColor"/>
-    <path d="M76,6 L108,0 L104,17 L108,34 L76,26 Z" fill="currentColor"/>
+
+  <symbol id="i-moon" viewBox="0 0 64 64">
+    <path d="M40,5 A27,27 0 1,0 40,59 A21,21 0 1,1 40,5 Z" class="o1"/>
+    <circle cx="25" cy="20" r="3" class="s3"/>
+    <circle cx="18" cy="34" r="2" class="s3"/>
+    <circle cx="26" cy="45" r="1.5" class="s3"/>
+    <path d="M31,12 C28,14 27,16 27,19 M15,26 C13,28 12,31 12,34" class="s4"/>
   </symbol>
-  <symbol id="s-kitten" viewBox="0 0 60 60">
-    <ellipse cx="30" cy="42" rx="17" ry="15" fill="currentColor"/>
-    <circle cx="30" cy="21" r="13" fill="currentColor"/>
-    <path d="M18,11 L22,21 L14,20 Z" fill="currentColor"/>
-    <path d="M42,11 L38,21 L46,20 Z" fill="currentColor"/>
-    <path class="tail" d="M45,46 C56,45 55,56 47,53" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+
+  <symbol id="i-spark" viewBox="0 0 24 24">
+    <path d="M12,0.8 C13.1,7.9 16.1,10.9 23.2,12 C16.1,13.1 13.1,16.1 12,23.2 C10.9,16.1 7.9,13.1 0.8,12 C7.9,10.9 10.9,7.9 12,0.8 Z" class="fk"/>
   </symbol>
-  <symbol id="s-book" viewBox="0 0 40 28">
-    <rect x="2" y="3" width="36" height="22" rx="2" fill="currentColor"/>
-    <line x1="20" y1="3" x2="20" y2="25" stroke="var(--paper-deep)" stroke-width="1.5"/>
+
+  <symbol id="i-owl" viewBox="0 0 52 65">
+    <path d="M26,8 C36,8 43,17 43,30 C43,43 35,54 26,54 C17,54 9,43 9,30 C9,17 16,8 26,8 Z" class="o1"/>
+    <path d="M13,15 C11.6,9 11.6,5.4 13.4,3.4 C15,6 17.2,8 19.4,9.4" class="o2"/>
+    <path d="M39,15 C40.4,9 40.4,5.4 38.6,3.4 C37,6 34.8,8 32.6,9.4" class="o2"/>
+    <path d="M26,13.5 C33,13.5 37,18.6 36,25.4 C35.2,31 30.4,35 26,32 C21.6,35 16.8,31 16,25.4 C15,18.6 19,13.5 26,13.5 Z" class="s2"/>
+    <circle cx="20.8" cy="23" r="4.4" class="o2"/>
+    <circle cx="31.2" cy="23" r="4.4" class="o2"/>
+    <circle cx="20.8" cy="23" r="2.3" class="fk"/>
+    <circle cx="31.2" cy="23" r="2.3" class="fk"/>
+    <circle cx="21.6" cy="22.2" r="0.7" class="fp"/>
+    <circle cx="32" cy="22.2" r="0.7" class="fp"/>
+    <path d="M26,27.4 L23.6,31 L26,34.4 L28.4,31 Z" class="fk"/>
+    <path d="M35,26 C39,33 38,44 32,50.4" class="s2"/>
+    <path d="M33.4,32 C36,34 37,37.4 36,40.6 M32.6,38 C35,40 35.6,43 34.6,46" class="s3"/>
+    <path d="M19,38 c2.2,2.4 4.4,2.4 6.6,0 M25.6,38 c2.2,2.4 4.4,2.4 6.6,0" class="s4"/>
+    <path d="M16.6,44 c2.2,2.4 4.4,2.4 6.6,0 M23.2,44 c2.2,2.4 4.4,2.4 6.6,0 M29.8,44 c1.6,1.8 3.2,2.2 4.8,1.2" class="s4"/>
+    <path d="M21,54 L21,58 M21,58 L17.6,60 M21,58 L21,61 M21,58 L24.4,60" class="s3"/>
+    <path d="M31,54 L31,58 M31,58 L27.6,60 M31,58 L31,61 M31,58 L34.4,60" class="s3"/>
   </symbol>
-  <symbol id="s-ringbox" viewBox="0 0 40 30">
-    <rect x="4" y="12" width="32" height="16" rx="2" fill="currentColor"/>
-    <rect x="4" y="6" width="32" height="8" rx="2" fill="currentColor"/>
-    <circle cx="20" cy="20" r="5" fill="none" stroke="var(--paper-deep)" stroke-width="2"/>
+
+  <symbol id="i-cat" viewBox="0 0 60 60">
+    <path d="M30,26 C41,26 48,38 48,49 C48,54 45,57 40,57 L18,57 C13,57 10,54 10,49 C10,38 19,26 30,26 Z" class="o1"/>
+    <circle cx="29" cy="20" r="13" class="o1"/>
+    <path d="M18,12 L15.6,1.6 L27,8" class="o1"/>
+    <path d="M40,12 L42.4,1.6 L31,8" class="o1"/>
+    <path d="M19.4,11 L18.2,5.6 L23.4,9" class="s3"/>
+    <path d="M38.6,11 L39.8,5.6 L34.6,9" class="s3"/>
+    <path d="M21,19 C22.7,16.4 25.5,16.4 27.2,19 C25.5,21.6 22.7,21.6 21,19 Z" class="fk"/>
+    <path d="M31,19 C32.7,16.4 35.5,16.4 37.2,19 C35.5,21.6 32.7,21.6 31,19 Z" class="fk"/>
+    <circle cx="22.6" cy="18.2" r="0.8" class="fp"/>
+    <circle cx="32.6" cy="18.2" r="0.8" class="fp"/>
+    <path d="M29,25.4 L26.8,23.2 L31.2,23.2 Z" class="fk"/>
+    <path d="M29,26 C29,27.8 27.2,28.4 26,27.4 M29,26 C29,27.8 30.8,28.4 32,27.4" class="s3"/>
+    <path d="M25,24.4 L12,21 M25,26 L11,26.6 M25,27.6 L13,32" class="s4"/>
+    <path d="M33,24.4 L46,21 M33,26 L47,26.6 M33,27.6 L45,32" class="s4"/>
+    <path d="M19,57 C19,52.6 26,52.6 26,57" class="o2"/>
+    <path d="M32,57 C32,52.6 39,52.6 39,57" class="o2"/>
+    <path d="M21,55.4 L21,57 M23.4,55 L23.4,57 M34,55.4 L34,57 M36.4,55 L36.4,57" class="s4"/>
+    <path d="M25,34 C27,36.4 31,36.4 33,34" class="s4"/>
+    <g class="a-wag">
+      <path d="M48,52 C57,50 58,39 51,36.4 C47,35 44.6,39.6 48,41.4" class="s1"/>
+    </g>
   </symbol>
-  <symbol id="s-cauldron" viewBox="0 0 60 42">
-    <path d="M8,14 Q30,44 52,14 L46,14 Q30,34 14,14 Z" fill="currentColor"/>
-    <ellipse cx="30" cy="14" rx="22" ry="5" fill="currentColor"/>
-    <line x1="14" y1="9" x2="8" y2="1" stroke="currentColor" stroke-width="2.5"/>
-    <line x1="46" y1="9" x2="52" y2="1" stroke="currentColor" stroke-width="2.5"/>
+
+  <symbol id="i-book-open" viewBox="0 0 64 32">
+    <path d="M32,9 C25,4.6 13,3.6 3,6.6 L3,23 C13,20 25,21 32,25.6 C39,21 51,20 61,23 L61,6.6 C51,3.6 39,4.6 32,9 Z" class="o1"/>
+    <path d="M32,9 L32,25.6" class="s2"/>
+    <path d="M8,11.6 C14,10.2 21,10.6 27,12.6 M8,15 C14,13.6 21,14 27,16 M8,18.4 C14,17 20,17.4 25,19" class="s4"/>
+    <path d="M37,12.6 C43,10.6 50,10.2 56,11.6 M37,16 C43,14 50,13.6 56,15 M39,19 C44,17.4 50,17 56,18.4" class="s4"/>
   </symbol>
-  <symbol id="s-seal" viewBox="0 0 80 80">
-    <circle cx="40" cy="40" r="37" fill="currentColor"/>
-    <text x="40" y="49" text-anchor="middle" font-family="Cinzel Decorative, serif" font-size="22" fill="var(--paper)">A&amp;K</text>
+
+  <symbol id="i-broom" viewBox="0 0 130 40">
+    <path d="M3,17.6 C24,15.6 48,15.2 76,17 L76,23.4 C48,24.6 24,24.4 3,22.4 Z" class="o1"/>
+    <path d="M18,16.6 L18,23.4 M23,16.4 L23,23.6 M28,16.4 L28,23.8" class="s3"/>
+    <path d="M76,13 C92,9 108,5 127,3 C122,14 122,26 127,37 C108,35 92,31 76,27 Z" class="o1"/>
+    <path d="M78,13.6 C83,15 85,20 85,25.6" class="s2"/>
+    <path d="M81,13 C86,15 88,20 88,26.4" class="s4"/>
+    <path d="M88,17 L124,6 M88,18.6 L126,11 M88,20 L127,20 M88,21.4 L126,29 M88,23 L124,34" class="s3"/>
+    <path d="M90,17.6 L120,9 M90,19.4 L122,15 M90,21 L122,25 M90,22.4 L120,31" class="s4"/>
+  </symbol>
+
+  <symbol id="i-window" viewBox="0 0 100 150">
+    <path d="M6,66 A47,62 0 0 1 50,6 A47,62 0 0 1 94,66" class="s1"/>
+    <path d="M6,66 L6,150 M94,66 L94,150" class="s1"/>
+    <path d="M50,150 L50,26" class="s2"/>
+    <path d="M6,96 L94,96" class="s2"/>
+    <circle cx="50" cy="44" r="13" class="s2"/>
+    <circle cx="50" cy="38.5" r="4.6" class="s3"/>
+    <circle cx="44.6" cy="47.5" r="4.6" class="s3"/>
+    <circle cx="55.4" cy="47.5" r="4.6" class="s3"/>
+    <path d="M12,86 A20,26 0 0 1 44,86" class="s3"/>
+    <path d="M56,86 A20,26 0 0 1 88,86" class="s3"/>
+    <path d="M28,96 L28,150 M72,96 L72,150 M6,116 L94,116 M6,134 L94,134" class="s4"/>
+    <path d="M20,86 L20,96 M38,86 L38,96 M62,86 L62,96 M80,86 L80,96" class="s4"/>
+  </symbol>
+
+  <symbol id="i-castle" viewBox="0 0 300 150">
+    <path d="M12,66 V58 H19 V64 H26 V58 H33 V64 H40 V58 H47 V66" class="o1"/>
+    <path d="M12,66 V150 M47,66 V150" class="s1"/>
+    <path d="M25,95 A5.5,5.5 0 0 1 36,95 V109 H25 Z" class="fk"/>
+    <path d="M17,120 A4,4 0 0 1 25,120 V130 H17 Z" class="s3"/>
+    <path d="M47,104 V96 H54 V102 H61 V96 H68 V102 H75 V96 H82 V102 H89 V96 H96 V102 H103 V96 H110 V104" class="o1"/>
+    <path d="M47,104 H118 M47,124 H118" class="s4"/>
+    <path d="M62,112 A4,4 0 0 1 70,112 V124 H62 Z" class="fk"/>
+    <path d="M86,112 A4,4 0 0 1 94,112 V124 H86 Z" class="s3"/>
+    <path d="M118,42 L150,10 L182,42" class="o1"/>
+    <path d="M150,10 V2 L166,7 L150,12" class="fk"/>
+    <path d="M126,36 C138,30 162,30 174,36 M132,29 C142,25 158,25 168,29" class="s4"/>
+    <path d="M118,42 V150 M182,42 V150" class="s1"/>
+    <path d="M118,42 H182" class="s2"/>
+    <circle cx="150" cy="60" r="9.5" class="s2"/>
+    <path d="M150,50.5 V69.5 M140.5,60 H159.5 M143.5,53.5 L156.5,66.5 M156.5,53.5 L143.5,66.5" class="s4"/>
+    <path d="M128,86 A6,6 0 0 1 140,86 V104 H128 Z" class="fk"/>
+    <path d="M144,86 A6,6 0 0 1 156,86 V104 H144 Z" class="s3"/>
+    <path d="M160,86 A6,6 0 0 1 172,86 V104 H160 Z" class="fk"/>
+    <path d="M124,118 H176 M118,132 H182" class="s4"/>
+    <path d="M182,100 V92 H189 V98 H196 V92 H203 V98 H210 V92 H217 V98 H224 V92 H231 V98 H238 V92 H245 V100" class="o1"/>
+    <path d="M182,100 H246 M182,122 H246" class="s4"/>
+    <path d="M204,108 A4,4 0 0 1 212,108 V120 H204 Z" class="fk"/>
+    <path d="M226,108 A4,4 0 0 1 234,108 V120 H226 Z" class="s3"/>
+    <path d="M244,54 L266,26 L288,54" class="o1"/>
+    <path d="M266,26 V19 L280,23 L266,28" class="fk"/>
+    <path d="M250,48 C258,44 274,44 282,48" class="s4"/>
+    <path d="M246,54 V150 M286,54 V150" class="s1"/>
+    <path d="M246,54 H286" class="s2"/>
+    <path d="M259,70 A7,7 0 0 1 273,70 V86 H259 Z" class="fk"/>
+    <path d="M252,100 A4.5,4.5 0 0 1 261,100 V112 H252 Z" class="s3"/>
+    <path d="M271,100 A4.5,4.5 0 0 1 280,100 V112 H271 Z" class="fk"/>
+    <path d="M246,124 H286" class="s4"/>
+  </symbol>
+
+  <symbol id="i-cauldron" viewBox="0 0 60 45">
+    <path d="M8,13 C8,32 18,41 30,41 C42,41 52,32 52,13 Z" class="o1"/>
+    <ellipse cx="30" cy="13" rx="22" ry="5.4" class="o2"/>
+    <ellipse cx="30" cy="13" rx="17.6" ry="3.6" class="s3"/>
+    <path d="M14,37 L10,44 M46,37 L50,44" class="s2"/>
+    <path d="M8,44 H13 M47,44 H52" class="s2"/>
+    <path d="M14,30 C18,34 24,36 30,36" class="s4"/>
+    <path d="M9,10 C6,2 54,2 51,10" class="s2"/>
+  </symbol>
+
+  <symbol id="i-ringbox" viewBox="0 0 44 44">
+    <path d="M5,24 L5,10 C5,7.6 7,6 9.4,6 L34.6,6 C37,6 39,7.6 39,10 L39,24 Z" class="o2"/>
+    <path d="M9,22 L9,11 C9,9.8 10,9 11.4,9 L32.6,9 C34,9 35,9.8 35,11 L35,22" class="s4"/>
+    <path d="M5,24 L39,24 L39,36 C39,38.4 37,40 34.6,40 L9.4,40 C7,40 5,38.4 5,36 Z" class="o1"/>
+    <path d="M9,28 C15,25.6 29,25.6 35,28" class="s3"/>
+    <circle cx="22" cy="22" r="6.4" class="s2"/>
+    <path d="M22,10.6 L26,15.4 L22,20.2 L18,15.4 Z" class="fk"/>
+    <path d="M22,10.6 L24,15.4 L22,20.2 L20,15.4 Z" class="lp"/>
+  </symbol>
+
+  <symbol id="i-violin" viewBox="0 0 40 100">
+    <path d="M20,36 C27,36 32,42 32,50 C32,55 29,58 26,60 C29,62 32,66 32,72 C32,81 27,88 20,88 C13,88 8,81 8,72 C8,66 11,62 14,60 C11,58 8,55 8,50 C8,42 13,36 20,36 Z" class="o1"/>
+    <path d="M15.4,54 C13.4,57 13.4,64 15.4,67 M14.2,54.6 L17,54.6 M14.2,66.4 L17,66.4" class="s3"/>
+    <path d="M24.6,54 C26.6,57 26.6,64 24.6,67 M23,54.6 L25.8,54.6 M23,66.4 L25.8,66.4" class="s3"/>
+    <path d="M17,36 L17,14 L23,14 L23,36" class="o2"/>
+    <path d="M17,14 C14.6,9.6 17,4 20.4,4 C23.6,4 25.6,7.6 23.4,10.4 C22.2,12 20,11.6 20,10" class="s2"/>
+    <path d="M16,17 L13,15.4 M16,21 L13,19.4 M24,17 L27,15.4 M24,21 L27,19.4" class="s3"/>
+    <path d="M18.4,12 L18.4,78 M19.4,12 L19.4,78 M20.6,12 L20.6,78 M21.6,12 L21.6,78" class="s4"/>
+    <path d="M13.6,70 L26.4,70" class="s2"/>
+    <path d="M17.4,74 L22.6,74 L21.6,84 L18.4,84 Z" class="o3"/>
+  </symbol>
+
+  <symbol id="i-piano" viewBox="0 0 130 100">
+    <path d="M26,96 L26,26 L104,26 L104,96 Z" class="o1"/>
+    <path d="M22,19 H108 V27 H22 Z" class="o1"/>
+    <path d="M22,23.4 H108" class="s4"/>
+    <path d="M40,19 L40,6 C40,4.4 41,3.6 42.6,3.6 L88,3.6 C89.6,3.6 91,4.4 91,6 L91,19" class="o2"/>
+    <path d="M47,7 H84 V17.4 H47 Z" class="o3"/>
+    <path d="M50,9.4 H81 M50,11.6 H81 M50,13.8 H81 M50,16 H81" class="s4"/>
+    <path d="M32,34 H98 V58 H32 Z" class="s3"/>
+    <path d="M36,38 H94 V54 H36 Z" class="s4"/>
+    <path d="M32,66 H98 V90 H32 Z" class="s3"/>
+    <path d="M104,44 H128 V50 H104 Z" class="o2"/>
+    <path d="M104,50 H127 C128.4,50 129,51 129,52.4 L129,56 C129,57.4 128.4,58.4 127,58.4 L104,58.4 Z" class="o1"/>
+    <path d="M107,50 V58.4 M110,50 V58.4 M113,50 V58.4 M116,50 V58.4 M119,50 V58.4 M122,50 V58.4 M125,50 V58.4" class="s3"/>
+    <path d="M108.2,50 H110 V54.6 H108.2 Z" class="fk"/>
+    <path d="M114.2,50 H116 V54.6 H114.2 Z" class="fk"/>
+    <path d="M117.2,50 H119 V54.6 H117.2 Z" class="fk"/>
+    <path d="M123.2,50 H125 V54.6 H123.2 Z" class="fk"/>
+    <path d="M104,58.4 H124 V67 H104 Z" class="o2"/>
+    <path d="M58,90 H76 V96 H58 Z" class="o2"/>
+    <path d="M63,84 V90 M71,84 V90" class="s2"/>
+    <path d="M22,96 H31 V100 H22 Z" class="o2"/>
+    <path d="M99,96 H108 V100 H99 Z" class="o2"/>
+  </symbol>
+</defs>
+</svg>
+
+<svg id="cast-defs" style="display:none" aria-hidden="true" focusable="false">
+<defs>
+  <!-- Archana: seated, facing right. Hip at (26,72), floor at y=108. -->
+  <symbol id="a-sit" viewBox="0 0 76 112">
+    <path d="M25,105 C29,102 35,102 37,105 C38,109 24,109 25,105 Z" class="o2"/>
+    <path d="M18,70 C15,54 17,36 22,22 C26,18 34,20 35,28 C36,40 37,56 37,70 Z" class="o1"/>
+    <path d="M16,66 C10,74 8,90 9,106 L46,106 C50,98 52,86 50,76 C46,70 38,64 28,63 C22,63 18,64 16,66 Z" class="o1"/>
+    <path d="M18,76 C20,86 20,96 19,105 M30,72 C32,84 34,96 34,105 M42,78 C44,88 44,98 43,105" class="s3"/>
+    <path d="M9,104 C20,101 38,102 46,104" class="s3"/>
+    <path d="M13,82 C15,92 15,100 14,105 M24,70 C26,82 27,94 27,104 M37,74 C39,86 39,98 38,105" class="s4"/>
+    <path d="M26,20 L27,16 M34,22 L33,17" class="s2"/>
+    <ellipse cx="30" cy="10" rx="8" ry="9.5" transform="rotate(8 30 10)" class="o1"/>
+    <path d="M32,4.6 C28,0 21,1.2 19.4,8 C18.6,13 19.6,17 17.6,21 C21.6,20 24.6,17 24.6,13 C26.4,8.8 29,7.6 32,7.6 Z" class="fk"/>
+    <circle cx="17" cy="16" r="5" class="fk"/>
+    <path d="M13.4,14.6 C15.4,12.4 19,12.8 20,15.6" class="lp"/>
+    <path d="M22,22 C26,28 32,27 35,24" class="s2"/>
+    <circle cx="28.4" cy="26.2" r="1.3" class="fk"/>
+    <path d="M29,24 C36,25 42,32 43,40 C44,46 50,54 54,57 C56,59 54,63 51,61 C46,58 40,52 37,46 C33,38 27,32 26,26 Z" class="o2"/>
+    <path d="M48,56 C50,53 53,53 55,55" class="s3"/>
+    <path d="M51,59 C54,57 58,58 59,61 C59,63.4 56,64.4 53,63 C51,62 50,60 51,59 Z" class="o2"/>
+    <path d="M54,60.2 C56,60.2 57,61 57,62 M53,61.6 C55,61.6 56,62.4 56,63.2" class="s4"/>
+  </symbol>
+
+  <!-- K K: seated, facing right. Same frame as a-sit. -->
+  <symbol id="k-sit" viewBox="0 0 76 112">
+    <path d="M25,105 C29,102 36,102 38,105 C39,109 24,109 25,105 Z" class="o2"/>
+    <path d="M18,70 C14,54 15,36 21,22 C25,17 34,19 36,27 C38,40 38,56 38,70 Z" class="o1"/>
+    <path d="M16,66 C10,74 8,90 9,106 L47,106 C51,98 53,86 51,76 C47,70 38,64 28,63 C22,63 18,64 16,66 Z" class="o1"/>
+    <path d="M18,76 C20,86 20,96 19,105 M30,72 C32,84 34,96 34,105 M43,78 C45,88 45,98 44,105" class="s3"/>
+    <path d="M9,104 C20,101 39,102 47,104" class="s3"/>
+    <path d="M13,82 C15,92 15,100 14,105 M24,70 C26,82 27,94 27,104 M38,74 C40,86 40,98 39,105" class="s4"/>
+    <path d="M27,20 L28,16 M35,22 L34,17" class="s2"/>
+    <ellipse cx="31" cy="10" rx="8.2" ry="9.5" transform="rotate(4 31 10)" class="o1"/>
+    <path d="M33.6,5 C30,0 23.6,1 22,9 C21.4,12.4 22,15.4 23,18.4 C25.4,13.4 28.6,11 33,11.6 Z" class="fk"/>
+    <path d="M23,22 C27,28 33,27 36,24" class="s2"/>
+    <circle cx="29.4" cy="26.2" r="1.3" class="fk"/>
+    <path d="M30,24 C37,25 43,32 44,40 C45,46 51,54 55,57 C57,59 55,63 52,61 C47,58 41,52 38,46 C34,38 28,32 27,26 Z" class="o2"/>
+    <path d="M49,56 C51,53 54,53 56,55" class="s3"/>
+    <path d="M52,59 C55,57 59,58 60,61 C60,63.4 57,64.4 54,63 C52,62 51,60 52,59 Z" class="o2"/>
+    <path d="M55,60.2 C57,60.2 58,61 58,62 M54,61.6 C56,61.6 57,62.4 57,63.2" class="s4"/>
+  </symbol>
+
+  <!-- Archana: standing, facing right. Feet at y=117. -->
+  <symbol id="a-stand" viewBox="0 0 64 120">
+    <path d="M22,113 C25,110 31,110 33,113 C34,116.6 21,116.6 22,113 Z" class="o2"/>
+    <path d="M36,113 C39,110 45,110 47,113 C48,116.6 35,116.6 36,113 Z" class="o2"/>
+    <path d="M23,31 C17,50 13,82 13,110 C13,113 15,115 18,115 L46,115 C49,115 51,113 51,110 C51,82 47,50 41,31 Z" class="o1"/>
+    <path d="M13,110 C23,106.4 41,106.4 51,110" class="s3"/>
+    <path d="M22,46 C19,66 18,92 18,110 M32,42 C32,68 32,92 32,111 M42,46 C45,66 46,92 46,110" class="s3"/>
+    <path d="M26,54 C25,76 25,96 25,110 M38,54 C39,76 39,96 39,110 M16,72 C15,88 15,100 15,110" class="s4"/>
+    <path d="M28,25 L28,31 M36,25 L36,31" class="s2"/>
+    <ellipse cx="32" cy="16" rx="8" ry="9.5" class="o1"/>
+    <path d="M28,4.6 C21,6.6 17.6,12.6 18.6,19.6 C19.6,26 23.4,30 28.6,31 C25,26.6 23,22 23.6,16.4 C24.2,10.6 25.6,6.6 28.6,4.8 Z" class="fk"/>
+    <path d="M25.4,8 C28.4,4 34.4,3.6 37.6,7 C35.6,6 33,6.2 30.6,7.2 C28.4,8.2 26.8,9.6 25.4,11.6 Z" class="fk"/>
+    <circle cx="17.6" cy="23.4" r="5.2" class="fk"/>
+    <path d="M13.8,22 C15.8,19.8 19.6,20.2 20.6,23" class="lp"/>
+    <path d="M23,32 C27,40 37,40 41,32" class="s2"/>
+    <circle cx="32" cy="38" r="1.4" class="fk"/>
+    <path d="M40,32 C47,38 50,52 50,66 C50,72 48,78 46,82 C42,81 40,75 41,69 C42,56 40,42 36,34 Z" class="o2"/>
+    <path d="M43,78 C45,76.4 48,76.6 49,79" class="s3"/>
+    <path d="M44,81 C47,79 51,80.4 51,84 C51,87.4 47,88.4 44,86.4 C42,85 42,82 44,81 Z" class="o2"/>
+    <path d="M46,83 C48,82.6 50,83.4 50,85 M45,85 C47,84.6 49,85.4 49,86.6" class="s4"/>
+  </symbol>
+
+
+  <symbol id="a-lap" viewBox="0 0 76 112">
+    <path d="M25,105 C29,102 35,102 37,105 C38,109 24,109 25,105 Z" class="o2"/>
+    <path d="M18,70 C15,54 17,36 22,22 C26,18 34,20 35,28 C36,40 37,56 37,70 Z" class="o1"/>
+    <path d="M16,66 C10,74 8,90 9,106 L46,106 C50,98 52,86 50,76 C46,70 38,64 28,63 C22,63 18,64 16,66 Z" class="o1"/>
+    <path d="M18,76 C20,86 20,96 19,105 M30,72 C32,84 34,96 34,105 M42,78 C44,88 44,98 43,105" class="s3"/>
+    <path d="M9,104 C20,101 38,102 46,104" class="s3"/>
+    <path d="M13,82 C15,92 15,100 14,105 M24,70 C26,82 27,94 27,104 M37,74 C39,86 39,98 38,105" class="s4"/>
+    <path d="M26,20 L27,16 M34,22 L33,17" class="s2"/>
+    <ellipse cx="30" cy="10" rx="8" ry="9.5" transform="rotate(8 30 10)" class="o1"/>
+    <path d="M32,4.6 C28,0 21,1.2 19.4,8 C18.6,13 19.6,17 17.6,21 C21.6,20 24.6,17 24.6,13 C26.4,8.8 29,7.6 32,7.6 Z" class="fk"/>
+    <circle cx="17" cy="16" r="5" class="fk"/>
+    <path d="M13.4,14.6 C15.4,12.4 19,12.8 20,15.6" class="lp"/>
+    <path d="M22,22 C26,28 32,27 35,24" class="s2"/>
+    <circle cx="28.4" cy="26.2" r="1.3" class="fk"/>
+    <path d="M29,24 C36,26 41,34 41,44 C41,50 39,55 37,58 C33,57 31,52 32,46 C33,38 31,30 26,26 Z" class="o2"/>
+    <path d="M33,54 C35,52 38,52.6 39,55" class="s3"/>
+    <path d="M32,56 C36,54 40,56 40,60 C40,63.4 35,64.4 32,62 C29,60.4 29,57.4 32,56 Z" class="o2"/>
+    <path d="M34,58 C36,57.6 38,58.4 38,60 M33,60 C35,59.6 37,60.4 37,61.6" class="s4"/>
+  </symbol>
+
+  <symbol id="k-lap" viewBox="0 0 76 112">
+    <path d="M25,105 C29,102 36,102 38,105 C39,109 24,109 25,105 Z" class="o2"/>
+    <path d="M18,70 C14,54 15,36 21,22 C25,17 34,19 36,27 C38,40 38,56 38,70 Z" class="o1"/>
+    <path d="M16,66 C10,74 8,90 9,106 L47,106 C51,98 53,86 51,76 C47,70 38,64 28,63 C22,63 18,64 16,66 Z" class="o1"/>
+    <path d="M18,76 C20,86 20,96 19,105 M30,72 C32,84 34,96 34,105 M43,78 C45,88 45,98 44,105" class="s3"/>
+    <path d="M9,104 C20,101 39,102 47,104" class="s3"/>
+    <path d="M13,82 C15,92 15,100 14,105 M24,70 C26,82 27,94 27,104 M38,74 C40,86 40,98 39,105" class="s4"/>
+    <path d="M27,20 L28,16 M35,22 L34,17" class="s2"/>
+    <ellipse cx="31" cy="10" rx="8.2" ry="9.5" transform="rotate(4 31 10)" class="o1"/>
+    <path d="M33.6,5 C30,0 23.6,1 22,9 C21.4,12.4 22,15.4 23,18.4 C25.4,13.4 28.6,11 33,11.6 Z" class="fk"/>
+    <path d="M23,22 C27,28 33,27 36,24" class="s2"/>
+    <circle cx="29.4" cy="26.2" r="1.3" class="fk"/>
+    <path d="M30,24 C37,26 42,34 42,44 C42,50 40,55 38,58 C34,57 32,52 33,46 C34,38 32,30 27,26 Z" class="o2"/>
+    <path d="M34,54 C36,52 39,52.6 40,55" class="s3"/>
+    <path d="M33,56 C37,54 41,56 41,60 C41,63.4 36,64.4 33,62 C30,60.4 30,57.4 33,56 Z" class="o2"/>
+    <path d="M35,58 C37,57.6 39,58.4 39,60 M34,60 C36,59.6 38,60.4 38,61.6" class="s4"/>
   </symbol>
 </defs>
 </svg>
 
 <div class="sheet">
   <div class="frame">
-    <svg class="corner tl" viewBox="0 0 100 100"><use href="#s-flourish"/></svg>
-    <svg class="corner tr" viewBox="0 0 100 100"><use href="#s-flourish"/></svg>
-    <svg class="corner bl" viewBox="0 0 100 100"><use href="#s-flourish"/></svg>
-    <svg class="corner br" viewBox="0 0 100 100"><use href="#s-flourish"/></svg>
+    <svg class="corner tl" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
+    <svg class="corner tr" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
+    <svg class="corner bl" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
+    <svg class="corner br" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-corner"/></svg>
 
     <header class="title-block">
       <h1>Happy Anniversary</h1>
       <p class="subtitle">Archana &amp; K K &mdash; Till the End of Time</p>
-      <svg class="divider" viewBox="0 0 300 20">
-        <line x1="0" y1="10" x2="128" y2="10" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="150" cy="10" r="4" fill="currentColor"/>
-        <line x1="172" y1="10" x2="300" y2="10" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
+      <svg class="divider" viewBox="0 0 300 22" aria-hidden="true"><use href="#i-rule"/></svg>
     </header>
 
     <div class="plates">
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <use href="#s-moon" x="230" y="10" width="42" height="42"/>
-            <use href="#s-star" x="200" y="24" width="10" height="10" opacity="0.7"/>
-            <use href="#s-star" x="260" y="58" width="8" height="8" opacity="0.55"/>
-            <use href="#s-owl" x="20" y="18" width="42" height="42"/>
-            <rect x="0" y="55" width="90" height="4" fill="currentColor" opacity="0.5"/>
-            <rect x="118" y="150" width="64" height="8" fill="currentColor"/>
-            <rect x="146" y="158" width="8" height="30" fill="currentColor"/>
-            <use href="#s-candle" x="130" y="95" width="16" height="55"/>
-            <rect x="100" y="140" width="12" height="12" rx="2" fill="currentColor"/>
-            <rect x="188" y="140" width="12" height="12" rx="2" fill="currentColor"/>
-            <g transform="translate(95,150)">
-              <circle cx="0" cy="-56" r="13" fill="currentColor"/>
-              <path d="M-20,-40 C-27,-12 -25,16 -18,36 L18,36 C25,16 27,-12 20,-40 C9,-48 -9,-48 -20,-40 Z" fill="currentColor"/>
-              <path d="M16,-28 C26,-22 28,-14 24,-6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="Two robed figures seated at opposite ends of a long candlelit table, an owl watching from a wall bracket, moonlight in the arched window behind.">
+            <use href="#i-moon" class="a-gl" x="176" y="106" width="26" height="26"/>
+            <use href="#i-spark" class="a-tw" x="224" y="112" width="8" height="8"/>
+            <use href="#i-spark" class="a-tw d2" x="240" y="128" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d4" x="190" y="84" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d1" x="234" y="88" width="7" height="7"/>
+            <use href="#i-window" x="168" y="16" width="90" height="135"/>
+            <path d="M160,151 H266" class="s1"/>
+            <path d="M164,157 H262" class="s2"/>
+            <path d="M172,157 C173,161 175,163 178,164 M254,157 C253,161 251,163 248,164" class="s3"/>
+
+            <use href="#i-owl" x="20" y="26" width="32" height="40"/>
+            <path d="M10,66 H62 L56,73 H16 Z" class="o2"/>
+            <path d="M22,73 C25,79 31,83 39,83" class="s3"/>
+            <path d="M26,73 C28,77 32,80 37,81" class="s4"/>
+
+            <use href="#i-taper" x="84" y="32" width="12" height="30"/>
+            <use href="#i-flame" class="a-fl" x="87" y="18" width="6" height="12"/>
+            <use href="#i-taper" x="114" y="54" width="10" height="25"/>
+            <use href="#i-flame" class="a-fl d2" x="116.5" y="43" width="5" height="10"/>
+            <use href="#i-taper" x="140" y="24" width="12" height="30"/>
+            <use href="#i-flame" class="a-fl d4" x="143" y="10" width="6" height="12"/>
+
+            <path d="M35,112 C35,107.6 49,107.6 49,112 L49,202 L35,202 Z" class="o2"/>
+            <path d="M39,118 V196 M45,118 V196" class="s4"/>
+            <use href="#a-sit" x="32" y="106" width="76" height="112"/>
+            <path d="M279,112 C279,107.6 293,107.6 293,112 L293,202 L279,202 Z" class="o2"/>
+            <path d="M283,118 V196 M289,118 V196" class="s4"/>
+            <g transform="translate(268,178) scale(-1,1)">
+              <use href="#k-sit" x="-26" y="-72" width="76" height="112"/>
             </g>
-            <g transform="translate(205,150) scale(-1,1)">
-              <circle cx="0" cy="-56" r="13" fill="currentColor"/>
-              <path d="M-20,-40 C-27,-12 -25,16 -18,36 L18,36 C25,16 27,-12 20,-40 C9,-48 -9,-48 -20,-40 Z" fill="currentColor"/>
-              <path d="M16,-28 C26,-22 28,-14 24,-6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-            </g>
+
+            <ellipse cx="167" cy="211" rx="100" ry="5" class="hx" opacity="0.3"/>
+            <path d="M86,178 L86,208 C86,210.6 88,212 90.6,212 L98,212 C100.6,212 102,210.6 102,208 L102,178 Z" class="o1"/>
+            <path d="M232,178 L232,208 C232,210.6 233.4,212 236,212 L243.4,212 C246,212 248,210.6 248,208 L248,178 Z" class="o1"/>
+            <path d="M94,198 H240 V203 H94 Z" class="o2"/>
+            <path d="M70,170 H264 V178 H70 Z" class="o1"/>
+            <path d="M70,174.6 H264" class="s4"/>
+
+            <use href="#i-book-open" x="96" y="142" width="56" height="28"/>
+            <use href="#i-candlestick" x="147" y="118" width="26" height="52"/>
+            <use href="#i-flame" class="a-fl d1" x="154" y="98" width="12" height="24"/>
+
+            <path d="M191,152 C191,160 193.4,164 196,164 C198.6,164 201,160 201,152 Z" class="o2"/>
+            <ellipse cx="196" cy="152" rx="5" ry="1.7" class="o3"/>
+            <path d="M196,164 V167" class="s2"/>
+            <path d="M191,170 C191,167 201,167 201,170 Z" class="o2"/>
+            <path d="M205,154 C205,161.4 207.4,165 210,165 C212.6,165 215,161.4 215,154 Z" class="o2"/>
+            <ellipse cx="210" cy="154" rx="5" ry="1.7" class="o3"/>
+            <path d="M210,165 V167.4" class="s2"/>
+            <path d="M205,170 C205,167.2 215,167.2 215,170 Z" class="o2"/>
+
+            <path d="M231,159 L243,159 L241.6,170 L232.4,170 Z" class="o2"/>
+            <path d="M229.6,159 H244.4" class="s2"/>
+            <path d="M240,158 C244,148 248,138 250,129" class="s2"/>
+            <path d="M250,129 C246,133.4 244,139 243,145 M250,129 C252,135 250.4,141 247.4,147" class="s3"/>
+
+            <path d="M0,213 H320" class="s1"/>
+            <path d="M46,213 L34,231 M118,213 L110,231 M204,213 L210,231 M278,213 L290,231 M0,231 H320" class="s4"/>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate I</span>
           <blockquote>&ldquo;Don't worry, I'll go easy on you&nbsp;&mdash; we just met.&rdquo;<br>&ldquo;Let's see where this goes.&rdquo;</blockquote>
@@ -295,29 +653,90 @@
       </figure>
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <rect x="30" y="20" width="240" height="6" fill="currentColor" opacity="0.5"/>
-            <line x1="34" y1="20" x2="34" y2="170" stroke="currentColor" stroke-width="5" opacity="0.5"/>
-            <line x1="266" y1="20" x2="266" y2="170" stroke="currentColor" stroke-width="5" opacity="0.5"/>
-            <path d="M34,26 Q60,50 34,80" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
-            <path d="M266,26 Q240,50 266,80" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
-            <rect x="40" y="150" width="220" height="20" rx="4" fill="currentColor"/>
-            <rect x="40" y="140" width="220" height="14" fill="currentColor" opacity="0.85"/>
-            <g transform="translate(110,146)">
-              <circle cx="0" cy="-14" r="12" fill="currentColor"/>
-              <path d="M-14,-2 C-20,4 -18,14 0,16 C18,14 20,4 14,-2 C6,-8 -6,-8 -14,-2 Z" fill="currentColor"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures pressed shoulder to shoulder at a single desk, heads bent over the same open book, a bookcase to one side and a tall arched window behind.">
+            <use href="#i-moon" class="a-gl" x="170" y="82" width="22" height="22"/>
+            <use href="#i-spark" class="a-tw" x="128" y="124" width="7" height="7"/>
+            <use href="#i-spark" class="a-tw d3" x="176" y="132" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d5" x="186" y="116" width="5" height="5"/>
+            <use href="#i-spark" class="a-tw d2" x="124" y="88" width="6" height="6"/>
+            <use href="#i-window" x="104" y="8" width="104" height="156"/>
+            <path d="M98,164 H214" class="s1"/>
+            <path d="M102,170 H210" class="s2"/>
+
+            <path d="M8,52 H92 V176 H8 Z" class="o1"/>
+            <path d="M4,46 H96 V52 H4 Z" class="o1"/>
+            <path d="M8,86 H92 M8,120 H92 M8,154 H92" class="s2"/>
+            <path d="M12,60 H18 V86 H12 Z" class="o2"/>
+            <path d="M19,62 H24.6 V86 H19 Z" class="fk"/>
+            <path d="M25.6,58 H32 V86 H25.6 Z" class="o2"/>
+            <path d="M33,61 H38 V86 H33 Z" class="o2"/>
+            <path d="M39,59 H45 V86 H39 Z" class="fk"/>
+            <path d="M47,86 L60,64 L64.6,66.4 L52,86 Z" class="o2"/>
+            <path d="M66,80 H88 V86 H66 Z" class="o2"/>
+            <path d="M68,74 H86 V80 H68 Z" class="o2"/>
+            <path d="M12,94 H19 V120 H12 Z" class="fk"/>
+            <path d="M20,92 H26 V120 H20 Z" class="o2"/>
+            <path d="M27,96 H33 V120 H27 Z" class="o2"/>
+            <path d="M34,93 H41 V120 H34 Z" class="o2"/>
+            <path d="M42,95 H47 V120 H42 Z" class="fk"/>
+            <path d="M56,104 C56,101 70,101 70,104 L70,120 L56,120 Z" class="o2"/>
+            <path d="M56.6,100.6 H69.4" class="s2"/>
+            <path d="M57,112 C61,110 65,110 69,112 L69,119 L57,119 Z" class="hx"/>
+            <path d="M76,110 H84 V120 H76 Z" class="o2"/>
+            <use href="#i-flame" class="a-fl d3" x="77.5" y="100" width="5" height="10"/>
+            <path d="M12,128 H18 V154 H12 Z" class="o2"/>
+            <path d="M19,130 H25 V154 H19 Z" class="fk"/>
+            <path d="M26,127 H33 V154 H26 Z" class="o2"/>
+            <path d="M40,142 H70 V148 H40 Z" class="o2"/>
+            <path d="M42,136 H68 V142 H42 Z" class="o2"/>
+            <path d="M44,130 H66 V136 H44 Z" class="o2"/>
+            <path d="M76,146 C76,143 88,143 88,146 C88,149 76,149 76,146 Z" class="o2"/>
+            <path d="M12,160 H20 V176 H12 Z" class="fk"/>
+            <path d="M21,162 H28 V176 H21 Z" class="o2"/>
+            <path d="M40,164 H70 V176 H40 Z" class="o2"/>
+            <path d="M40,168.6 H70" class="s4"/>
+
+            <path d="M282,10 V34" class="s2"/>
+            <circle cx="282" cy="8" r="3" class="s2"/>
+            <path d="M268,32 H296 V37 H268 Z" class="o2"/>
+            <path d="M271,37 H293 L289,60 H275 Z" class="o2"/>
+            <use href="#i-flame" class="a-fl d2" x="278" y="42" width="8" height="16"/>
+            <path d="M277,38 V58 M287,38 V58" class="s4"/>
+            <path d="M276,60 H288 L286,64 H278 Z" class="o2"/>
+
+            <use href="#a-sit" x="106" y="114" width="76" height="112"/>
+            <g transform="translate(208,186) scale(-1,1)">
+              <use href="#k-sit" x="-26" y="-72" width="76" height="112"/>
             </g>
-            <g transform="translate(190,146) scale(-1,1)">
-              <circle cx="0" cy="-14" r="12" fill="currentColor"/>
-              <path d="M-14,-2 C-20,4 -18,14 0,16 C18,14 20,4 14,-2 C6,-8 -6,-8 -14,-2 Z" fill="currentColor"/>
-            </g>
-            <use href="#s-book" x="130" y="95" width="44" height="30"/>
-            <use href="#s-candle" x="60" y="90" width="14" height="46"/>
-            <use href="#s-candle" x="230" y="90" width="14" height="46"/>
-            <use href="#s-star" x="145" y="70" width="10" height="10" opacity="0.6"/>
+
+            <ellipse cx="177" cy="219" rx="108" ry="5" class="hx" opacity="0.3"/>
+            <path d="M72,182 L72,216 C72,219 74,220.4 77,220.4 L85,220.4 C88,220.4 90,219 90,216 L90,182 Z" class="o1"/>
+            <path d="M264,182 L264,216 C264,219 266,220.4 269,220.4 L277,220.4 C280,220.4 282,219 282,216 L282,182 Z" class="o1"/>
+            <path d="M90,182 H264 V208 H90 Z" class="o1"/>
+            <path d="M98,188 H174 V202 H98 Z" class="s4"/>
+            <path d="M182,188 H256 V202 H182 Z" class="s4"/>
+            <path d="M58,174 H296 V182 H58 Z" class="o1"/>
+            <path d="M58,178.6 H296" class="s4"/>
+
+            <use href="#i-candlestick" x="92" y="122" width="26" height="52"/>
+            <use href="#i-flame" class="a-fl" x="99" y="102" width="12" height="24"/>
+            <use href="#i-book-open" x="142" y="146" width="56" height="28"/>
+
+            <path d="M206,168 C206,164.6 226,164.6 226,168 C226,171.4 206,171.4 206,168 Z" class="o2"/>
+            <path d="M210,164 C210,167.4 210,168.6 210,171.6 M222,164 C222,167.4 222,168.6 222,171.6" class="s4"/>
+            <path d="M240,162 L252,162 L250.6,174 L241.4,174 Z" class="o2"/>
+            <path d="M238.6,162 H253.4" class="s2"/>
+            <path d="M249,161 C253,151 257,142 259,134" class="s2"/>
+            <path d="M259,134 C255,138 253,143 252,149 M259,134 C261,140 259.4,146 256.4,151" class="s3"/>
+            <path d="M258,168 H288 V174 H258 Z" class="o2"/>
+            <path d="M260,162 H286 V168 H260 Z" class="o2"/>
+            <path d="M262,164 H284 M260,170 H286" class="s4"/>
+
+            <path d="M0,222 H320" class="s1"/>
+            <path d="M40,222 L36,238 M110,222 L108,238 M190,222 L194,238 M260,222 L268,238 M0,236 H320" class="s4"/>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate II</span>
           <p class="caption-line">Two desks were never needed.</p>
@@ -325,27 +744,89 @@
       </figure>
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <ellipse cx="60" cy="190" rx="50" ry="16" fill="currentColor" opacity="0.15"/>
-            <rect x="20" y="140" width="80" height="60" fill="currentColor" opacity="0.08"/>
-            <use href="#s-star" x="180" y="30" width="10" height="10" opacity="0.5"/>
-            <path d="M210,50 q6,-14 14,-4" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6"/>
-            <circle class="note-float" cx="210" cy="52" r="4" fill="currentColor" opacity="0.6"/>
-            <circle class="note-float" cx="222" cy="44" r="4" fill="currentColor" opacity="0.6"/>
-            <g transform="translate(150,150)">
-              <circle cx="0" cy="-70" r="13" fill="currentColor"/>
-              <path d="M-16,-54 C-22,-24 -20,10 -14,44 L14,44 C20,10 22,-24 16,-54 C8,-62 -8,-62 -16,-54 Z" fill="currentColor"/>
-              <path d="M14,-50 C26,-56 34,-50 40,-56" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-              <path d="M40,-56 L58,-64 L54,-50 Z" fill="currentColor"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="One figure at an upright piano, the other standing beside it with a violin, notes drifting up between them.">
+            <use href="#i-moon" class="a-gl" x="36" y="84" width="18" height="18"/>
+            <use href="#i-spark" class="a-tw d3" x="76" y="88" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d5" x="88" y="100" width="5" height="5"/>
+            <use href="#i-window" x="28" y="6" width="76" height="114"/>
+
+            <path d="M196,36 H232 V76 H196 Z" class="o1"/>
+            <path d="M200,40 H228 V72 H200 Z" class="s3"/>
+            <path d="M201,63 C208,57 214,61 220,55 C223.4,52 227,54 227,57 L227,71 H201 Z" class="hx"/>
+            <path d="M201,63 C208,57 214,61 220,55 C223.4,52 227,54 227,57" class="s3"/>
+            <path d="M200,36 L214,29 M228,36 L214,29" class="s4"/>
+            <circle cx="214" cy="27.6" r="1.6" class="fk"/>
+
+            <path d="M296,82 C288,84 284,90 284,96" class="s2"/>
+            <path d="M276,97 C276,94 292,94 292,97 C292,100 276,100 276,97 Z" class="o2"/>
+            <path d="M281,82 H287 V95 H281 Z" class="o2"/>
+            <use href="#i-flame" class="a-fl d5" x="281" y="70" width="6" height="12"/>
+
+            <path d="M0,206 H320" class="s1"/>
+            <path d="M60,206 L52,232 M140,206 L138,232 M220,206 L226,232 M290,206 L300,232 M0,230 H320" class="s4"/>
+            <ellipse cx="168" cy="208" rx="118" ry="11" class="hx" opacity="0.26"/>
+
+            <use href="#i-piano" x="14" y="106" width="130" height="100"/>
+            <use href="#i-candlestick" x="40" y="100" width="13" height="26"/>
+            <use href="#i-flame" class="a-fl d2" x="43.25" y="87" width="6.5" height="13"/>
+            <use href="#i-candlestick" x="106" y="100" width="13" height="26"/>
+            <use href="#i-flame" class="a-fl d4" x="109.25" y="87" width="6.5" height="13"/>
+            <path d="M148,168 H188 V174 H148 Z" class="o2"/>
+            <path d="M152,174 V198 M184,174 V198" class="s2"/>
+            <g transform="translate(164,170) scale(-1,1)">
+              <use href="#k-sit" x="-26" y="-72" width="76" height="112"/>
             </g>
-            <g transform="translate(230,168) scale(-1,1)">
-              <circle cx="0" cy="-50" r="12" fill="currentColor"/>
-              <path d="M-16,-36 C-22,-14 -20,10 -14,30 L14,30 C20,10 22,-14 16,-36 C8,-42 -8,-42 -16,-36 Z" fill="currentColor"/>
-              <path d="M12,-24 C20,-20 22,-14 18,-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+
+            <path d="M217,203 C220,200 226,200 228,203 C229,206.6 216,206.6 217,203 Z" class="o2"/>
+            <path d="M231,203 C234,200 240,200 242,203 C243,206.6 230,206.6 231,203 Z" class="o2"/>
+            <path d="M218,120 C212,140 208,172 208,200 C208,203 210,205 213,205 L241,205 C244,205 246,203 246,200 C246,172 242,140 236,120 Z" class="o1"/>
+            <path d="M208,200 C218,196 236,196 246,200" class="s3"/>
+            <path d="M217,135 C214,155 213,182 213,200 M227,131 C227,157 227,182 227,201 M237,135 C240,155 241,182 241,200" class="s3"/>
+            <path d="M221,143 C220,165 220,185 220,200 M233,143 C234,165 234,185 234,200" class="s4"/>
+            <path d="M223,114 L223,120 M231,114 L231,120" class="s2"/>
+            <ellipse cx="227" cy="105" rx="8" ry="9.5" transform="rotate(-12 227 105)" class="o1"/>
+            <path d="M219,96 C224,90 234,91 236,99 C237,105 236,112 238,119 C234,118 230,115 229,110 C224,107 220,100 219,99 Z" class="fk"/>
+            <circle cx="238" cy="109" r="5.4" class="fk"/>
+            <path d="M234,107.6 C236,105.2 240,105.6 241,108.6" class="lp"/>
+            <path d="M218,121 C222,129 232,129 236,121" class="s2"/>
+            <circle cx="227" cy="126.6" r="1.4" class="fk"/>
+            <path d="M220,124 C210,126 198,130 190,133 C186,135 186,140 191,139 C200,136 212,133 220,130 Z" class="o2"/>
+            <g transform="translate(222,120) rotate(-107.7)">
+              <use href="#i-violin" x="-12" y="-52" width="24" height="60"/>
             </g>
+            <path d="M185,128 C189,127 192,130 191,134 C190,137 185,137 183,134 C182,131 183,129 185,128 Z" class="o2"/>
+            <path d="M203.4,95.6 C210,114 216.4,136 222.6,154.4" class="s2"/>
+            <path d="M205,95 C211.6,113.4 218,135.4 224.2,153.8" class="s4"/>
+            <path d="M201.6,96.6 C199.6,93.6 203,91 205.4,94 Z" class="o3"/>
+            <path d="M221,149 L226.4,147 L228.4,153.4 L223,155.4 Z" class="o3"/>
+            <path d="M234,122 C240,130 240,142 234,150 C230,152 226,150 226,145 C228,138 228,130 226,124 Z" class="o2"/>
+            <path d="M222,148 C226,146 230,148 230,152 C230,155.4 226,156.4 223,154 C221,152.6 221,149.4 222,148 Z" class="o2"/>
+
+            <g transform="translate(154,74)"><g class="a-note">
+              <path d="M-4,0 C-4,-3 0,-5 3,-4 C6,-3 5,1 2,2 C-2,3 -4,2 -4,0 Z" class="fk"/>
+              <path d="M4.6,-3.4 L4.6,-17" class="s2"/>
+              <path d="M4.6,-17 C8,-16 11,-13 11,-9" class="s2"/>
+            </g></g>
+            <g transform="translate(176,56)"><g class="a-note d2">
+              <path d="M-3.4,0 C-3.4,-2.6 0,-4.2 2.6,-3.4 C5,-2.6 4.2,0.8 1.8,1.8 C-1.8,2.6 -3.4,1.8 -3.4,0 Z" class="fk"/>
+              <path d="M4,-3 L4,-15" class="s2"/>
+              <path d="M4,-15 C7,-14 9.6,-11.4 9.6,-8" class="s2"/>
+            </g></g>
+            <g transform="translate(160,44)"><g class="a-note d4">
+              <path d="M-3,0 C-3,-2.4 0,-3.8 2.4,-3 C4.6,-2.4 4,0.6 1.6,1.6 C-1.6,2.4 -3,1.6 -3,0 Z" class="fk"/>
+              <path d="M3.6,-2.6 L3.6,-14" class="s2"/>
+              <path d="M12.6,-4.4 L12.6,-15.4" class="s2"/>
+              <path d="M9,0 C9,-2.4 12,-3.8 14.4,-3 C16.6,-2.4 16,0.6 13.6,1.6 C10.4,2.4 9,1.6 9,0 Z" class="fk"/>
+              <path d="M3.6,-14 L12.6,-15.4 L12.6,-12 L3.6,-10.6 Z" class="fk"/>
+            </g></g>
+            <g transform="translate(192,80)"><g class="a-note d5">
+              <path d="M-3,0 C-3,-2.4 0,-3.8 2.4,-3 C4.6,-2.4 4,0.6 1.6,1.6 C-1.6,2.4 -3,1.6 -3,0 Z" class="fk"/>
+              <path d="M3.6,-2.6 L3.6,-13.4" class="s2"/>
+              <path d="M3.6,-13.4 C6.4,-12.6 8.6,-10.4 8.6,-7.4" class="s2"/>
+            </g></g>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate III</span>
           <p class="caption-line">Every wrong note, right together.</p>
@@ -353,27 +834,77 @@
       </figure>
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <use href="#s-castle" x="0" y="120" width="300" height="90" opacity="0.9"/>
-            <use href="#s-moon" x="230" y="10" width="40" height="40"/>
-            <use href="#s-star" x="60" y="20" width="10" height="10" opacity="0.6"/>
-            <use href="#s-star" x="110" y="40" width="8" height="8" opacity="0.5"/>
-            <rect x="0" y="160" width="300" height="10" fill="currentColor" opacity="0.7"/>
-            <g transform="translate(140,160)">
-              <circle cx="0" cy="-46" r="12" fill="currentColor"/>
-              <path d="M-14,-32 C-18,-14 -10,4 8,6 L16,-2 C18,-14 12,-28 2,-34 C-4,-36 -10,-35 -14,-32 Z" fill="currentColor"/>
-              <path d="M8,-20 C20,-18 26,-10 30,-4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-              <use href="#s-ringbox" x="26" y="-14" width="20" height="16"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="One figure on one knee holding up an open ring box, the other standing with a hand to her heart, the castle and lake behind them under a full moon.">
+            <use href="#i-moon" class="a-gl" x="252" y="14" width="46" height="46"/>
+            <use href="#i-spark" class="a-tw" x="60" y="26" width="10" height="10"/>
+            <use href="#i-spark" class="a-tw d3" x="110" y="44" width="7" height="7"/>
+            <use href="#i-spark" class="a-tw d2" x="208" y="20" width="8" height="8"/>
+            <use href="#i-spark" class="a-tw d5" x="30" y="60" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d4" x="172" y="50" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d6" x="236" y="66" width="5" height="5"/>
+
+            <use href="#i-castle" x="8" y="56" width="200" height="100"/>
+
+            <path d="M0,156 C40,153 80,158 120,155 C160,152 200,157 240,154 C270,152 300,156 320,154" class="s2"/>
+            <path d="M40,162 H92 M110,162 H150 M170,166 H210 M250,164 H288 M60,170 H110 M130,172 H176 M200,170 H236 M258,174 H300 M30,178 H78 M96,180 H140 M160,178 H198 M215,181 H252 M266,180 H304" class="s4"/>
+            <path d="M14,182 C12,170 10,162 8,157 M23,182 C23,168 23,160 22,153 M31,182 C33,170 35,164 37,158" class="s2"/>
+            <ellipse cx="8" cy="154" rx="1.6" ry="4.2" transform="rotate(-8 8 154)" class="fk"/>
+            <ellipse cx="22" cy="150" rx="1.6" ry="4.2" class="fk"/>
+            <ellipse cx="37" cy="155" rx="1.6" ry="4.2" transform="rotate(10 37 155)" class="fk"/>
+
+            <path d="M8,188 C8,192 6,194 6,200 L20,200 C20,194 18,192 18,188 Z" class="o2"/>
+            <path d="M32,188 C32,192 30,194 30,200 L44,200 C44,194 42,192 42,188 Z" class="o2"/>
+            <path d="M56,188 C56,192 54,194 54,200 L68,200 C68,194 66,192 66,188 Z" class="o2"/>
+            <path d="M80,188 C80,192 78,194 78,200 L92,200 C92,194 90,192 90,188 Z" class="o2"/>
+            <path d="M104,188 C104,192 102,194 102,200 L116,200 C116,194 114,192 114,188 Z" class="o2"/>
+            <path d="M128,188 C128,192 126,194 126,200 L140,200 C140,194 138,192 138,188 Z" class="o2"/>
+            <path d="M152,188 C152,192 150,194 150,200 L164,200 C164,194 162,192 162,188 Z" class="o2"/>
+            <path d="M176,188 C176,192 174,194 174,200 L188,200 C188,194 186,192 186,188 Z" class="o2"/>
+            <path d="M200,188 C200,192 198,194 198,200 L212,200 C212,194 210,192 210,188 Z" class="o2"/>
+            <path d="M224,188 C224,192 222,194 222,200 L236,200 C236,194 234,192 234,188 Z" class="o2"/>
+            <path d="M248,188 C248,192 246,194 246,200 L260,200 C260,194 258,192 258,188 Z" class="o2"/>
+            <path d="M272,188 C272,192 270,194 270,200 L284,200 C284,194 282,192 282,188 Z" class="o2"/>
+            <path d="M296,188 C296,192 294,194 294,200 L308,200 C308,194 306,192 306,188 Z" class="o2"/>
+            <path d="M0,182 H320 V188.6 H0 Z" class="o1"/>
+            <path d="M0,185.4 H320" class="s4"/>
+            <path d="M0,200 H320 V206 H0 Z" class="o1"/>
+            <path d="M0,203 H320" class="s4"/>
+
+            <path d="M0,206 H320" class="s1"/>
+            <path d="M50,206 L40,236 M130,206 L126,236 M210,206 L216,236 M280,206 L292,236 M0,228 H320" class="s4"/>
+
+            <path d="M236,128 C248,140 254,160 252,182 C251,190 246,196 241,198 C244,180 242,152 234,134 Z" class="o1"/>
+            <path d="M240,146 C245,160 246,176 244,190 M245,152 C248,164 248,176 247,186" class="s3"/>
+            <g transform="translate(222,206) scale(-1,1)">
+              <use href="#a-stand" x="-32" y="-117" width="64" height="120"/>
             </g>
-            <g transform="translate(190,164)">
-              <circle cx="0" cy="-58" r="13" fill="currentColor"/>
-              <path d="M-16,-44 C-22,-16 -20,16 -14,40 L14,40 C20,16 22,-16 16,-44 C8,-52 -8,-52 -16,-44 Z" fill="currentColor"/>
-              <path d="M-12,-30 C-18,-24 -18,-16 -14,-12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-              <path d="M12,-30 C18,-24 18,-16 14,-12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-            </g>
+            <path d="M212,124 C204,128 198,136 198,144 C198,148 202,150.6 205,147 C207,140 212,132 216,128 Z" class="o2"/>
+            <path d="M196,140 C199,137 204,138 205,142 C206,146 201,149 197,147 C194,145 194,142 196,140 Z" class="o2"/>
+            <path d="M199,142.6 C201,141.6 203,142.4 203.4,144 M198.6,145 C200.6,144 202.6,144.8 203,146.4" class="s4"/>
+
+            <path d="M100,200 C96,203 96,206 100,206.6 L120,206.6 C120,204 118,201 114,199 Z" class="o2"/>
+            <path d="M118,168 C110,178 104,190 102,201 C101,204.6 104,206.6 108,206.6 L146,206.6 C151,206.6 155,204 156,199 C158,191 157,182 152,176 C147,170 138,166 130,164 Z" class="o1"/>
+            <path d="M102,203.6 C114,200 142,200 154,203.6" class="s3"/>
+            <path d="M114,180 C110,190 108,199 108,205 M126,172 C124,186 123,197 123,205 M140,176 C143,188 145,198 144,204" class="s3"/>
+            <path d="M144,186 C151,188 155,193 155,199" class="s3"/>
+            <path d="M138,178 C146,180 152,184 155,190" class="s4"/>
+            <path d="M110,186 C107,195 106,201 106,205" class="s4"/>
+            <path d="M120,168 C118,158 122,148 130,146 C138,144 144,150 144,158 C144,163 142,167 140,171 Z" class="o1"/>
+            <path d="M128,144 L128,148 M136,144 L136,148" class="s2"/>
+            <ellipse cx="134" cy="135" rx="8.4" ry="9.8" transform="rotate(10 134 135)" class="o1"/>
+            <path d="M130,124 C123.6,126 120.6,131.6 121.6,138.4 C122.4,144 125.6,148 130.4,149 C127,144.8 125.2,140.4 125.8,135 C126.4,129.6 127.6,126 130.4,124.2 Z" class="fk"/>
+            <path d="M127.6,127.4 C130.4,123.6 136,123.2 139,126.4 C137.2,125.4 134.8,125.6 132.6,126.6 C130.6,127.6 129,129 127.6,131 Z" class="fk"/>
+            <path d="M122,149 C126,156 136,156 141,149" class="s2"/>
+            <circle cx="131" cy="154" r="1.3" class="fk"/>
+            <path d="M138,150 C148,150 160,152 168,156 C172,158 170,163 165,161 C157,158 147,155 137,157 Z" class="o2"/>
+            <path d="M140,154 C150,154 160,157 168,161 C172,163 170,168 165,166 C157,163 148,160 138,161 Z" class="o2"/>
+            <path d="M164,156 C169,154 174,157 174,161 C174,165 168,166 164,163 C161,161 161,158 164,156 Z" class="o2"/>
+            <use href="#i-ringbox" x="158" y="130" width="28" height="28"/>
+            <path d="M172,126 V119 M181,133 L186,128 M163,133 L158,128" class="s3"/>
+            <use href="#i-spark" class="a-tw" x="166" y="133" width="13" height="13"/>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate IV</span>
           <blockquote>&ldquo;Marry me?&rdquo;</blockquote>
@@ -381,29 +912,56 @@
       </figure>
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <use href="#s-castle" x="10" y="150" width="180" height="60" opacity="0.6"/>
-            <ellipse cx="150" cy="205" rx="140" ry="10" fill="currentColor" opacity="0.15"/>
-            <use href="#s-star" x="230" y="20" width="10" height="10" opacity="0.6"/>
-            <use href="#s-star" x="260" y="50" width="8" height="8" opacity="0.5"/>
-            <use href="#s-moon" x="20" y="15" width="36" height="36"/>
-            <g class="broom-fly">
-            <g transform="translate(170,110) rotate(-8)">
-              <use href="#s-broom" x="-10" y="30" width="110" height="34"/>
-              <g transform="translate(40,10)">
-                <circle cx="0" cy="-20" r="11" fill="currentColor"/>
-                <path d="M-14,-8 C-18,4 -14,18 0,20 C14,18 18,4 14,-8 C7,-14 -7,-14 -14,-8 Z" fill="currentColor"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures riding one broom across the night sky, a cloak streaming out behind them, the castle small and far below.">
+            <use href="#i-moon" class="a-gl" x="246" y="12" width="56" height="56"/>
+            <use href="#i-spark" class="a-tw" x="40" y="30" width="10" height="10"/>
+            <use href="#i-spark" class="a-tw d3" x="90" y="18" width="7" height="7"/>
+            <use href="#i-spark" class="a-tw d5" x="150" y="40" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d2" x="204" y="24" width="8" height="8"/>
+            <use href="#i-spark" class="a-tw d4" x="58" y="82" width="6" height="6"/>
+            <use href="#i-spark" class="a-tw d6" x="234" y="88" width="5" height="5"/>
+            <use href="#i-spark" class="a-tw d1" x="112" y="66" width="5" height="5"/>
+            <path d="M0,118 C24,110 48,116 72,110 C88,106 100,110 112,106" class="s4"/>
+            <path d="M196,152 C220,146 244,152 268,146 C284,142 300,148 320,144" class="s4"/>
+
+            <use href="#i-castle" x="-6" y="146" width="176" height="88"/>
+            <path d="M0,234 C40,228 92,232 172,226" class="s3"/>
+
+            <g class="a-bob">
+            <g transform="translate(176,112) rotate(-16)">
+              <path d="M-72,-6 C-88,-10 -104,-8 -116,-2 M-70,4 C-86,6 -102,12 -112,20 M-74,-14 C-88,-20 -100,-22 -110,-20" class="s3" opacity="0.6"/>
+              <path d="M2,-22 C-14,-16 -34,-6 -46,6 C-50,10 -44,16 -38,12 C-24,2 -8,-8 4,-14 Z" class="o1"/>
+              <path d="M-6,-10 C-18,-2 -30,6 -38,11" class="s3"/>
+              <path d="M0,-16 C-12,-8 -26,0 -36,7 M-3,-6 C-14,1 -26,8 -34,12" class="s4"/>
+              <g transform="scale(-1,1)">
+                <use href="#i-broom" x="-60" y="-20" width="130" height="40"/>
               </g>
-              <g transform="translate(8,16)">
-                <circle cx="0" cy="-20" r="11" fill="currentColor"/>
-                <path d="M-14,-8 C-18,4 -14,18 0,20 C14,18 18,4 14,-8 C7,-14 -7,-14 -14,-8 Z" fill="currentColor"/>
-                <path d="M12,-4 C20,0 24,6 20,14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-              </g>
+              <path d="M2,2 C-4,14 -8,24 -16,30 C-19,32 -16,36 -12,34 C-4,28 4,16 8,6 Z" class="o1"/>
+              <path d="M-2,10 C-6,18 -10,26 -15,31" class="s4"/>
+              <path d="M0,2 C-2,-10 0,-22 6,-28 C12,-31 18,-27 18,-20 C18,-12 16,-4 16,2 Z" class="o1"/>
+              <path d="M4,-24 C2,-14 2,-6 3,2 M11,-27 C10,-16 10,-6 11,2" class="s4"/>
+              <path d="M0,-2 C4,-8 12,-8 16,-3" class="s2"/>
+              <ellipse cx="14" cy="-36" rx="7.5" ry="9" transform="rotate(-8 14 -36)" class="o1"/>
+              <path d="M15.6,-43.6 C11.6,-47.4 5.4,-46 4,-38 C3.2,-33.4 4,-30.4 5.6,-27.4 C6,-33 8.6,-36.6 13,-37.4 Z" class="fk"/>
+              <circle cx="3.4" cy="-32" r="4.4" class="fk"/>
+              <path d="M0,-33 C1.6,-35 4,-34.6 5,-32.6" class="lp"/>
+              <path d="M16,-22 C24,-18 30,-8 30,-2 C30,2 25,2.6 24,-2 C22,-10 18,-17 14,-20 Z" class="o2"/>
+              <path d="M30,2 C34,0 38,2 38,6 C38,9.4 33,10 30,7.4 C28,5.6 28,3 30,2 Z" class="o2"/>
+
+              <path d="M30,2 C24,14 20,24 12,30 C9,32 12,36 16,34 C24,28 32,16 36,6 Z" class="o1"/>
+              <path d="M26,10 C22,18 18,26 13,31" class="s4"/>
+              <path d="M28,2 C26,-10 28,-22 34,-28 C40,-31 46,-27 46,-20 C46,-12 44,-4 44,2 Z" class="o1"/>
+              <path d="M32,-24 C30,-14 30,-6 31,2 M39,-27 C38,-16 38,-6 39,2" class="s4"/>
+              <path d="M28,-2 C32,-8 40,-8 44,-3" class="s2"/>
+              <ellipse cx="42" cy="-36" rx="7.5" ry="9" transform="rotate(-8 42 -36)" class="o1"/>
+              <path d="M43.6,-43.6 C39.6,-47.4 35.4,-46 34,-39 C33.4,-35 34,-32 35,-29.4 C36.6,-34 39,-36.6 42.4,-37.4 Z" class="fk"/>
+              <path d="M44,-22 C52,-18 58,-8 58,-2 C58,2 53,2.6 52,-2 C50,-10 46,-17 42,-20 Z" class="o2"/>
+              <path d="M58,2 C62,0 66,2 66,6 C66,9.4 61,10 58,7.4 C56,5.6 56,3 58,2 Z" class="o2"/>
             </g>
             </g>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate V</span>
           <p class="caption-line">No broom needed to feel like flying.</p>
@@ -411,23 +969,85 @@
       </figure>
 
       <figure class="plate">
-        <div class="plate-frame">
-          <svg viewBox="0 0 300 220">
-            <ellipse cx="150" cy="200" rx="130" ry="14" fill="currentColor" opacity="0.12"/>
-            <rect x="230" y="150" width="30" height="50" fill="currentColor" opacity="0.7"/>
-            <use href="#s-cauldron" x="20" y="150" width="50" height="36"/>
-            <use href="#s-book" x="240" y="160" width="30" height="22"/>
-            <g transform="translate(115,175)">
-              <circle cx="0" cy="-40" r="12" fill="currentColor"/>
-              <path d="M-20,-26 C-26,-10 -22,4 -10,8 L10,8 C22,4 26,-10 20,-26 C10,-32 -10,-32 -20,-26 Z" fill="currentColor"/>
+        <div class="plate-frame"><div>
+          <svg viewBox="0 0 320 240" role="img" aria-label="Two figures on a settle by the fire with a kitten asleep across their laps, a cauldron hanging over the flames and their portrait on the mantel.">
+            <path d="M10,54 H102 V60 H10 Z" class="o1"/>
+            <path d="M18,60 C20,66 24,69.4 30,70.4 M94,60 C92,66 88,69.4 82,70.4" class="s3"/>
+            <path d="M16,36 H22 V54 H16 Z" class="o2"/>
+            <path d="M23,38 H28 V54 H23 Z" class="fk"/>
+            <path d="M29,34 H36 V54 H29 Z" class="o2"/>
+            <path d="M38,54 L48,38 L52.4,40.4 L43,54 Z" class="o2"/>
+            <path d="M62,42 C62,39 74,39 74,42 L74,54 L62,54 Z" class="o2"/>
+            <path d="M62.6,39 H73.4" class="s2"/>
+            <path d="M63,47 C66,45.6 70,45.6 73,47 L73,53 L63,53 Z" class="hx"/>
+            <path d="M82,44 C82,41 94,41 94,44 L92,54 L84,54 Z" class="o2"/>
+
+            <path d="M212,204 L212,142 A32,24 0 0 1 276,142 L276,204 Z" class="o1"/>
+            <path d="M212,204 L212,142 A32,24 0 0 1 276,142 L276,204 Z" class="hx" opacity="0.55"/>
+            <path d="M212,204 L212,142 A32,24 0 0 1 276,142 L276,204" class="s1"/>
+            <path d="M216.3,130 L210.2,127.4 M228,121.2 L224.5,116.4 M244,118 L244,112.7 M260,121.2 L263.5,116.4 M271.7,130 L277.8,127.4" class="s3"/>
+            <ellipse cx="244" cy="188" rx="31" ry="17" class="fp"/>
+            <ellipse cx="244" cy="188" rx="31" ry="17" class="hx" opacity="0.12"/>
+            <path d="M222,192 C232,187 246,186 258,189 C260,190 259,193.4 256,192.6 C246,190 234,190.6 226,193.4 C223,194.4 220,193 222,192 Z" class="o2"/>
+            <use href="#i-flame" class="a-fl d1" x="222" y="174" width="8" height="16"/>
+            <use href="#i-flame" class="a-fl" x="229" y="168" width="11" height="22"/>
+            <use href="#i-flame" class="a-fl d2" x="239" y="164" width="13" height="26"/>
+            <use href="#i-flame" class="a-fl d5" x="250" y="168" width="11" height="22"/>
+            <use href="#i-flame" class="a-fl d4" x="259" y="172" width="9" height="18"/>
+            <path d="M219,198 C231,192.6 249,190.6 263,194.6 C266,195.6 265,200.6 261,200 C249,197.6 233,199.6 223,202 C220,203 217,199.6 219,198 Z" class="o2"/>
+            <path d="M225,196.6 C237,193.6 249,192.6 258,195.6" class="s4"/>
+            <ellipse cx="262.4" cy="197.4" rx="2.6" ry="3.2" class="o3"/>
+            <ellipse cx="262.4" cy="197.4" rx="1.1" ry="1.5" class="s4"/>
+            <path d="M216,142 H272" class="s2"/>
+            <path d="M244,142 V149" class="s2"/>
+            <use href="#i-cauldron" x="227" y="149" width="34" height="25.5"/>
+            <path d="M236,146 C232,140 240,134 236,128" class="s3 a-steam"/>
+            <path d="M252,146 C256,139 248,133 253,127" class="s3 a-steam d3"/>
+            <path d="M204,204 H288 V211 H204 Z" class="o2"/>
+            <path d="M198,100 H316 V112 H198 Z" class="o1"/>
+            <path d="M198,106.4 H316" class="s4"/>
+            <use href="#i-candlestick" x="208" y="74" width="13" height="26"/>
+            <use href="#i-flame" class="a-fl d3" x="211" y="63" width="6.5" height="13"/>
+            <use href="#i-candlestick" x="289" y="74" width="13" height="26"/>
+            <use href="#i-flame" class="a-fl d5" x="292.25" y="63" width="6.5" height="13"/>
+            <path d="M236,72 H274 V100 H236 Z" class="o1"/>
+            <path d="M240,76 H270 V96 H240 Z" class="o3"/>
+            <path d="M244,96 C244,89.4 256,89.4 256,96 Z" class="fk"/>
+            <path d="M254,96 C254,89.4 266,89.4 266,96 Z" class="fk"/>
+            <circle cx="250" cy="85" r="3.6" class="fk"/>
+            <circle cx="260" cy="85" r="3.6" class="fk"/>
+
+            <path d="M0,204 H320" class="s1"/>
+            <path d="M56,204 L48,232 M136,204 L134,232 M214,204 L220,232 M292,204 L302,232 M0,230 H320" class="s4"/>
+            <ellipse cx="130" cy="207" rx="112" ry="11" class="hx" opacity="0.26"/>
+
+            <path d="M62,120 H180 V127 H62 Z" class="o1"/>
+            <path d="M70,127 V160 M84,127 V160 M98,127 V160 M112,127 V160 M126,127 V160 M140,127 V160 M154,127 V160 M168,127 V160" class="s2"/>
+            <path d="M64,170 L64,200 C64,202.6 66,204 68.6,204 L76,204 C78.6,204 80,202.6 80,200 L80,170 Z" class="o1"/>
+            <path d="M162,170 L162,200 C162,202.6 164,204 166.6,204 L174,204 C176.6,204 178,202.6 178,200 L178,170 Z" class="o1"/>
+            <path d="M74,190 H168 V194.4 H74 Z" class="o2"/>
+            <path d="M56,160 H186 V170 H56 Z" class="o1"/>
+            <path d="M56,165 H186" class="s4"/>
+
+            <path d="M4,168 H52 V174.4 H4 Z" class="o1"/>
+            <path d="M24,174.4 V196 M32,174.4 V196" class="s1"/>
+            <path d="M12,200 C12,195.6 44,195.6 44,200 C44,203 12,203 12,200 Z" class="o2"/>
+            <path d="M13,158 C13,150 37,150 37,158 C37,165 32,168.4 25,168.4 C18,168.4 13,165 13,158 Z" class="o1"/>
+            <path d="M14,161.6 C19,164 31,164 36,161.6" class="s3"/>
+            <path d="M16.4,151.4 C19,147.4 31,147.4 33.6,151.4 Z" class="o2"/>
+            <circle cx="25" cy="145.6" r="2" class="fk"/>
+            <path d="M37,155 C44,153.4 47.4,158 48.4,164.4" class="s1"/>
+            <path d="M13,154 C5,154 5,163 10.6,164.4" class="s1"/>
+            <path d="M48.4,160 C44.4,154 52.4,149 48.4,143" class="s3 a-steam"/>
+            <path d="M25,142 C21,136 29,131 25,125" class="s3 a-steam d2"/>
+
+            <use href="#a-lap" x="74" y="96" width="76" height="112"/>
+            <g transform="translate(156,168) scale(-1,1)">
+              <use href="#k-lap" x="-26" y="-72" width="76" height="112"/>
             </g>
-            <g transform="translate(185,175) scale(-1,1)">
-              <circle cx="0" cy="-40" r="12" fill="currentColor"/>
-              <path d="M-20,-26 C-26,-10 -22,4 -10,8 L10,8 C22,4 26,-10 20,-26 C10,-32 -10,-32 -20,-26 Z" fill="currentColor"/>
-            </g>
-            <use href="#s-kitten" x="128" y="150" width="44" height="44"/>
+            <use href="#i-cat" x="105" y="118" width="46" height="46"/>
           </svg>
-        </div>
+        </div></div>
         <figcaption>
           <span class="plate-number">Plate VI</span>
           <p class="caption-line">The family, now three.</p>
@@ -437,7 +1057,7 @@
     </div>
 
     <footer class="closing">
-      <svg class="wax-seal" viewBox="0 0 80 80"><use href="#s-seal"/></svg>
+      <svg class="wax-seal" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-seal"/></svg>
       <p>Happy Anniversary, Archana &amp; K K &mdash; here's to every ordinary night that turned into something enchanted.</p>
     </footer>
   </div>
