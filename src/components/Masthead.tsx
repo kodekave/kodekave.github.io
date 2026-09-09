@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Plate from "./Plate";
 
 /**
@@ -15,6 +16,7 @@ export default function Masthead({
   lead,
   ghost,
   plate = false,
+  breadcrumb,
   children,
 }: {
   label: string;
@@ -24,6 +26,12 @@ export default function Masthead({
   ghost?: string;
   /** Show the engraved portrait. Only for pages actually about the person. */
   plate?: boolean;
+  /**
+   * Visible trail, for pages that also publish a BreadcrumbList. The last
+   * entry is the current page and renders as plain text, so pass it without
+   * an href.
+   */
+  breadcrumb?: { name: string; href?: string }[];
   children?: React.ReactNode;
 }) {
   return (
@@ -53,7 +61,32 @@ export default function Masthead({
       )}
 
       <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-24 md:px-10 md:pb-28">
-        <p className="settle settle-1 label text-paper-faint">{label}</p>
+        {breadcrumb && (
+          <nav
+            aria-label="Breadcrumb"
+            className="settle settle-1 label mb-8 text-paper-faint"
+          >
+            <ol className="flex flex-wrap items-center gap-2.5">
+              {breadcrumb.map((crumb, i) => (
+                <li key={crumb.name} className="flex items-center gap-2.5">
+                  {i > 0 && <span aria-hidden="true">/</span>}
+                  {crumb.href ? (
+                    <Link href={crumb.href} className="link-rule">
+                      {crumb.name}
+                    </Link>
+                  ) : (
+                    <span aria-current="page">{crumb.name}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        {/* On a page whose trail already ends in its own name, the label
+            would just say it twice. */}
+        {breadcrumb?.at(-1)?.name.toLowerCase() !== label.toLowerCase() && (
+          <p className="settle settle-1 label text-paper-faint">{label}</p>
+        )}
         <h1 className="settle settle-2 font-display mt-6 max-w-3xl text-[clamp(2rem,5.4vw,3.9rem)] leading-[1.05]">
           {title}
         </h1>
