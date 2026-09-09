@@ -18,78 +18,97 @@ const footerLinks = [
   { href: "/sponsor", label: "Sponsor" },
 ];
 
+const elsewhere = [
+  { href: profile.linkedin, label: "LinkedIn", me: true },
+  { href: "https://github.com/kodekave", label: "GitHub", me: true },
+  { href: `mailto:${profile.email}`, label: "Email", me: false },
+  { href: "/feed.xml", label: "RSS", me: false },
+];
+
+/**
+ * The newsletter closes every page, so it gets the last ink field on the
+ * site rather than being tucked into the small print below it.
+ */
 export default function Footer() {
   return (
-    <footer className="border-t border-line bg-paper">
-      <div
-        id="newsletter"
-        className="mx-auto max-w-5xl px-6 py-16 scroll-mt-24"
-      >
-        <Reveal>
-          <div className="grid gap-10 md:grid-cols-2 md:items-start">
-            <div>
-              <h2 className="font-display text-2xl text-ink">
-                Get the next issue.
-              </h2>
-              <p className="mt-2 max-w-sm text-ink-soft">
-                Notes on founder&rsquo;s-office operations, GTM strategy, and
-                building across borders — sent when there&rsquo;s something
-                worth saying, not on a schedule.
+    <footer className="on-ink grain overflow-hidden">
+      <div id="newsletter" className="scroll-mt-20">
+        <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+          {/* Cropped wordmark, bleeding off the bottom edge. */}
+          <span
+            aria-hidden="true"
+            className="ghost absolute -bottom-[0.24em] -left-2 text-[22vw] text-paper/[0.05] md:text-[15vw]"
+          >
+            Kodekave
+          </span>
+
+          <Reveal className="relative">
+            <div className="grid gap-x-12 gap-y-8 md:grid-cols-[1fr_auto] md:items-end">
+              <div>
+                <p className="label text-paper-faint">The newsletter</p>
+                <h2 className="font-display mt-4 text-3xl sm:text-4xl">
+                  Get the next issue.
+                </h2>
+                <p className="mt-4 max-w-md text-paper-soft">
+                  Notes on founder&rsquo;s-office operations, GTM strategy, and
+                  building across borders — sent when there&rsquo;s something
+                  worth saying, not on a schedule.
+                </p>
+              </div>
+              <NewsletterForm onInk />
+            </div>
+          </Reveal>
+        </div>
+
+        <div className="relative border-t border-hair-inv">
+          <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between md:px-10">
+            <div className="flex flex-col gap-3">
+              <Link href="/" className="wordmark text-sm leading-none" style={{ fontVariationSettings: '"opsz" 24' }}>
+                Komal Kedarnath
+              </Link>
+              <p className="label text-paper-faint">
+                © {new Date().getFullYear()} {profile.name}
               </p>
             </div>
-            <div>
-              <NewsletterForm />
+
+            <div className="grid gap-8 sm:grid-cols-2">
+              <nav aria-label="Footer" className="flex flex-col gap-2.5">
+                {footerLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="label link-rule self-start text-paper-soft hover:text-paper"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <nav aria-label="Elsewhere" className="flex flex-col gap-2.5">
+                {elsewhere.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    {...(link.href.startsWith("http")
+                      ? {
+                          target: "_blank",
+                          /*
+                            rel="me" marks these as profiles belonging to the
+                            same person as the site, which is the HTML-level
+                            counterpart to schema sameAs.
+                          */
+                          rel: link.me
+                            ? "me noopener noreferrer"
+                            : "noopener noreferrer",
+                        }
+                      : {})}
+                    className="label link-rule self-start text-paper-soft hover:text-paper"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
             </div>
           </div>
-        </Reveal>
-
-        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-sm text-ink-faint sm:flex-row sm:items-center">
-          <p>
-            © {new Date().getFullYear()} {profile.name}
-          </p>
-          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
-            {footerLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-accent-deep"
-              >
-                {link.label}
-              </Link>
-            ))}
-            {/*
-              rel="me" marks these as profiles belonging to the same person as
-              the site, which is the HTML-level counterpart to schema sameAs.
-            */}
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="me noopener noreferrer"
-              className="transition-colors hover:text-accent-deep"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="https://github.com/kodekave"
-              target="_blank"
-              rel="me noopener noreferrer"
-              className="transition-colors hover:text-accent-deep"
-            >
-              GitHub
-            </a>
-            <a
-              href={`mailto:${profile.email}`}
-              className="transition-colors hover:text-accent-deep"
-            >
-              Email
-            </a>
-            <a
-              href="/feed.xml"
-              className="transition-colors hover:text-accent-deep"
-            >
-              RSS
-            </a>
-          </nav>
         </div>
       </div>
     </footer>
