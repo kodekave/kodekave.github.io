@@ -20,7 +20,13 @@
 
   /* Ink on paper. */
   --color-ink-soft: color-mix(in srgb, #000 68%, #fcfcfa);
-  --color-ink-faint: color-mix(in srgb, #000 46%, #fcfcfa);
+  /*
+   * 58% and not lighter, because this carries the 11px mono labels. At 46%
+   * it measured 3.45:1 on paper and 3.08:1 on the mist band — below the 4.5:1
+   * that text this size needs. The hierarchy against `ink-soft` is carried by
+   * size and letter-spacing rather than by tone.
+   */
+  --color-ink-faint: color-mix(in srgb, #000 58%, #fcfcfa);
   --color-hair: color-mix(in srgb, #000 15%, #fcfcfa);
   /* A light band for the third surface — used sparingly, where a section
      needs to separate from paper without going all the way to black. */

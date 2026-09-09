@@ -51,11 +51,15 @@ export default function Masthead({
             alt="Engraved portrait"
             priority
             sizes="(max-width: 640px) 80vw, 38vw"
-            className="plate-fade settle-plate absolute -top-10 -right-[4%] h-[118%] w-[78%] max-w-none object-cover object-[46%_18%] sm:w-[46%] lg:w-[36%]"
+            className="plate-fade settle-plate absolute opacity-40 sm:opacity-100 -top-10 -right-[4%] h-[118%] w-[78%] max-w-none object-cover object-[46%_18%] sm:w-[46%] lg:w-[36%]"
           />
           <span
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-ink from-25% via-ink/60 to-transparent sm:via-ink/10 sm:to-45%"
+            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/30 sm:hidden"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 hidden bg-gradient-to-r from-ink from-25% via-ink/10 to-transparent to-50% sm:block"
           />
         </>
       )}

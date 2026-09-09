@@ -41,7 +41,7 @@ export default function HomePage() {
           alt={`${profile.name} — engraved portrait`}
           priority
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 54vw, 44vw"
-          className="plate-fade settle-plate absolute -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
+          className="plate-fade settle-plate absolute opacity-40 sm:opacity-100 -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
         />
 
         {/*
@@ -49,9 +49,20 @@ export default function HomePage() {
           name has to sit over it on narrow screens — this keeps the left side
           of the field dark without hiding the engraving on the right.
         */}
+        {/*
+          Two scrims, because the type sits in a different place at each
+          width. Narrow: the name is bottom-aligned over the middle of the
+          plate, so the field darkens upward from the bottom. Wide: the name
+          is beside the plate, so it darkens inward from the left and barely
+          touches the engraving.
+        */}
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-ink from-20% via-ink/60 to-transparent sm:via-ink/10 sm:to-40%"
+          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/25 sm:hidden"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-ink from-20% via-ink/10 to-transparent to-45% sm:block"
         />
 
         <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col justify-end px-6 pb-20 pt-28 md:px-10">
