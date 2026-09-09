@@ -37,17 +37,6 @@
   --font-mono-stack: var(--font-plex-mono), ui-monospace, SFMono-Regular,
     Menlo, monospace;
 
-  /*
-   * Legacy palette names, kept so every page still builds and reads as
-   * monochrome while the templates migrate one at a time. Removed in the
-   * final commit of this redesign once nothing references them.
-   */
-  --color-cream: var(--color-paper);
-  --color-line: var(--color-hair);
-  --color-khaki: var(--color-paper-faint);
-  --color-accent: var(--color-ink-soft);
-  --color-accent-soft: var(--color-mist);
-  --color-accent-deep: var(--color-ink);
 }
 
 @theme inline {
@@ -61,12 +50,6 @@
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
 
-  --color-cream: var(--color-cream);
-  --color-line: var(--color-line);
-  --color-khaki: var(--color-khaki);
-  --color-accent: var(--color-accent);
-  --color-accent-soft: var(--color-accent-soft);
-  --color-accent-deep: var(--color-accent-deep);
 
   --font-display: var(--font-display);
   --font-read: var(--font-read);
