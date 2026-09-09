@@ -263,6 +263,17 @@ body {
 }
 
 /*
+ * Fade the plate's inboard edge. `object-cover` crops a bleeding plate, and
+ * the crop can cut away the vignette that was doing the dissolving — which
+ * leaves the engraving ending on a straight vertical line. This guarantees
+ * the fade regardless of how the plate is cropped.
+ */
+.plate-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 30%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 30%);
+}
+
+/*
  * Oversized watermark wordmarks. Set from currentColor at a low mix so they
  * belong to whichever field they sit on, and cropped by the section rather
  * than fitted inside it — the bleed is the point.
@@ -328,6 +339,24 @@ body {
   .link-rule:hover,
   .link-rule:focus-visible {
     background-size: 100% 1px;
+  }
+}
+
+/* Inline reference links in body copy — the corroborating links this site
+   leans on, so they stay visibly links rather than tinted text. */
+.ref {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.ref:hover {
+  opacity: 0.62;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ref {
+    transition: none;
   }
 }
 

@@ -41,7 +41,7 @@ export default function HomePage() {
           alt={`${profile.name} — engraved portrait`}
           priority
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 54vw, 44vw"
-          className="settle-plate absolute -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
+          className="plate-fade settle-plate absolute -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
         />
 
         {/*
@@ -51,7 +51,7 @@ export default function HomePage() {
         */}
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-ink from-25% via-ink/70 to-transparent sm:via-ink/25 sm:to-45%"
+          className="absolute inset-0 bg-gradient-to-r from-ink from-20% via-ink/60 to-transparent sm:via-ink/10 sm:to-40%"
         />
 
         <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col justify-end px-6 pb-20 pt-28 md:px-10">
