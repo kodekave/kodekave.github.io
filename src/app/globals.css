@@ -179,7 +179,13 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
+  /*
+   * Above the content rather than beneath it: a press texture sits on top of
+   * the ink, and at this opacity it costs type nothing. Putting it below
+   * instead would mean giving every child a stacking position, and
+   * `.grain > *` would then out-specify Tailwind's own `absolute`.
+   */
+  z-index: 5;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
   background-size: 160px 160px;
@@ -189,10 +195,50 @@ body {
 .on-ink.grain {
   --grain-strength: 0.2;
 }
-/* Grain sits at z-index 0, so section content needs to clear it. */
-.grain > * {
-  position: relative;
-  z-index: 1;
+
+/* ------------------------------------------------------- the opening beat */
+
+/*
+ * The site's only motion that nobody asked for: the first act settles once,
+ * on load, as a single sequence. Everything further down uses the scroll
+ * Reveal instead, so there is one orchestrated moment rather than a page of
+ * things sliding in. Both sit behind the reduced-motion query — with it set,
+ * the act is simply already in place.
+ */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes plate-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .settle {
+    animation: settle 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .settle-1 {
+    animation-delay: 0.04s;
+  }
+  .settle-2 {
+    animation-delay: 0.16s;
+  }
+  .settle-3 {
+    animation-delay: 0.3s;
+  }
+  .settle-plate {
+    animation: plate-in 1.5s ease-out 0.08s backwards;
+  }
 }
 
 /* ----------------------------------------------------------------- plates */
@@ -426,35 +472,3 @@ body {
   color: var(--color-paper-faint);
 }
 
-/*
- * Below belongs to FieldMesh and Portrait — the previous decorative system,
- * which the engraved plate replaces. Kept only so this commit builds; both
- * components and these rules go together in the homepage commit.
- */
-.bg-grid-lines {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--color-paper) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 7%, transparent) 1px, transparent 1px);
-  background-size: 44px 44px;
-}
-@keyframes slow-zoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.06); }
-}
-.animate-slow-zoom { animation: slow-zoom 24s ease-in-out infinite alternate; }
-.fm-fade-x {
-  -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 4%) 0%, rgb(0 0 0 / 22%) 32%, rgb(0 0 0 / 80%) 58%, rgb(0 0 0 / 95%) 100%);
-  mask-image: linear-gradient(to right, rgb(0 0 0 / 4%) 0%, rgb(0 0 0 / 22%) 32%, rgb(0 0 0 / 80%) 58%, rgb(0 0 0 / 95%) 100%);
-}
-.fm-fade-y {
-  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 8%) 0%, rgb(0 0 0 / 20%) 34%, rgb(0 0 0 / 55%) 72%, rgb(0 0 0 / 85%) 100%);
-  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 8%) 0%, rgb(0 0 0 / 20%) 34%, rgb(0 0 0 / 55%) 72%, rgb(0 0 0 / 85%) 100%);
-}
-@keyframes stream-drift {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -240; }
-}
-.fm-stream { stroke-dasharray: 3 13; animation: stream-drift 18s linear infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .animate-slow-zoom, .fm-stream { animation: none; }
-}
