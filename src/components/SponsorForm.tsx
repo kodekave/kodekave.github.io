@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { profile } from "@/lib/content";
 
-export default function SponsorForm() {
+export default function SponsorForm({ onInk = false }: { onInk?: boolean }) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -30,11 +30,28 @@ export default function SponsorForm() {
     setSubmitted(true);
   }
 
+  // Fields are ruled on one edge rather than boxed, so the form reads as
+  // lines on a page instead of a stack of inputs.
+  const field = `w-full border-b bg-transparent px-0 py-3 outline-none focus:border-current ${
+    onInk
+      ? "border-hair-inv text-paper placeholder:text-paper-faint"
+      : "border-hair text-ink placeholder:text-ink-faint"
+  }`;
+  const labelCls = `label block ${onInk ? "text-paper-faint" : "text-ink-faint"}`;
+
   if (submitted) {
     return (
-      <div className="rounded-xl border border-line bg-cream p-8 text-center">
-        <p className="font-display text-xl text-ink">Thanks — got it.</p>
-        <p className="mt-2 text-ink-soft">
+      <div
+        className={`border p-8 ${
+          onInk ? "border-hair-inv" : "border-hair"
+        }`}
+      >
+        <p className="font-display text-2xl">Thanks — got it.</p>
+        <p
+          className={`mt-3 leading-relaxed ${
+            onInk ? "text-paper-soft" : "text-ink-soft"
+          }`}
+        >
           This opens your email client with your details filled in — send it
           across and I&rsquo;ll get back to you at {form.email} shortly.
         </p>
@@ -43,10 +60,10 @@ export default function SponsorForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+      <div className="grid gap-8 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="text-sm text-ink-soft">
+          <label htmlFor="name" className={labelCls}>
             Name
           </label>
           <input
@@ -54,11 +71,11 @@ export default function SponsorForm() {
             required
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
+            className={field}
           />
         </div>
         <div>
-          <label htmlFor="email" className="text-sm text-ink-soft">
+          <label htmlFor="email" className={labelCls}>
             Email
           </label>
           <input
@@ -67,23 +84,23 @@ export default function SponsorForm() {
             required
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
+            className={field}
           />
         </div>
       </div>
       <div>
-        <label htmlFor="company" className="text-sm text-ink-soft">
+        <label htmlFor="company" className={labelCls}>
           Company (optional)
         </label>
         <input
           id="company"
           value={form.company}
           onChange={(e) => setForm({ ...form, company: e.target.value })}
-          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
+          className={field}
         />
       </div>
       <div>
-        <label htmlFor="message" className="text-sm text-ink-soft">
+        <label htmlFor="message" className={labelCls}>
           What did you have in mind?
         </label>
         <textarea
@@ -91,12 +108,12 @@ export default function SponsorForm() {
           rows={4}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="mt-1 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm transition-colors focus:border-accent focus:outline-none"
+          className={`${field} resize-y`}
         />
       </div>
       <button
         type="submit"
-        className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-cream transition hover:-translate-y-0.5 hover:bg-accent-deep hover:shadow-sm"
+        className={`btn self-start ${onInk ? "btn-paper" : "btn-ink"}`}
       >
         Send inquiry
       </button>
