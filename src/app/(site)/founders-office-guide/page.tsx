@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Masthead from "@/components/Masthead";
 import Reveal from "@/components/Reveal";
 import FaqSection from "@/components/FaqSection";
 import { absoluteUrl } from "@/lib/site";
@@ -73,43 +74,34 @@ export default function FoundersOfficeGuidePage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      <Reveal>
-        <nav aria-label="Breadcrumb" className="text-sm text-ink-faint">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="hover:text-accent-deep">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>Guide</li>
-          </ol>
-        </nav>
-
-        <h1 className="mt-6 font-display text-4xl leading-tight text-ink sm:text-5xl">
-          What is a founder&rsquo;s office?
-        </h1>
-
-        {/* Definition first, in one extractable paragraph. */}
-        <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-          A founder&rsquo;s office is the function that turns a
+      <Masthead
+        label="Guide"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "Guide" }]}
+        title={
+          <>What is a founder&rsquo;s office?</>
+        }
+        lead={
+          <>
+            A founder&rsquo;s office is the function that turns a
           founder&rsquo;s priorities into executed work. It sits next to the
           founder rather than inside the org chart, and it owns outcomes end
           to end — go-to-market launches, operations, financial operations,
           fundraising support — instead of advising on them. In an early-stage
           company it is usually one person; later it becomes a small team.
-        </p>
-        <p className="mt-4 leading-relaxed text-ink-soft">
+          </>
+        }
+      >
+        <p className="settle settle-3 mt-6 max-w-xl leading-relaxed text-paper-faint">
           This guide is written from six years doing the job across{" "}
           <Link
             href="/work"
-            className="font-medium text-accent-deep underline underline-offset-2"
+            className="ref"
           >
             four ventures in four countries
           </Link>{" "}
@@ -117,9 +109,12 @@ export default function FoundersOfficeGuidePage() {
           accessibility tech — under three different job titles for what was
           substantially the same function.
         </p>
-      </Reveal>
+      </Masthead>
 
-      <div className="prose-post mt-12">
+      <section className="on-paper grain">
+        <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
+
+      <div className="prose-post">
         <Reveal delay={60}>
           <h2>The three things that define the role</h2>
           <p>
@@ -209,33 +204,37 @@ export default function FoundersOfficeGuidePage() {
           </p>
         </Reveal>
       </div>
+        </div>
+      </section>
 
       <FaqSection faqs={faqs} id="founders-office-faq" />
 
-      <Reveal delay={90}>
-        <section className="mt-16 rounded-xl border border-line bg-cream p-8">
-          <h2 className="font-display text-xl text-ink">
-            Building this function into your company?
-          </h2>
-          <p className="mt-3 leading-relaxed text-ink-soft">
-            I do this work for early-stage founders —{" "}
-            <Link
-              href="/services"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              here is what an engagement covers
-            </Link>
-            . Or read{" "}
-            <Link
-              href="/blog/what-a-founders-office-actually-is"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              the shorter essay version
-            </Link>{" "}
-            of this argument.
-          </p>
-        </section>
-      </Reveal>
+      <section className="on-paper grain border-t border-hair">
+        <div className="mx-auto max-w-2xl px-6 py-16">
+          <Reveal>
+            <h2 className="font-display text-2xl sm:text-3xl">
+              Building this function into your company?
+            </h2>
+            <p className="mt-5 leading-[1.75] text-ink-soft">
+              I do this work for early-stage founders —{" "}
+              <Link
+                href="/services"
+                className="ref"
+              >
+                here is what an engagement covers
+              </Link>
+              . Or read{" "}
+              <Link
+                href="/blog/what-a-founders-office-actually-is"
+                className="ref"
+              >
+                the shorter essay version
+              </Link>{" "}
+              of this argument.
+            </p>
+          </Reveal>
+        </div>
+      </section>
     </div>
   );
 }

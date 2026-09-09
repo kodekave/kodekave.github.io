@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Masthead from "@/components/Masthead";
 import Reveal from "@/components/Reveal";
 import FaqSection from "@/components/FaqSection";
 import { absoluteUrl } from "@/lib/site";
@@ -71,46 +72,40 @@ export default function CrossBorderOperationsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      <Reveal>
-        <nav aria-label="Breadcrumb" className="text-sm text-ink-faint">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="hover:text-accent-deep">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>Guide</li>
-          </ol>
-        </nav>
-
-        <h1 className="mt-6 font-display text-4xl leading-tight text-ink sm:text-5xl">
-          Cross-border startup operations
-        </h1>
-
-        <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-          Running operations across countries fails for regulatory and
+      <Masthead
+        label="Guide"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "Guide" }]}
+        title={
+          <>Cross-border startup operations</>
+        }
+        lead={
+          <>
+            Running operations across countries fails for regulatory and
           reconciliation reasons far more often than strategic ones. Compliance
           has to be sequenced before growth, money needs one source of truth in
           one currency, and distributed teams need written follow-through more
           than they need answers. Everything below comes from doing this across{" "}
           <Link
             href="/work"
-            className="font-medium text-accent-deep underline underline-offset-2"
+            className="ref"
           >
             India, the Maldives, the United States and the United Kingdom
           </Link>
           .
-        </p>
-      </Reveal>
+          </>
+        }
+      />
 
-      <div className="prose-post mt-12">
+      <section className="on-paper grain">
+        <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
+
+      <div className="prose-post">
         <Reveal delay={60}>
           <h2>1. Compliance first, growth second</h2>
           <p>
@@ -185,33 +180,37 @@ export default function CrossBorderOperationsPage() {
           </p>
         </Reveal>
       </div>
+        </div>
+      </section>
 
       <FaqSection faqs={faqs} id="cross-border-faq" />
 
-      <Reveal delay={90}>
-        <section className="mt-16 rounded-xl border border-line bg-cream p-8">
-          <h2 className="font-display text-xl text-ink">
-            Expanding into a new market?
-          </h2>
-          <p className="mt-3 leading-relaxed text-ink-soft">
-            Cross-border market entry is one of the{" "}
-            <Link
-              href="/services"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              engagements I take on
-            </Link>
-            . The longer narrative version of this is in{" "}
-            <Link
-              href="/blog/running-ops-across-four-countries"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              running ops across four countries with no playbook
-            </Link>
-            .
-          </p>
-        </section>
-      </Reveal>
+      <section className="on-paper grain border-t border-hair">
+        <div className="mx-auto max-w-2xl px-6 py-16">
+          <Reveal>
+            <h2 className="font-display text-2xl sm:text-3xl">
+              Expanding into a new market?
+            </h2>
+            <p className="mt-5 leading-[1.75] text-ink-soft">
+              Cross-border market entry is one of the{" "}
+              <Link
+                href="/services"
+                className="ref"
+              >
+                engagements I take on
+              </Link>
+              . The longer narrative version of this is in{" "}
+              <Link
+                href="/blog/running-ops-across-four-countries"
+                className="ref"
+              >
+                running ops across four countries with no playbook
+              </Link>
+              .
+            </p>
+          </Reveal>
+        </div>
+      </section>
     </div>
   );
 }

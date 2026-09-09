@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Masthead from "@/components/Masthead";
 import Reveal from "@/components/Reveal";
 import FaqSection from "@/components/FaqSection";
 import { absoluteUrl } from "@/lib/site";
@@ -109,71 +110,77 @@ export default function ComparisonPage() {
   );
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      <Reveal>
-        <nav aria-label="Breadcrumb" className="text-sm text-ink-faint">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="hover:text-accent-deep">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>Comparison</li>
-          </ol>
-        </nav>
-
-        <h1 className="mt-6 font-display text-4xl leading-tight text-ink sm:text-5xl">
-          Fractional COO vs founder&rsquo;s office vs chief of staff
-        </h1>
-
-        <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-          These three titles get used interchangeably and should not be. A
+      <Masthead
+        label="Comparison"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "Comparison" }]}
+        title={
+          <>Fractional COO vs founder&rsquo;s office vs chief of staff</>
+        }
+        lead={
+          <>
+            These three titles get used interchangeably and should not be. A
           chief of staff coordinates, a fractional COO runs an established
           function part-time with a playbook they bring, and a
           founder&rsquo;s office executes whatever is next and writes the
           playbook as it goes. Hiring the wrong one wastes two quarters,
           because the mismatch is about accountability rather than capability.
-        </p>
-      </Reveal>
+          </>
+        }
+      />
+
+      <section className="on-paper grain">
+        <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
 
       <Reveal delay={70}>
-        <div className="mt-12 overflow-x-auto border border-line bg-paper">
-          <table className="w-full min-w-[640px] border-collapse text-sm">
-            <caption className="sr-only">
+        {/*
+          Hairline rules only, no outer box, and the founder's-office column
+          set in full-strength ink so the page's own subject reads as the
+          emphasised one. Scrolls in its own container so the page body never
+          scrolls sideways.
+        */}
+        <div className="-mx-6 mb-14 overflow-x-auto px-6">
+          <table className="w-full min-w-[680px] border-collapse">
+            <caption className="label mb-6 text-left text-ink-faint">
               Comparison of chief of staff, founder&rsquo;s office operator and
               fractional COO across six dimensions
             </caption>
             <thead>
-              <tr className="border-b border-ink/20">
-                <th scope="col" className="p-4 text-left font-mono text-xs uppercase tracking-wider text-ink-faint">
+              <tr>
+                <th scope="col" className="label border-b border-ink py-4 pr-6 text-left align-bottom text-ink-faint">
                   Dimension
                 </th>
-                <th scope="col" className="p-4 text-left font-display text-base text-ink">
+                <th scope="col" className="font-display-text border-b border-ink py-4 pr-6 text-left align-bottom text-lg">
                   Chief of staff
                 </th>
-                <th scope="col" className="p-4 text-left font-display text-base text-ink">
+                <th scope="col" className="font-display-text border-b border-ink py-4 pr-6 text-left align-bottom text-lg">
                   Founder&rsquo;s office
                 </th>
-                <th scope="col" className="p-4 text-left font-display text-base text-ink">
+                <th scope="col" className="font-display-text border-b border-ink py-4 text-left align-bottom text-lg">
                   Fractional COO
                 </th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.dimension} className="border-b border-line last:border-0">
-                  <th scope="row" className="p-4 text-left align-top font-mono text-xs uppercase tracking-wider text-ink-faint">
+                <tr key={r.dimension}>
+                  <th scope="row" className="label border-b border-hair py-5 pr-6 text-left align-top text-ink-faint">
                     {r.dimension}
                   </th>
-                  <td className="p-4 align-top leading-relaxed text-ink-soft">{r.cos}</td>
-                  <td className="p-4 align-top leading-relaxed text-ink">{r.fo}</td>
-                  <td className="p-4 align-top leading-relaxed text-ink-soft">{r.coo}</td>
+                  <td className="border-b border-hair py-5 pr-6 align-top leading-relaxed text-ink-soft">
+                    {r.cos}
+                  </td>
+                  <td className="border-b border-hair py-5 pr-6 align-top leading-relaxed text-ink">
+                    {r.fo}
+                  </td>
+                  <td className="border-b border-hair py-5 align-top leading-relaxed text-ink-soft">
+                    {r.coo}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -238,33 +245,37 @@ export default function ComparisonPage() {
           </p>
         </Reveal>
       </div>
+        </div>
+      </section>
 
       <FaqSection faqs={faqs} id="comparison-faq" />
 
-      <Reveal delay={90}>
-        <section className="mt-16 rounded-xl border border-line bg-cream p-8">
-          <h2 className="font-display text-xl text-ink">
-            Think it&rsquo;s the founder&rsquo;s office you need?
-          </h2>
-          <p className="mt-3 leading-relaxed text-ink-soft">
-            Start with{" "}
-            <Link
-              href="/founders-office-guide"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              what the function actually is
-            </Link>
-            , then{" "}
-            <Link
-              href="/services"
-              className="font-medium text-accent-deep underline underline-offset-2"
-            >
-              how I work with founders
-            </Link>
-            .
-          </p>
-        </section>
-      </Reveal>
+      <section className="on-paper grain border-t border-hair">
+        <div className="mx-auto max-w-2xl px-6 py-16">
+          <Reveal>
+            <h2 className="font-display text-2xl sm:text-3xl">
+              Think it&rsquo;s the founder&rsquo;s office you need?
+            </h2>
+            <p className="mt-5 leading-[1.75] text-ink-soft">
+              Start with{" "}
+              <Link
+                href="/founders-office-guide"
+                className="ref"
+              >
+                what the function actually is
+              </Link>
+              , then{" "}
+              <Link
+                href="/services"
+                className="ref"
+              >
+                how I work with founders
+              </Link>
+              .
+            </p>
+          </Reveal>
+        </div>
+      </section>
     </div>
   );
 }

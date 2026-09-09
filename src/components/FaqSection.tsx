@@ -20,23 +20,24 @@ export default function FaqSection({
   if (faqs.length === 0) return null;
 
   return (
-    <Reveal delay={80}>
-      <section
-        aria-labelledby={id}
-        className="mt-16 border-t border-line pt-10"
-      >
-        <h2 id={id} className="font-display text-2xl text-ink">
-          {heading}
-        </h2>
-        <dl className="mt-6 space-y-6">
-          {faqs.map((faq) => (
-            <div key={faq.q}>
-              <dt className="font-display text-lg text-ink">{faq.q}</dt>
-              <dd className="mt-2 leading-relaxed text-ink-soft">{faq.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-    </Reveal>
+    <section aria-labelledby={id} className="grain border-t border-hair bg-mist">
+      <div className="mx-auto max-w-2xl px-6 py-16">
+        <Reveal>
+          <h2 id={id} className="label text-ink-faint">
+            {heading}
+          </h2>
+          <dl className="mt-10">
+            {faqs.map((faq) => (
+              <div key={faq.q} className="border-t border-hair py-7">
+                <dt className="font-display-text text-xl leading-snug">
+                  {faq.q}
+                </dt>
+                <dd className="mt-3 leading-[1.75] text-ink-soft">{faq.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+      </div>
+    </section>
   );
 }
