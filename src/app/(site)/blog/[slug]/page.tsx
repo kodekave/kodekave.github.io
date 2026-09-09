@@ -88,149 +88,162 @@ export default async function BlogPostPage({
   );
 
   return (
-    <article className="mx-auto max-w-2xl px-6 py-16">
+    <article>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      <Reveal direction="none">
-        {/* Visible breadcrumb, matching the BreadcrumbList above. */}
-        <nav aria-label="Breadcrumb" className="text-sm text-ink-faint">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="hover:text-accent-deep">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/blog" className="hover:text-accent-deep">
-                Writing
-              </Link>
-            </li>
-          </ol>
-        </nav>
+      {/* The post opens on ink, like every other page on the site. */}
+      <header className="on-ink grain relative overflow-hidden">
+        <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-20">
+          {/* Visible breadcrumb, matching the BreadcrumbList above. */}
+          <nav
+            aria-label="Breadcrumb"
+            className="settle settle-1 label text-paper-faint"
+          >
+            <ol className="flex flex-wrap items-center gap-2.5">
+              <li>
+                <Link href="/" className="link-rule">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link href="/blog" className="link-rule">
+                  Writing
+                </Link>
+              </li>
+            </ol>
+          </nav>
 
-        <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-sm text-ink-faint">
-          <time dateTime={post.published_at}>
-            {new Date(post.published_at ?? post.created_at).toLocaleDateString(
-              "en-US",
-              { month: "long", day: "numeric", year: "numeric" }
-            )}
-          </time>
-          <span aria-hidden="true">·</span>
-          <span>{post.reading_minutes} min read</span>
-          <span aria-hidden="true">·</span>
-          {/* Named author on the page, not just in schema — a basic E-E-A-T signal. */}
-          <Link href="/about" className="hover:text-accent-deep">
-            {profile.name}
-          </Link>
+          <h1 className="settle settle-2 font-display mt-8 text-[clamp(1.9rem,4.8vw,3.3rem)] leading-[1.07]">
+            {post.title}
+          </h1>
+
+          <div className="settle settle-3 label mt-9 flex flex-wrap items-center gap-x-4 gap-y-2 text-paper-faint">
+            <time dateTime={post.published_at}>
+              {new Date(post.published_at ?? post.created_at).toLocaleDateString(
+                "en-US",
+                { month: "long", day: "numeric", year: "numeric" }
+              )}
+            </time>
+            <span aria-hidden="true" className="h-3 w-px bg-hair-inv" />
+            <span>{post.reading_minutes} min read</span>
+            <span aria-hidden="true" className="h-3 w-px bg-hair-inv" />
+            {/* Named author on the page, not just in schema — a basic E-E-A-T signal. */}
+            <Link href="/about" className="link-rule">
+              {profile.name}
+            </Link>
+          </div>
         </div>
+      </header>
 
-        <h1 className="mt-3 font-display text-3xl leading-tight text-ink sm:text-4xl">
-          {post.title}
-        </h1>
+      <div className="on-paper grain">
+        <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
+          {post.cover_image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.cover_image}
+              alt={post.title}
+              width={1200}
+              height={630}
+              loading="lazy"
+              decoding="async"
+              className="mb-14 w-full object-cover"
+            />
+          )}
 
-        {post.cover_image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={post.cover_image}
-            alt={post.title}
-            width={1200}
-            height={630}
-            className="mt-8 w-full rounded-2xl object-cover"
+          <div
+            className="prose-post"
+            dangerouslySetInnerHTML={{ __html: html }}
           />
-        )}
-
-        <div
-          className="prose-post mt-10"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </Reveal>
+        </div>
+      </div>
 
       {post.faqs.length > 0 && (
-        <Reveal delay={80}>
-          <section
-            aria-labelledby="faq-heading"
-            className="mt-16 border-t border-line pt-10"
-          >
-            <h2
-              id="faq-heading"
-              className="font-display text-2xl text-ink"
-            >
-              Common questions
-            </h2>
-            <dl className="mt-6 space-y-6">
-              {post.faqs.map((faq) => (
-                <div key={faq.q}>
-                  <dt className="font-display text-lg text-ink">{faq.q}</dt>
-                  <dd className="mt-2 leading-relaxed text-ink-soft">
-                    {faq.a}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        </Reveal>
+        <section
+          aria-labelledby="faq-heading"
+          className="grain border-t border-hair bg-mist"
+        >
+          <div className="mx-auto max-w-2xl px-6 py-16">
+            <Reveal>
+              <h2 id="faq-heading" className="label text-ink-faint">
+                Common questions
+              </h2>
+              <dl className="mt-10">
+                {post.faqs.map((faq) => (
+                  <div key={faq.q} className="border-t border-hair py-7">
+                    <dt className="font-display-text text-xl leading-snug">
+                      {faq.q}
+                    </dt>
+                    <dd className="mt-3 leading-[1.75] text-ink-soft">
+                      {faq.a}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
+        </section>
       )}
 
       {related.length > 0 && (
-        <Reveal delay={90}>
-          <section className="mt-16 border-t border-line pt-10">
-            <h2 className="font-display text-xl text-ink">Keep reading</h2>
-            <ul className="mt-5 space-y-4">
-              {related.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/blog/${r.slug}`}
-                    className="group block rounded-lg border border-line bg-paper p-5 transition hover:border-accent"
-                  >
-                    <p className="font-display text-lg text-ink group-hover:text-accent-deep">
-                      {r.title}
-                    </p>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-                      {r.excerpt}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm text-ink-soft">
-              For the full picture of how this played out in practice, see{" "}
-              <Link
-                href="/work"
-                className="font-medium text-accent-deep underline underline-offset-2"
-              >
-                the four ventures I have run a founder&rsquo;s office for
-              </Link>
-              , or{" "}
-              <Link
-                href="/services"
-                className="font-medium text-accent-deep underline underline-offset-2"
-              >
-                how I work with founders
-              </Link>
-              .
-            </p>
-          </section>
-        </Reveal>
+        <section className="on-paper grain border-t border-hair">
+          <div className="mx-auto max-w-2xl px-6 py-16">
+            <Reveal>
+              <h2 className="label text-ink-faint">Keep reading</h2>
+              <ul className="mt-10">
+                {related.map((r) => (
+                  <li key={r.slug}>
+                    <Link
+                      href={`/blog/${r.slug}`}
+                      className="group block border-t border-hair py-7"
+                    >
+                      <h3 className="font-display-text text-xl leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                        {r.title}
+                      </h3>
+                      <p className="mt-3 leading-relaxed text-ink-soft">
+                        {r.excerpt}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-10 border-t border-hair pt-7 text-ink-soft">
+                For the full picture of how this played out in practice, see{" "}
+                <Link href="/work" className="ref">
+                  the four ventures I have run a founder&rsquo;s office for
+                </Link>
+                , or{" "}
+                <Link href="/services" className="ref">
+                  how I work with founders
+                </Link>
+                .
+              </p>
+            </Reveal>
+          </div>
+        </section>
       )}
 
-      <Reveal delay={100}>
-        <div className="mt-16 rounded-xl border border-line bg-paper p-8 transition hover:border-accent/60">
-          <h2 className="font-display text-xl text-ink">
-            Enjoyed this? Get the next one.
-          </h2>
-          <p className="mt-2 text-sm text-ink-soft">
-            Occasional notes on founder&rsquo;s-office work and cross-border
-            ops.
-          </p>
-          <div className="mt-5">
-            <NewsletterForm compact />
-          </div>
+      {/* The post's own subscribe prompt. The footer's newsletter still
+          closes the page below it. */}
+      <section className="grain border-t border-hair bg-mist">
+        <div className="mx-auto max-w-2xl px-6 py-16">
+          <Reveal>
+            <h2 className="font-display text-2xl sm:text-3xl">
+              Enjoyed this? Get the next one.
+            </h2>
+            <p className="mt-4 leading-relaxed text-ink-soft">
+              Occasional notes on founder&rsquo;s-office work and cross-border
+              ops.
+            </p>
+            <div className="mt-8">
+              <NewsletterForm compact />
+            </div>
+          </Reveal>
         </div>
-      </Reveal>
+      </section>
     </article>
   );
 }
