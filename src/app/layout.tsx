@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Newsreader, IBM_Plex_Mono } from "next/font/google";
+import { Instrument_Serif, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
@@ -11,18 +11,20 @@ import {
 } from "@/lib/seo";
 
 /**
- * Three faces, three jobs: a Didone for display, a text serif for reading,
+ * Three faces, three jobs: a serif for display, a text serif for reading,
  * and a monospace for every label, date and control.
  *
- * `opsz` has to be requested explicitly — next/font ships only the weight
- * axis by default — and it does the work a light weight would elsewhere:
- * Bodoni Moda starts at 400, so the fine Didone hairlines in the name
- * treatment come from driving optical size up, not from thinning the stroke.
+ * Display was Bodoni Moda driven to `opsz` 96 — its most extreme display
+ * cut, where the hairlines thin to roughly a pixel. Under the grain overlay,
+ * in light type on a black field, they disappeared and the titles stopped
+ * being readable. Instrument Serif keeps the editorial, high-contrast feel
+ * but carries its thins at a weight that survives all three.
  */
-const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  axes: ["opsz"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 const newsreader = Newsreader({
@@ -80,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bodoni.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${instrumentSerif.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*

@@ -89,10 +89,7 @@ export default function SponsorPage() {
                     {tier.name}
                   </dt>
                   <dd>
-                    <span
-                      className="font-display tabular mt-4 block text-3xl leading-none"
-                      style={{ fontVariationSettings: '"opsz" 34' }}
-                    >
+                    <span className="font-display tabular mt-4 block text-3xl leading-none">
                       {tier.price}
                     </span>
                     <span className="mt-5 block leading-relaxed text-ink-soft">
