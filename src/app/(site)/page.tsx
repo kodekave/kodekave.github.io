@@ -45,11 +45,6 @@ export default function HomePage() {
         />
 
         {/*
-          Legibility scrim. The plate is bright where the face is lit, and the
-          name has to sit over it on narrow screens — this keeps the left side
-          of the field dark without hiding the engraving on the right.
-        */}
-        {/*
           Two scrims, because the type sits in a different place at each
           width. Narrow: the name is bottom-aligned over the middle of the
           plate, so the field darkens upward from the bottom. Wide: the name
@@ -70,7 +65,7 @@ export default function HomePage() {
             {profile.role}
           </p>
 
-          <h1 className="settle settle-2 wordmark mt-7 text-[clamp(2.5rem,7.4vw,5.75rem)]">
+          <h1 className="settle settle-2 wordmark mt-7 text-[clamp(2.6rem,8.8vw,7rem)]">
             {firstName}
             <br />
             <span className="sm:whitespace-nowrap">
@@ -90,7 +85,6 @@ export default function HomePage() {
         >
           <span
             className="wordmark text-xl leading-none text-paper-soft"
-            style={{ fontVariationSettings: '"opsz" 32' }}
           >
             KK
           </span>
@@ -156,16 +150,7 @@ export default function HomePage() {
                 <div key={s.label} className="border-t border-hair-inv pt-5">
                   <dt className="sr-only">{s.label}</dt>
                   <dd>
-                    {/*
-                      A lower optical size than the headings use. At opsz 96
-                      the hairlines in "%" and "+" thin out to almost nothing
-                      at this size, and the figures are the one thing here
-                      that has to be unambiguous.
-                    */}
-                    <span
-                      className="font-display tabular block text-4xl leading-[1.06]"
-                      style={{ fontVariationSettings: '"opsz" 34' }}
-                    >
+                    <span className="font-display tabular block text-4xl leading-[1.06]">
                       {s.value}
                     </span>
                     <span

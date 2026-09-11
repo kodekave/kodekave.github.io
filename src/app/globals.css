@@ -3,42 +3,52 @@
 /*
  * The monochrome engraving system.
  *
- * Two fields only — true black and near-white paper — alternating down the
- * page. Everything between them is ink at a percentage rather than a picked
- * grey, which is how printing actually works and keeps the palette honest.
+ * Two fields — true black and off-white paper — alternating down the page,
+ * with the greys between them expressed as ink at a percentage rather than
+ * picked hex values, which is how printing works and keeps the neutrals from
+ * drifting.
  *
- * The black is #000 and not a tinted near-black on purpose: the portrait
- * plates composite with `mix-blend-mode: screen`, which treats pure black as
- * a no-op. Against #0B0B0C the plate's ground survives faintly and you can
- * see the rectangle it sits in. See scripts/engrave.py.
+ * There is no pure white anywhere. Paper stock never is, and on screen a
+ * near-white next to pure black halates: the light bleeds visually into the
+ * dark and fine strokes in the display type get eaten. So the light end is a
+ * ladder of off-whites, and the light type on the black fields is drawn from
+ * the same ladder rather than being turned up to #fff.
+ *
+ * The black stays #000, unlike the light end, because the portrait plates
+ * composite with `mix-blend-mode: screen`, which treats pure black as a
+ * no-op. Against a tinted near-black the plate's ground survives faintly and
+ * you can see the rectangle it sits in. See scripts/engrave.py.
  */
 :root {
   --color-ink: #000000;
-  /* Very slightly warm and off-white, so large paper fields read as stock
-     rather than as an unpainted screen. */
-  --color-paper: #fcfcfa;
+
+  /*
+   * The off-white ladder, faintly warm, each step a little further from the
+   * light. `paper` is the page, `mist` the secondary band, `chalk` the
+   * deepest of the three.
+   */
+  --color-paper: #efede8;
+  --color-mist: #e6e3dc;
+  --color-chalk: #dbd7cf;
 
   /* Ink on paper. */
-  --color-ink-soft: color-mix(in srgb, #000 68%, #fcfcfa);
+  --color-ink-soft: color-mix(in srgb, #000 68%, #efede8);
   /*
    * 58% and not lighter, because this carries the 11px mono labels. At 46%
    * it measured 3.45:1 on paper and 3.08:1 on the mist band — below the 4.5:1
    * that text this size needs. The hierarchy against `ink-soft` is carried by
    * size and letter-spacing rather than by tone.
    */
-  --color-ink-faint: color-mix(in srgb, #000 58%, #fcfcfa);
-  --color-hair: color-mix(in srgb, #000 15%, #fcfcfa);
-  /* A light band for the third surface — used sparingly, where a section
-     needs to separate from paper without going all the way to black. */
-  --color-mist: color-mix(in srgb, #000 5%, #fcfcfa);
+  --color-ink-faint: color-mix(in srgb, #000 58%, #efede8);
+  --color-hair: color-mix(in srgb, #000 17%, #efede8);
 
   /* Paper on ink. Kept as explicit mixes rather than alpha so text over the
      grain overlay stays exactly this value. */
-  --color-paper-soft: color-mix(in srgb, #fcfcfa 72%, #000);
-  --color-paper-faint: color-mix(in srgb, #fcfcfa 48%, #000);
-  --color-hair-inv: color-mix(in srgb, #fcfcfa 18%, #000);
+  --color-paper-soft: color-mix(in srgb, #efede8 74%, #000);
+  --color-paper-faint: color-mix(in srgb, #efede8 52%, #000);
+  --color-hair-inv: color-mix(in srgb, #efede8 20%, #000);
 
-  --font-display: var(--font-bodoni), "Didot", "Times New Roman", serif;
+  --font-display: var(--font-instrument), "Iowan Old Style", Georgia, serif;
   --font-read: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-mono-stack: var(--font-plex-mono), ui-monospace, SFMono-Regular,
     Menlo, monospace;
@@ -52,6 +62,7 @@
   --color-ink-faint: var(--color-ink-faint);
   --color-hair: var(--color-hair);
   --color-mist: var(--color-mist);
+  --color-chalk: var(--color-chalk);
   --color-paper-soft: var(--color-paper-soft);
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
@@ -93,32 +104,35 @@ body {
 /* ------------------------------------------------------------------ type */
 
 /*
- * Bodoni Moda's lightest weight is 400, so the delicate Didone hairlines
- * come from the optical-size axis rather than from a thin weight: opsz 96 is
- * the display cut, with the highest stroke contrast. Anything set below
- * ~28px uses a lower opsz so it doesn't lose its thins to the screen.
+ * One display cut, no optical-size axis to get wrong. The previous face was
+ * driven to its extreme display optical size, which is where a Didone's
+ * hairlines are thinnest — they then had to survive a grain overlay and
+ * light-on-black halation, and did not. This face carries a single, sturdier
+ * set of thins at every size it is used.
+ *
+ * Headings are set a touch tighter than the metrics default, because this
+ * face is generously spaced and large titles close up well.
  */
 .font-display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "opsz" 96;
-  letter-spacing: 0.004em;
+  letter-spacing: -0.008em;
 }
+/* The same face at text sizes, where the tightening is unhelpful. */
 .font-display-text {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "opsz" 16;
+  letter-spacing: 0;
 }
 
-/* The name treatment: uppercase Didone, tight leading, opened up slightly
-   because caps at this size need the air. */
+/* The name treatment: uppercase, tight leading, and opened up because caps
+   at this size need the air that lowercase does not. */
 .wordmark {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "opsz" 96;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  line-height: 0.86;
+  letter-spacing: 0.045em;
+  line-height: 0.92;
   text-wrap: balance;
 }
 
@@ -243,11 +257,18 @@ body {
  * content layer, never nested under an opacity or filter.
  */
 .plate {
+  /*
+   * The plate's own whites are pure #fff and the screen blend knows nothing
+   * about the palette, so they are the one place pure white would survive.
+   * Brought down to sit with the off-white type, and warmed a shade to match
+   * the ladder.
+   */
+  filter: brightness(0.93) sepia(0.06);
   mix-blend-mode: screen;
 }
 .on-paper .plate,
 .plate-dark {
-  filter: invert(1);
+  filter: invert(1) brightness(0.97);
   mix-blend-mode: multiply;
 }
 
@@ -270,7 +291,6 @@ body {
 .ghost {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "opsz" 96;
   text-transform: uppercase;
   line-height: 0.76;
   letter-spacing: 0.02em;
@@ -361,7 +381,6 @@ body {
 .prose-post h2,
 .prose-post h3 {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 40;
   color: var(--color-ink);
   font-weight: 400;
   margin-top: 2.2em;
@@ -427,7 +446,6 @@ body {
   padding: 0.2em 0 0.2em 1.4em;
   border-left: 1px solid var(--color-ink);
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 30;
   font-size: 1.35rem;
   line-height: 1.45;
   color: var(--color-ink);

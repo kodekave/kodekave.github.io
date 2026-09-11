@@ -28,7 +28,6 @@ export default function Nav() {
           href="/"
           onClick={() => setOpen(false)}
           className="wordmark text-base leading-none whitespace-nowrap"
-          style={{ fontVariationSettings: '"opsz" 28' }}
         >
           Komal Kedarnath
         </Link>
