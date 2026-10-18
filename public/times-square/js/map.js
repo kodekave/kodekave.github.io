@@ -220,6 +220,7 @@
   P.visible = function (s) {
     if (s.kind === 'gateway') return true;
     if (this.filter !== 'all' && s.kind !== this.filter) return false;
+    if (s.kind === 'everyday' && this.filter === 'all' && this.scale < 1.25) return false;
     return true;
   };
   P.dimmed = function (s) { return this.maxMins && s.kind !== 'gateway' && s.mins > this.maxMins; };
@@ -461,78 +462,95 @@
     ctx.restore();
   };
 
-  var KIND_R = { famous: 13, lesser: 11.5, local: 11.5, hidden: 11.5, gateway: 10 };
+  var KIND_R = { famous: 13, known: 11.5, hidden: 11.5, local: 11.5, gateway: 10 };
+  var KIND_W = { famous: 500, local: 300, hidden: 280, gateway: 260, known: 200, everyday: 50 };
 
   P.drawMarkers = function (ctx, now, X, Y, S, alpha) {
     var self = this, placed = [], list = [];
     var introAge = now - this.introT0;
     var fam = getComputedStyle(document.body).fontFamily;
+    var routeMode = !!this.route;
     geo.spots.forEach(function (s, idx) {
       if (!self.visible(s)) return;
       var sx = X(s.u), sy = Y(s.v);
       if (sx < -30 || sx > self.W + 30 || sy < -30 || sy > self.H + 30) return;
-      var pop = REDUCED ? 1 : clamp((introAge - 700 - idx * 35) / 320, 0, 1);
+      var pop = REDUCED ? 1 : clamp((introAge - 700 - (idx % 40) * 30) / 320, 0, 1);
       if (pop <= 0) return;
-      list.push({ s: s, x: sx, y: sy, pop: pop });
+      var sel = s.id === self.selected, hov = s.id === self.hover;
+      var dot = s.kind === 'everyday';
+      var base = dot ? 5.5 + clamp((S - 1.2) * 3.2, 0, 5) : (KIND_R[s.kind] || 12) + clamp((S - 0.6) * 2.4, 0, 5);
+      var r = base * (sel ? 1.3 : hov ? 1.12 : 1);
+      var prio = (sel ? 1e6 : 0) + (hov ? 5e5 : 0) + (KIND_W[s.kind] || 100) + (s.idx || 0) * 8;
+      list.push({ s: s, x: sx, y: sy, pop: pop, r: r, sel: sel, hov: hov, dot: dot, prio: prio });
     });
-    // draw lower priority first so important ones sit on top
-    list.sort(function (a, b) {
-      var sa = a.s.id === self.selected ? 99 : a.s.idx, sb = b.s.id === self.selected ? 99 : b.s.idx;
-      return sa - sb;
+    // Declutter: strongest first; anything that would sit on top of a stronger marker waits until you zoom in.
+    list.sort(function (a, b) { return b.prio - a.prio || a.s.name.localeCompare(b.s.name); });
+    var drawn = [];
+    list.forEach(function (m) {
+      if (!m.sel && !m.hov) {
+        for (var i = 0; i < drawn.length; i++) {
+          var o = drawn[i];
+          if (Math.hypot(o.x - m.x, o.y - m.y) < o.r + m.r + (m.dot ? 2 : 3)) return;
+        }
+      }
+      drawn.push(m);
     });
     this.markers = [];
-    list.forEach(function (m) {
-      var s = m.s, sel = s.id === self.selected, hov = s.id === self.hover, dim = self.dimmed(s) || (!!self.route && !sel && !hov);
-      var base = (KIND_R[s.kind] || 12) + clamp((S - 0.6) * 2.4, 0, 5);
-      var r = base * (sel ? 1.3 : hov ? 1.12 : 1) * (0.5 + 0.5 * ease(m.pop));
+    for (var di = drawn.length - 1; di >= 0; di--) {            // weakest first so the strongest sit on top
+      var m = drawn[di], s = m.s, sel = m.sel, r = m.r * (0.5 + 0.5 * ease(m.pop));
+      var dim = self.dimmed(s) || (routeMode && !sel && !m.hov);
       var col = TS.KINDS[s.kind].color;
       ctx.save();
-      ctx.globalAlpha = (dim ? (self.route ? 0.3 : 0.38) : 1) * ease(m.pop);
+      ctx.globalAlpha = (dim ? (routeMode ? 0.3 : 0.38) : 1) * ease(m.pop);
       if (sel && !REDUCED) {
         var pr = (now / 1100) % 1;
         ctx.beginPath(); ctx.arc(m.x, m.y, r + 4 + pr * 16, 0, 7); ctx.strokeStyle = 'rgba(' + INK_RGB + ',' + (0.55 * (1 - pr)) + ')'; ctx.lineWidth = 2; ctx.stroke();
       }
-      // shadow
-      ctx.beginPath(); ctx.ellipse(m.x + 1.5, m.y + r * 0.9, r * 0.85, r * 0.35, 0, 0, 7); ctx.fillStyle = 'rgba(' + INK_RGB + ',.28)'; ctx.fill();
-      // wax seal with a slightly wavy edge
-      ctx.beginPath();
-      for (var a = 0; a <= 24; a++) {
-        var th = a / 24 * Math.PI * 2, rr = r * (1 + 0.045 * Math.sin(th * 7 + s.idx));
-        var px = m.x + Math.cos(th) * rr, py = m.y + Math.sin(th) * rr;
-        if (a) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+      if (m.dot) {
+        ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, 7);
+        ctx.fillStyle = col; ctx.fill();
+        ctx.lineWidth = sel ? 2.6 : 1.6; ctx.strokeStyle = sel ? '#fbf3da' : INK; ctx.stroke();
+        if (r >= 9) {
+          ctx.font = Math.round(r * 1.05) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+          ctx.fillText(TS.ICONS[s.t] || '•', m.x, m.y + r * 0.06);
+        }
+      } else {
+        ctx.beginPath(); ctx.ellipse(m.x + 1.5, m.y + r * 0.9, r * 0.85, r * 0.35, 0, 0, 7); ctx.fillStyle = 'rgba(' + INK_RGB + ',.28)'; ctx.fill();
+        ctx.beginPath();
+        for (var a = 0; a <= 24; a++) {
+          var th = a / 24 * Math.PI * 2, rr = r * (1 + 0.045 * Math.sin(th * 7 + (s.idx || 0)));
+          var px = m.x + Math.cos(th) * rr, py = m.y + Math.sin(th) * rr;
+          if (a) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fillStyle = col; ctx.fill();
+        ctx.lineWidth = sel ? 3 : 2; ctx.strokeStyle = sel ? '#fbf3da' : INK; ctx.stroke();
+        if (sel) { ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(m.x, m.y, r + 2.2, 0, 7); ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(m.x, m.y, r * 0.72, 0, 7); ctx.strokeStyle = 'rgba(255,240,205,.35)'; ctx.lineWidth = 1.2; ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(m.x - r * 0.3, m.y - r * 0.38, r * 0.3, r * 0.17, -0.6, 0, 7); ctx.fillStyle = 'rgba(255,240,205,.28)'; ctx.fill();
+        ctx.font = Math.round(r * 1.0) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+        ctx.fillText(TS.ICONS[s.t] || '✨', m.x, m.y + r * 0.06);
       }
-      ctx.closePath();
-      ctx.fillStyle = col; ctx.fill();
-      ctx.lineWidth = sel ? 3 : 2; ctx.strokeStyle = sel ? '#fbf3da' : INK; ctx.stroke();
-      if (sel) { ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(m.x, m.y, r + 2.2, 0, 7); ctx.stroke(); }
-      // inner ring + highlight
-      ctx.beginPath(); ctx.arc(m.x, m.y, r * 0.72, 0, 7); ctx.strokeStyle = 'rgba(255,240,205,.35)'; ctx.lineWidth = 1.2; ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(m.x - r * 0.3, m.y - r * 0.38, r * 0.3, r * 0.17, -0.6, 0, 7); ctx.fillStyle = 'rgba(255,240,205,.28)'; ctx.fill();
-      // icon
-      ctx.font = Math.round(r * 1.0) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#fff';
-      ctx.fillText(TS.ICONS[s.t] || '✨', m.x, m.y + r * 0.06);
       ctx.restore();
-      self.markers.push({ id: s.id, x: m.x, y: m.y, r: r });
-    });
+      self.markers.push({ id: s.id, x: m.x, y: m.y, r: Math.max(r, 11) });
+    }
 
-    // labels, best-first, no overlaps
-    var cand = list.slice().sort(function (a, b) {
-      var sa = a.s.id === self.selected ? 99 : a.s.idx, sb = b.s.id === self.selected ? 99 : b.s.idx;
-      return sb - sa;
-    });
+    // labels, strongest first, never over another marker or label
     var fs = clamp(10.5 + S * 0.9, 11.5, 15);
     var font = 'italic 600 ' + fs + 'px ' + fam;
-    list.forEach(function (m) { placed.push({ x: m.x - 14, y: m.y - 14, w: 28, h: 28, own: m.s.id }); });
+    drawn.forEach(function (m) { placed.push({ x: m.x - m.r - 1, y: m.y - m.r - 1, w: m.r * 2 + 2, h: m.r * 2 + 2, own: m.s.id }); });
     ctx.save();
     ctx.textBaseline = 'middle';
-    cand.forEach(function (m) {
-      var s = m.s, sel = s.id === self.selected, hov = s.id === self.hover;
-      if (self.route && !sel) return;     // during a route only the destination is labelled
-      var tw = self.textWidth(font, s.short || s.name) + 8, th = fs + 6;
-      var r = 13;
-      var tries = [['r', m.x + r + 3, m.y - th / 2], ['l', m.x - r - 3 - tw, m.y - th / 2], ['b', m.x - tw / 2, m.y + r + 1], ['t', m.x - tw / 2, m.y - r - th - 1]];
+    drawn.forEach(function (m) {
+      var s = m.s, sel = m.sel;
+      if (routeMode && !sel) return;                 // during a route only the destination is labelled
+      if (m.dot && !sel && !m.hov && S < 2.0) return; // everyday dots are only named when you are zoomed right in
+      var label = s.short || s.name;
+      var tw = self.textWidth(font, label) + 8, th = fs + 6;
+      var r = m.r + 2;
+      var tries = [['r', m.x + r + 1, m.y - th / 2], ['l', m.x - r - 1 - tw, m.y - th / 2], ['b', m.x - tw / 2, m.y + r], ['t', m.x - tw / 2, m.y - r - th]];
       for (var i = 0; i < tries.length; i++) {
         var t = tries[i], rect = { x: t[1], y: t[2], w: tw, h: th };
         if (rect.x < 4 || rect.x + rect.w > self.W - 4 || rect.y < 4 || rect.y + rect.h > self.H - 4) continue;
@@ -541,8 +559,8 @@
         placed.push(rect);
         ctx.font = font; ctx.textAlign = 'left';
         ctx.globalAlpha = self.dimmed(s) ? 0.5 : 1;
-        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(244,232,200,.96)'; ctx.strokeText(s.short || s.name, rect.x + 4, rect.y + th / 2);
-        ctx.fillStyle = INK; ctx.fillText(s.short || s.name, rect.x + 4, rect.y + th / 2);
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(244,232,200,.96)'; ctx.strokeText(label, rect.x + 4, rect.y + th / 2);
+        ctx.fillStyle = INK; ctx.fillText(label, rect.x + 4, rect.y + th / 2);
         break;
       }
     });

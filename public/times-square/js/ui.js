@@ -81,7 +81,7 @@
   /* ------------------------------------------------------------ filters */
   function buildChips() {
     var nav = $('chips');
-    var items = [['all', 'All spots', '#3a2616'], ['famous', KINDS.famous.chip, KINDS.famous.color], ['lesser', KINDS.lesser.chip, KINDS.lesser.color], ['local', KINDS.local.chip, KINDS.local.color], ['hidden', KINDS.hidden.chip, KINDS.hidden.color]];
+    var items = [['all', 'All spots', '#3a2616']].concat(['famous', 'known', 'hidden', 'local', 'everyday'].map(function (k) { return [k, KINDS[k].chip, KINDS[k].color]; }));
     nav.innerHTML = items.map(function (it) {
       return '<button class="chip" type="button" data-k="' + it[0] + '" aria-pressed="' + (it[0] === st.filter) + '"><i style="--c:' + it[2] + '"></i>' + esc(it[1]) + '</button>';
     }).join('');
@@ -130,16 +130,18 @@
     openSheet(
       '<div class="kicker">' + kindBadge(s.kind) + '</div>' +
       '<h2>' + esc(s.name) + '</h2>' +
+      (s.addr ? '<p class="sub" style="margin:0 0 4px">' + esc(s.addr) + '</p>' : '') +
       meter(s.idx) +
       '<div class="facts">' + facts.map(function (f) { return '<span>' + f + '</span>'; }).join('') + '</div>' +
       '<h3>What it is</h3><p>' + esc(s.what) + '</p>' +
       '<h3>Famous for</h3><p>' + esc(s.famous) + '</p>' +
       '<h3>Local tip</h3><p>' + esc(s.tip) + '</p>' +
+      (s.unverified ? '<div class="warn">We could not fully confirm the details of this place. Check that it is open before you go.</div>' : '') +
       '<p class="fine" style="margin-top:12px">Opening hours and prices change. Check before you go.</p>' +
       '<div class="cta sticky"><button class="btn primary block" id="goBtn" type="button">Take me there →</button></div>'
     );
     $('goBtn').onclick = function () { st.dest = s; showAsk(); };
-    if (fly !== false) map.focus(s.u, s.v, Math.max(map.scale, 1.5));
+    if (fly !== false) map.focus(s.u, s.v, Math.max(map.scale, s.kind === 'everyday' ? 2.1 : 1.5));
   }
 
   /* ------------------------------------------------------------ ask view */
@@ -258,7 +260,7 @@
   function showNearby() {
     st.view = 'nearby';
     var o = st.origin;
-    var rows = TS.spots.filter(function (s) { return s.kind !== 'gateway'; }).map(function (s) {
+    var rows = TS.spots.filter(function (s) { return s.kind !== 'gateway' && s.kind !== 'everyday'; }).map(function (s) {
       var r = TS.route(o, { name: s.name, u: s.u, v: s.v });
       return { s: s, r: r };
     }).filter(function (x) { return x.r; }).sort(function (a, b) { return a.r.dist - b.r.dist; }).slice(0, 8);
@@ -346,10 +348,11 @@
     st.view = 'list';
     var y = body.scrollTop;
     var items = TS.spots.filter(function (s) { return st.filter === 'all' || s.kind === st.filter || s.kind === 'gateway'; });
+    var KW = { famous: 5, known: 4, local: 4, hidden: 4, gateway: 2, everyday: 1 };
     var sorts = {
-      popular: function (a, b) { return b.idx - a.idx || a.name.localeCompare(b.name); },
-      hidden: function (a, b) { return (a.idx || 9) - (b.idx || 9) || a.name.localeCompare(b.name); },
-      quick: function (a, b) { return (a.mins || 99) - (b.mins || 99) || a.name.localeCompare(b.name); }
+      popular: function (a, b) { return KW[b.kind] - KW[a.kind] || b.idx - a.idx || a.name.localeCompare(b.name); },
+      hidden: function (a, b) { return KW[b.kind] - KW[a.kind] || (a.idx || 9) - (b.idx || 9) || a.name.localeCompare(b.name); },
+      quick: function (a, b) { return KW[b.kind] - KW[a.kind] || (a.mins || 99) - (b.mins || 99) || a.name.localeCompare(b.name); }
     };
     items = items.slice().sort(sorts[st.listSort]);
     openSheet(
@@ -369,13 +372,13 @@
 
   function showHelp() {
     st.view = 'help';
-    var legend = ['famous', 'lesser', 'local', 'hidden', 'gateway'].map(function (k) {
-      var txt = { famous: 'Famous: the places everyone has heard of.', lesser: 'Less famous: good, but fewer people queue for them.', local: 'Non-tourist, still worth it: where people who work here go.', hidden: 'Hidden gems: easy to walk past, worth a detour.', gateway: 'Getting here: subway and bus.' }[k];
+    var legend = ['famous', 'known', 'hidden', 'local', 'everyday', 'gateway'].map(function (k) {
+      var txt = { famous: 'Tourist favourites: the places most first-time visitors plan for.', known: 'Known: well-recognised venues, theatres and hotels you will pass or have heard of.', hidden: 'Less-known gems: easy to miss, worth a detour.', local: 'Non-tourist, still worth it: where the people who work here go.', everyday: 'Eat, drink & stay: everyday restaurants, cafes, bars and hotels (small dots, they appear as you zoom in).', gateway: 'Getting here: subway and bus.' }[k];
       return '<div><span class="dot" style="--c:' + KINDS[k].color + '"></span><span>' + esc(txt) + '</span></div>';
     }).join('');
     openSheet(
       '<h2>How this map works</h2>' +
-      '<p>This map covers Times Square only, from W 41st to W 49th Street and from 8th Avenue to 6th Avenue. It works offline once it has loaded once.</p>' +
+      '<p>This map covers Times Square only, from W 41st to W 49th Street and from 8th Avenue to 6th Avenue. It works offline once it has loaded once. Zoom in to reveal more places.</p>' +
       '<h3>The pins</h3><div class="legend">' + legend + '</div>' +
       '<p>Each pop-up has a <b>tourist index</b>, from "Hidden gem" to "Tourist magnet", plus how long a visit takes, to help you choose.</p>' +
       '<h3>Getting directions</h3><p>Open a spot and press <b>Take me there</b>. Tell the map what you can see around you (a shop, hotel or street sign) and it draws the route, with turns, distances, minutes and landmarks to look for.</p>' +

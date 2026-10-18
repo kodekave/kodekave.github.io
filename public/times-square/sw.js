@@ -1,5 +1,5 @@
 /* Offline support: everything the map needs is cached on first load. Bump VERSION when you change files. */
-const VERSION = 'tsmap-v1';
+const VERSION = 'tsmap-v2';
 const FILES = [
   './', 'index.html', 'css/style.css',
   'js/core.js', 'js/router.js', 'js/map.js', 'js/ui.js',
