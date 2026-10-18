@@ -36,12 +36,13 @@
 
   TS.KINDS = {
     famous: { label: 'Tourist favourite', chip: 'Tourist favourites', color: '#9c2f27' },
-    lesser: { label: 'Less famous', chip: 'Less famous', color: '#b07a14' },
+    known: { label: 'Known', chip: 'Known', color: '#b07a14' },
+    hidden: { label: 'Less-known gem', chip: 'Less-known gems', color: '#5b3f8f' },
     local: { label: 'Non-tourist, still worth it', chip: 'Non-tourist, worth it', color: '#3f6b49' },
-    hidden: { label: 'Hidden gem', chip: 'Hidden gems', color: '#5b3f8f' },
+    everyday: { label: 'Eat, drink & stay', chip: 'Eat, drink & stay', color: '#8a6a3b' },
     gateway: { label: 'Getting here', chip: 'Getting here', color: '#5a5148' }
   };
-  TS.ICONS = { see: '✨', show: '🎭', eat: '🍴', drink: '🍸', shop: '🛍️', history: '🏛️', view: '🌆', worship: '⛪', gateway: '🚇' };
+  TS.ICONS = { see: '✨', show: '🎭', eat: '🍴', cafe: '☕', drink: '🍸', shop: '🛍️', history: '🏛️', art: '🎨', view: '🌆', worship: '⛪', stay: '🛏️', fun: '🎟️', gateway: '🚇' };
   TS.INDEX_LABELS = { 5: 'Tourist magnet', 4: 'Very popular', 3: 'Visitors and locals', 2: 'Mostly locals', 1: 'Hidden gem', 0: '' };
 
   TS.spots = geo.spots;
