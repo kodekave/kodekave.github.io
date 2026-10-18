@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Times Square, the Mischief Map</title>
+<meta name="description" content="An offline-friendly map of Times Square only: famous spots, local favourites and hidden gems, with walking directions from whatever you can see around you.">
+<meta name="theme-color" content="#3a2616">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="map" aria-label="Map of Times Square. Use the list button for an accessible list of spots."></canvas>
+
+<div class="veil" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="script">Times Square</span>
+    <small>The Mischief Map</small>
+  </div>
+  <div class="actions">
+    <button id="btnHere" class="pill" type="button" aria-label="Where am I?"><span aria-hidden="true">📍</span> <span class="lbl">Where am I?</span></button>
+    <button id="btnList" class="round" type="button" aria-label="List all spots">☰</button>
+    <button id="btnHelp" class="round" type="button" aria-label="Help and legend">?</button>
+  </div>
+</header>
+
+<nav class="chips" id="chips" aria-label="Filter spots"></nav>
+
+<div class="hud">
+  <div class="compass" aria-hidden="true" title="The map is turned so that uptown is up">
+    <svg viewBox="0 0 80 80" width="64" height="64">
+      <circle cx="40" cy="40" r="36" class="c-ring"/>
+      <g id="northArrow"><path d="M40 8 L45 40 L40 36 L35 40 Z" class="c-north"/><text x="40" y="7" text-anchor="middle" class="c-n">N</text></g>
+      <path d="M40 72 L40 20" class="c-up" marker-end="url(#none)"/>
+      <path d="M40 14 L34 26 L46 26 Z" class="c-uparrow"/>
+      <text x="40" y="52" text-anchor="middle" class="c-lbl">UPTOWN</text>
+    </svg>
+  </div>
+  <div class="zoom">
+    <button id="zIn" type="button" aria-label="Zoom in">+</button>
+    <button id="zOut" type="button" aria-label="Zoom out">−</button>
+    <button id="zFit" type="button" aria-label="Show the whole map">⌂</button>
+  </div>
+</div>
+
+<aside id="sheet" class="sheet" hidden aria-live="polite">
+  <div class="grab" id="grab" role="button" tabindex="0" aria-label="Expand or collapse"></div>
+  <div class="sheet-body" id="sheetBody"></div>
+</aside>
+
+<button id="btnRoute" class="pill route-pill" type="button" hidden><span aria-hidden="true">🧭</span> Directions</button>
+<div class="attrib">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<div id="splash" class="splash" role="dialog" aria-label="Welcome">
+  <div class="splash-inner">
+    <p class="oath" id="oath" aria-label="I solemnly swear that I am up to no good."></p>
+    <p class="skip">tap to open the map</p>
+  </div>
+  <div class="steps-trail" aria-hidden="true"></div>
+</div>
+
+<noscript><p style="position:fixed;inset:20% 10%;text-align:center;font:18px Georgia,serif;color:#3a2616">This map needs JavaScript to draw itself.</p></noscript>
+
+<script src="data/geo.js"></script>
+<script src="js/core.js"></script>
+<script src="js/router.js"></script>
+<script src="js/map.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
