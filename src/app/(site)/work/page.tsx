@@ -88,76 +88,75 @@ export default function WorkPage() {
           <ol>
             {ventures.map((v, i) => (
               <Reveal
+                as="li"
                 key={v.slug}
                 id={v.slug}
                 delay={i * 60}
-                className="scroll-mt-20"
+                className="scroll-mt-20 grid gap-x-10 gap-y-6 border-t border-hair py-14 md:grid-cols-[3.5rem_11rem_1fr]"
               >
-                <li className="grid gap-x-10 gap-y-6 border-t border-hair py-14 md:grid-cols-[3.5rem_11rem_1fr]">
-                  <span className="label tabular text-ink-faint md:pt-2">
-                    #{i + 1}
-                  </span>
+                <span className="label tabular text-ink-faint md:pt-2">
+                  #{i + 1}
+                </span>
 
-                  <div className="flex flex-col items-start gap-3">
-                    <span className="stamp">{countryCode(v.country)}</span>
-                    <p className="label text-ink-soft">{v.period}</p>
-                    <p className="label text-ink-faint">{v.location}</p>
-                    {v.current && <span className="stamp">Current</span>}
-                  </div>
+                <div className="flex flex-col items-start gap-3">
+                  <span className="stamp">{countryCode(v.country)}</span>
+                  <p className="label text-ink-soft">{v.period}</p>
+                  <p className="label text-ink-faint">{v.location}</p>
+                  {v.current && <span className="stamp">Current</span>}
+                </div>
 
-                  <div>
-                    <span className="stamp">{v.category}</span>
-                    <h2 className="font-display mt-5 text-[clamp(1.7rem,3.6vw,2.6rem)] leading-tight">
-                      {v.url ? (
-                        <a
-                          href={v.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ref"
-                        >
-                          {v.company}
-                        </a>
-                      ) : (
-                        v.company
-                      )}
-                    </h2>
-                    <p className="font-display-text mt-3 text-lg text-ink-faint">
-                      {v.role}
-                    </p>
-                    <p className="mt-6 text-lg leading-[1.75] text-ink-soft">
-                      {v.summary}
-                    </p>
-
-                    {v.links && v.links.length > 0 && (
-                      <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
-                        {v.links.map((l) => (
-                          <li key={l.url}>
-                            <a
-                              href={l.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="label ref text-ink-soft"
-                            >
-                              {l.label}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+                <div>
+                  <span className="stamp">{v.category}</span>
+                  <h2 className="font-display mt-5 text-[clamp(1.7rem,3.6vw,2.6rem)] leading-tight">
+                    {v.url ? (
+                      <a
+                        href={v.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ref"
+                      >
+                        {v.company}
+                      </a>
+                    ) : (
+                      v.company
                     )}
+                  </h2>
+                  <p className="font-display-text mt-3 text-lg text-ink-faint">
+                    {v.role}
+                  </p>
+                  <p className="mt-6 text-lg leading-[1.75] text-ink-soft">
+                    {v.summary}
+                  </p>
 
-                    <ul className="mt-8 flex flex-col gap-4 border-t border-hair pt-7">
-                      {v.highlights.map((h) => (
-                        <li key={h} className="flex gap-4 text-ink-soft">
-                          <span
-                            aria-hidden="true"
-                            className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-faint"
-                          />
-                          <span className="leading-relaxed">{h}</span>
+                  {v.links && v.links.length > 0 && (
+                    <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+                      {v.links.map((l) => (
+                        <li key={l.url}>
+                          <a
+                            href={l.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="label ref text-ink-soft"
+                          >
+                            {l.label}
+                          </a>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                </li>
+                  )}
+
+                  <ul className="mt-8 flex flex-col gap-4 border-t border-hair pt-7">
+                    {v.highlights.map((h) => (
+                      <li key={h} className="flex gap-4 text-ink-soft">
+                        <span
+                          aria-hidden="true"
+                          className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-faint"
+                        />
+                        <span className="leading-relaxed">{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </Reveal>
             ))}
           </ol>

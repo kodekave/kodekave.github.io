@@ -1,52 +1,63 @@
 @import "tailwindcss";
 
 /*
- * The monochrome engraving system.
+ * The forest-and-brass engraving system.
  *
- * Two fields — true black and off-white paper — alternating down the page,
- * with the greys between them expressed as ink at a percentage rather than
- * picked hex values, which is how printing works and keeps the neutrals from
- * drifting.
+ * Two fields — deep forest green and warm bone paper — alternating down the
+ * page, with brass as the single accent. The greys between the fields are
+ * expressed as one field at a percentage of the other rather than as picked
+ * hex values, which is how printing works and keeps the neutrals from
+ * drifting off the palette.
  *
- * There is no pure white anywhere. Paper stock never is, and on screen a
- * near-white next to pure black halates: the light bleeds visually into the
- * dark and fine strokes in the display type get eaten. So the light end is a
- * ladder of off-whites, and the light type on the black fields is drawn from
- * the same ladder rather than being turned up to #fff.
+ * There is no pure white and no pure black anywhere. Paper stock never is
+ * white, and on screen a near-white beside a very dark field halates: the
+ * light bleeds visually into the dark and fine strokes in the display type
+ * get eaten. So the light end is a ladder of warm off-whites, and the light
+ * type on the dark fields is drawn from the same ladder.
  *
- * The black stays #000, unlike the light end, because the portrait plates
- * composite with `mix-blend-mode: screen`, which treats pure black as a
- * no-op. Against a tinted near-black the plate's ground survives faintly and
- * you can see the rectangle it sits in. See scripts/engrave.py.
+ * The portrait plates composite with `mix-blend-mode: screen`, which treats
+ * the plate's black ground as a no-op, so the engraving's lines simply
+ * lighten the green beneath them and its ground never shows as a rectangle.
+ * See scripts/engrave.py.
+ *
+ * Brass is used sparingly and always for the same job: the action, the mark
+ * and the ornament. It never carries reading text on the paper fields — there
+ * the deeper `brass-deep` does, which holds 5:1 against the paper.
  */
 :root {
-  --color-ink: #000000;
+  /* The dark field. Named `ink` because every dark surface and every dark
+     piece of type on paper is this one colour. */
+  --color-ink: #0e2a22;
 
   /*
-   * The off-white ladder, faintly warm, each step a little further from the
+   * The bone ladder, faintly warm, each step a little further from the
    * light. `paper` is the page, `mist` the secondary band, `chalk` the
    * deepest of the three.
    */
-  --color-paper: #efede8;
-  --color-mist: #e6e3dc;
-  --color-chalk: #dbd7cf;
+  --color-paper: #eeeadf;
+  --color-mist: #e5e1d4;
+  --color-chalk: #d9d5c7;
+
+  /* The accent. `brass` on the dark field (5.6:1), `brass-deep` on paper
+     (5.0:1). */
+  --color-brass: #bc9660;
+  --color-brass-deep: #7c5e2a;
 
   /* Ink on paper. */
-  --color-ink-soft: color-mix(in srgb, #000 68%, #efede8);
+  --color-ink-soft: color-mix(in srgb, var(--color-ink) 80%, var(--color-paper));
   /*
-   * 58% and not lighter, because this carries the 11px mono labels. At 46%
-   * it measured 3.45:1 on paper and 3.08:1 on the mist band — below the 4.5:1
-   * that text this size needs. The hierarchy against `ink-soft` is carried by
-   * size and letter-spacing rather than by tone.
+   * 68% and not lighter, because this carries the 11px mono labels, which
+   * need 4.5:1 on both paper (5.0) and the mist band (4.6). The hierarchy against `ink-soft` is carried by size and
+   * letter-spacing rather than by tone.
    */
-  --color-ink-faint: color-mix(in srgb, #000 58%, #efede8);
-  --color-hair: color-mix(in srgb, #000 17%, #efede8);
+  --color-ink-faint: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --color-hair: color-mix(in srgb, var(--color-ink) 18%, var(--color-paper));
 
   /* Paper on ink. Kept as explicit mixes rather than alpha so text over the
      grain overlay stays exactly this value. */
-  --color-paper-soft: color-mix(in srgb, #efede8 74%, #000);
-  --color-paper-faint: color-mix(in srgb, #efede8 52%, #000);
-  --color-hair-inv: color-mix(in srgb, #efede8 20%, #000);
+  --color-paper-soft: color-mix(in srgb, var(--color-paper) 78%, var(--color-ink));
+  --color-paper-faint: color-mix(in srgb, var(--color-paper) 58%, var(--color-ink));
+  --color-hair-inv: color-mix(in srgb, var(--color-paper) 20%, var(--color-ink));
 
   --font-display: var(--font-instrument), "Iowan Old Style", Georgia, serif;
   --font-read: var(--font-newsreader), Georgia, "Times New Roman", serif;
@@ -63,6 +74,8 @@
   --color-hair: var(--color-hair);
   --color-mist: var(--color-mist);
   --color-chalk: var(--color-chalk);
+  --color-brass: var(--color-brass);
+  --color-brass-deep: var(--color-brass-deep);
   --color-paper-soft: var(--color-paper-soft);
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
@@ -507,6 +520,11 @@ body {
   border-color: var(--color-hair-inv);
   color: var(--color-paper-faint);
 }
+/* The one live engagement: the same stamp, struck in brass. */
+.stamp-brass {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+}
 
 
 /* ------------------------------------------------------- the polish layer */
@@ -521,13 +539,13 @@ h3 {
 /* Solid controls. The outlined `.btn-ink` / `.btn-paper` stay for secondary
    actions; these carry the one primary action per field. */
 .btn-solid-paper {
-  background: var(--color-paper);
-  border-color: var(--color-paper);
+  background: var(--color-brass);
+  border-color: var(--color-brass);
   color: var(--color-ink);
 }
 .btn-solid-paper:hover {
   background: transparent;
-  color: var(--color-paper);
+  color: var(--color-brass);
 }
 .btn-solid-ink {
   background: var(--color-ink);
@@ -783,8 +801,8 @@ h3 {
     mix-blend-mode: screen;
     background: radial-gradient(
       circle 320px at var(--gx, 50%) var(--gy, 50%),
-      rgba(255, 236, 200, 0.26),
-      rgba(255, 236, 200, 0.09) 45%,
+      rgba(214, 178, 118, 0.26),
+      rgba(214, 178, 118, 0.09) 45%,
       transparent 72%
     );
     opacity: var(--glow, 0);
@@ -852,7 +870,7 @@ h3 {
   padding: 1em 1.4em;
   background: var(--color-ink);
   color: var(--color-paper);
-  border: 1px solid color-mix(in srgb, var(--color-paper) 45%, transparent);
+  border: 1px solid var(--color-brass);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
   opacity: 0;
   transform: translateY(14px);
@@ -866,7 +884,7 @@ h3 {
   pointer-events: auto;
 }
 .sticky-cta:hover {
-  background: var(--color-paper);
+  background: var(--color-brass);
   color: var(--color-ink);
 }
 .sticky-cta:hover .btn-arrow {

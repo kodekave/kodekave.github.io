@@ -109,7 +109,7 @@ export default function HomePage() {
         <div className="hero-exit relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col justify-end px-6 pb-14 pt-28 md:px-10 md:pb-16">
           {now && (
             <p className="settle settle-1 label mb-5 flex items-center gap-3 text-paper-soft">
-              <span aria-hidden="true" className="now-mark" />
+              <span aria-hidden="true" className="now-mark text-brass" />
               <span>
                 Now — {now.role}, {now.company}
               </span>
@@ -165,7 +165,7 @@ export default function HomePage() {
           aria-hidden="true"
           className="absolute bottom-8 right-6 hidden h-20 w-20 place-items-center text-paper md:grid md:right-10"
         >
-          <Guilloche copies={30} className="absolute inset-0 text-paper/55" />
+          <Guilloche copies={30} className="absolute inset-0 text-brass/75" />
           <span className="relative grid h-10 w-10 place-items-center rounded-full bg-ink">
             <span className="wordmark text-base leading-none text-paper-soft">
               KK
@@ -232,7 +232,7 @@ export default function HomePage() {
 
         <div className="relative mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
           <Reveal>
-            <SectionLabel n="02" className="text-paper-faint">
+            <SectionLabel n="02" onInk className="text-paper-faint">
               Operating record
             </SectionLabel>
             <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
@@ -245,7 +245,7 @@ export default function HomePage() {
             <div className="mt-16 space-y-12">
               <dl className="grid gap-x-8 gap-y-10 sm:grid-cols-2">
                 {leadStats.map((s) => (
-                  <div key={s.label} className="border-t border-paper pt-6">
+                  <div key={s.label} className="border-t border-brass pt-6">
                     <dt className="sr-only">{s.label}</dt>
                     <dd>
                       <CountUp
@@ -322,7 +322,7 @@ export default function HomePage() {
                   <div className="flex flex-col items-start gap-6 md:items-end md:justify-between">
                     <div className="flex flex-wrap items-start gap-2 md:justify-end">
                       {v.current && (
-                        <span className="stamp stamp-dark">Current</span>
+                        <span className="stamp stamp-brass">Current</span>
                       )}
                       <span className="stamp stamp-dark">{v.category}</span>
                       <span className="stamp stamp-dark">
@@ -478,12 +478,12 @@ export default function HomePage() {
         >
           <Guilloche
             copies={44}
-            className="guilloche-turn h-full w-full text-paper/[0.22]"
+            className="guilloche-turn h-full w-full text-brass/[0.34]"
           />
         </div>
         <div className="relative mx-auto max-w-6xl px-6 pb-80 pt-24 md:px-10 md:py-36">
           <Reveal>
-            <SectionLabel n="05" className="text-paper-faint">
+            <SectionLabel n="05" onInk className="text-paper-faint">
               Start a conversation
             </SectionLabel>
             <h2 className="font-display mt-8 max-w-4xl text-[clamp(2.6rem,7vw,6rem)] leading-[1]">
