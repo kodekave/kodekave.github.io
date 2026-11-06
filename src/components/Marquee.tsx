@@ -21,7 +21,7 @@ export default function Marquee({ items }: { items: string[] }) {
           <span>{item}</span>
           <span
             aria-hidden="true"
-            className="h-1.5 w-1.5 border border-current opacity-50"
+            className="h-1.5 w-1.5 border border-brass-deep"
           />
         </li>
       ))}
