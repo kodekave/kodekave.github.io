@@ -945,3 +945,119 @@ h3 {
     }
   }
 }
+
+/* ------------------------------------------------ the technical drawing layer */
+
+/*
+ * The hero's hairline grid, faded out before it reaches the portrait, and a
+ * measuring scale along the frame's top and left edges. Both are drawn in
+ * CSS, so the layer costs no image.
+ */
+.blueprint-grid {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-paper) 6%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-paper) 6%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 68%);
+  mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 68%);
+}
+.blueprint-ticks-x {
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-brass) 0 1px,
+    transparent 1px 12px
+  );
+  opacity: 0.5;
+}
+.blueprint-ticks-y {
+  width: 6px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-brass) 0 1px,
+    transparent 1px 12px
+  );
+  opacity: 0.5;
+}
+@keyframes blueprint-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .blueprint {
+    animation: blueprint-in 1.4s ease-out 0.1s backwards;
+  }
+}
+
+/*
+ * The section rail. It takes its colour from the field it is over (`data-tone`
+ * is the active section's field) and lights the current section in brass.
+ */
+.section-rail {
+  position: fixed;
+  left: 1.25rem;
+  top: 50%;
+  z-index: 30;
+  transform: translateY(-50%);
+  color: var(--color-ink);
+  --rail-accent: var(--color-brass-deep);
+  transition: opacity 0.45s ease, color 0.35s ease;
+}
+.section-rail[data-tone="ink"] {
+  color: var(--color-paper);
+  --rail-accent: var(--color-brass);
+}
+.section-rail.is-off {
+  opacity: 0;
+  pointer-events: none;
+}
+.section-rail ol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+.rail-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: -1px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.rail-link:hover,
+.rail-link.is-active {
+  opacity: 1;
+}
+.rail-tick {
+  display: block;
+  width: 0.5rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.3s ease;
+}
+.rail-link.is-active .rail-tick {
+  width: 1.3rem;
+  background: var(--rail-accent);
+}
+.rail-link.is-active .rail-num {
+  color: var(--rail-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-rail,
+  .rail-link,
+  .rail-tick {
+    transition: none;
+  }
+}

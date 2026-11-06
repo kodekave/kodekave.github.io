@@ -308,11 +308,16 @@ export const journey = [
   },
 ];
 
+/**
+ * `lat` / `lon` place each stop on the homepage globe. They are country-level
+ * (roughly the middle of the country) except where the site's own copy names
+ * a city: London for the UK, Malé for the Maldives. `place` is the pin label.
+ */
 export const route = [
-  { code: "IN", label: "India", years: "2019–22" },
-  { code: "MV", label: "Maldives", years: "2022–24" },
-  { code: "US", label: "United States", years: "2025–26" },
-  { code: "UK", label: "United Kingdom", years: "2026–" },
+  { code: "IN", label: "India", years: "2019–22", place: "India", lat: 20.6, lon: 78.9 },
+  { code: "MV", label: "Maldives", years: "2022–24", place: "Malé", lat: 4.18, lon: 73.51 },
+  { code: "US", label: "United States", years: "2025–26", place: "United States", lat: 39.8, lon: -98.6 },
+  { code: "UK", label: "United Kingdom", years: "2026–", place: "London", lat: 51.51, lon: -0.13 },
 ];
 
 const countryCodes: Record<string, string> = {
