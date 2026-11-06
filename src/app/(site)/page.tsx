@@ -4,7 +4,6 @@ import CountUp from "@/components/CountUp";
 import Guilloche from "@/components/Guilloche";
 import Marquee from "@/components/Marquee";
 import Plate from "@/components/Plate";
-import PointerLight from "@/components/PointerLight";
 import Reveal from "@/components/Reveal";
 import RouteMap from "@/components/RouteMap";
 import ScrollText from "@/components/ScrollText";
@@ -80,15 +79,6 @@ export default function HomePage() {
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 54vw, 44vw"
           className="plate-fade settle-plate absolute opacity-40 sm:opacity-100 -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
         />
-
-        {/* The brighter copy of the portrait, revealed under the cursor. */}
-        <Plate
-          alt=""
-          sizes="(max-width: 1024px) 54vw, 44vw"
-          className="plate-lit absolute -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
-        />
-        <PointerLight />
-        <span aria-hidden="true" className="hero-glow absolute inset-0" />
 
         {/*
           Two scrims, because the type sits in a different place at each
