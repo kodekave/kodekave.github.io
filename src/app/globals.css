@@ -753,64 +753,6 @@ h3 {
 /* ------------------------------------------------------ signature details */
 
 /*
- * The lit engraving. A second copy of the portrait, brighter, revealed only
- * through a soft pool that follows the cursor — so the ruling under the
- * pointer comes up out of the dark. Composited the same way as the base
- * plate (screen), and only present for a fine pointer.
- */
-.plate-lit {
-  display: none;
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .plate-lit {
-    display: block;
-    pointer-events: none;
-    filter: sepia(1) saturate(1.5) hue-rotate(-10deg) brightness(1.75) contrast(1.1);
-    opacity: var(--lit, 0);
-    transition: opacity 0.6s ease;
-    -webkit-mask-image: radial-gradient(
-        circle 210px at var(--mx, 50%) var(--my, 50%),
-        #000 0%,
-        rgba(0, 0, 0, 0.6) 38%,
-        transparent 100%
-      ),
-      linear-gradient(to right, transparent 0%, #000 30%);
-    mask-image: radial-gradient(
-        circle 210px at var(--mx, 50%) var(--my, 50%),
-        #000 0%,
-        rgba(0, 0, 0, 0.6) 38%,
-        transparent 100%
-      ),
-      linear-gradient(to right, transparent 0%, #000 30%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-  }
-}
-
-/*
- * A warm bloom that rides with the cursor — a lamp held over the plate. It
- * is screened onto the field, so it only ever adds light.
- */
-.hero-glow {
-  display: none;
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .hero-glow {
-    display: block;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    background: radial-gradient(
-      circle 320px at var(--gx, 50%) var(--gy, 50%),
-      rgba(214, 178, 118, 0.26),
-      rgba(214, 178, 118, 0.09) 45%,
-      transparent 72%
-    );
-    opacity: var(--glow, 0);
-    transition: opacity 0.7s ease;
-  }
-}
-
-/*
  * The name, set letter by letter. Each glyph rises into its line from below
  * a clipped edge, left to right, so the name is composed rather than faded
  * in. The h1 carries the real name as an aria-label; the glyph spans are
