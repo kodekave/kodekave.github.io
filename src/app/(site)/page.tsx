@@ -1,18 +1,23 @@
 import Link from "next/link";
 import Arrow from "@/components/Arrow";
+import BlueprintFrame from "@/components/BlueprintFrame";
 import CountUp from "@/components/CountUp";
+import Globe from "@/components/Globe";
 import Guilloche from "@/components/Guilloche";
+import HalftoneDivider from "@/components/HalftoneDivider";
 import Marquee from "@/components/Marquee";
 import Plate from "@/components/Plate";
 import Reveal from "@/components/Reveal";
 import RouteMap from "@/components/RouteMap";
 import ScrollText from "@/components/ScrollText";
 import SectionLabel from "@/components/SectionLabel";
+import SectionRail from "@/components/SectionRail";
 import StickyCta from "@/components/StickyCta";
 import {
   countryCode,
   engagements,
   profile,
+  route,
   stats,
   ventures,
 } from "@/lib/content";
@@ -95,6 +100,8 @@ export default function HomePage() {
           aria-hidden="true"
           className="absolute inset-0 hidden bg-gradient-to-r from-ink from-20% via-ink/10 to-transparent to-45% sm:block"
         />
+
+        <BlueprintFrame />
 
         <div className="hero-exit relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col justify-end px-6 pb-14 pt-28 md:px-10 md:pb-16">
           {now && (
@@ -200,12 +207,20 @@ export default function HomePage() {
 
           <Reveal delay={140} className="lg:col-span-5 lg:pt-14">
             <div className="border-t border-ink pt-8 text-ink">
-              <p className="label mb-10 text-ink-faint">The route</p>
-              <RouteMap />
+              <p className="label mb-6 text-ink-faint">The route</p>
+              <Globe
+                pins={route}
+                label="A turning globe marking the four places worked: India, Malé in the Maldives, the United States, and London in the United Kingdom."
+              />
+              <div className="mt-10">
+                <RouteMap />
+              </div>
             </div>
           </Reveal>
         </div>
       </section>
+
+      <HalftoneDivider field="paper" dot="ink" />
 
       {/* Operating record — the stats, then the venture timeline as a
           numbered sequence. This is the section with the most budget. */}
@@ -337,6 +352,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <HalftoneDivider field="ink" dot="paper" />
+
       {/* Offering */}
       <section id="work-with-me" className="on-paper grain scroll-mt-16">
         <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
@@ -398,7 +415,7 @@ export default function HomePage() {
 
       {/* --------------------------------- Everything else, deliberately quiet */}
       {posts.length > 0 && (
-        <section className="grain border-t border-hair bg-mist">
+        <section id="writing" className="grain scroll-mt-16 border-t border-hair bg-mist">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
             <Reveal>
               <div className="flex flex-wrap items-baseline justify-between gap-4">
@@ -455,10 +472,12 @@ export default function HomePage() {
         </section>
       )}
 
+      <HalftoneDivider field={posts.length > 0 ? "mist" : "paper"} dot="ink" />
+
       {/* --------------------------------------------- Act III — the close */}
       <section
         id="contact"
-        className="on-ink grain relative overflow-hidden border-t border-hair-inv"
+        className="on-ink grain relative scroll-mt-16 overflow-hidden"
       >
         {/* The fade is on a wrapper that does not turn, so it stays put
             while the rosette rotates beneath it. */}
@@ -511,6 +530,19 @@ export default function HomePage() {
         href={`mailto:${profile.email}`}
         label="Start a conversation"
         hideWhileVisible={["hero", "contact", "newsletter"]}
+      />
+
+      <SectionRail
+        items={[
+          { id: "about", label: "About", tone: "paper" },
+          { id: "record", label: "Operating record", tone: "ink" },
+          { id: "work-with-me", label: "Work with me", tone: "paper" },
+          ...(posts.length > 0
+            ? [{ id: "writing", label: "Writing", tone: "paper" as const }]
+            : []),
+          { id: "contact", label: "Start a conversation", tone: "ink" },
+        ]}
+        hideWhileVisible={["hero", "newsletter"]}
       />
     </div>
   );
