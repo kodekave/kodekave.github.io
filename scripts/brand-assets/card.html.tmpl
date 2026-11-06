@@ -1,0 +1,77 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "IS"; src: url("{{INSTRUMENT}}") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #0e2a22; }
+  .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
+          background: #0e2a22; color: #eeeadf; }
+  .seal { position: absolute; right: 64px; bottom: 58px; width: 124px; height: 124px;
+          display: grid; place-items: center; }
+  .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; color: #bc9660; opacity: 0.85; }
+  .seal i { position: relative; display: grid; place-items: center; width: 62px; height: 62px;
+            border-radius: 50%; background: #0e2a22; font: 400 25px/1 "IS", serif; color: #eeeadf;
+            letter-spacing: 0.045em; font-style: normal; }
+  .plate { position: absolute; top: -34px; right: -34px; width: 560px; height: 704px;
+           object-fit: cover; object-position: 46% 20%; mix-blend-mode: screen;
+           filter: brightness(0.93) sepia(0.06);
+           -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%); }
+  .shade { position: absolute; inset: 0;
+           background: linear-gradient(to right, #0e2a22 0%, #0e2a22 40%, rgba(14,42,34,0) 66%); }
+  .frame { position: absolute; inset: 22px; border: 1px solid rgba(188,150,96,0.55); }
+  .text { position: absolute; inset: 0; padding: 74px 72px 70px; width: 780px;
+          display: flex; flex-direction: column; }
+  .label { font: 400 17px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
+  h1 { font: 400 100px/0.95 "IS", serif; text-transform: uppercase; letter-spacing: 0.045em; margin-top: 30px; }
+  .tag { font: 400 31px/1.45 "NR", serif; margin-top: 34px; max-width: 520px;
+         color: color-mix(in srgb, #eeeadf 80%, #0e2a22); }
+  .foot { margin-top: auto; }
+  .rule { width: 64px; height: 2px; background: #bc9660; margin-bottom: 22px; }
+  .proof { font: 400 19px "PM", monospace; letter-spacing: 0.1em; text-transform: uppercase;
+           color: color-mix(in srgb, #eeeadf 78%, #0e2a22); }
+  .proof b { font-weight: 400; color: #bc9660; padding: 0 10px; }
+  .url { font: 400 20px "PM", monospace; letter-spacing: 0.1em; color: #bc9660; margin-top: 12px; }
+</style>
+<div class="card">
+  <img class="plate" src="{{PLATE}}" alt="">
+  <div class="shade"></div>
+  <div class="frame"></div>
+  <div class="seal">
+    <svg viewBox="-50 -50 100 100" fill="none" aria-hidden="true">
+      <defs><path id="g" stroke="currentColor" stroke-width="0.6"/></defs>
+      <g id="copies"></g>
+    </svg>
+    <i>KK</i>
+  </div>
+  <div class="text">
+    <div class="label">Founder's office &middot; GTM &middot; Cross-border ops</div>
+    <h1>Komal<br>Kedarnath G</h1>
+    <div class="tag">Helping founders build and scale &mdash; from idea to operations.</div>
+    <div class="foot">
+      <div class="rule"></div>
+      <div class="proof">$2.1M+ raised<b>&middot;</b>4 countries<b>&middot;</b>6+ years</div>
+      <div class="url">kodekave.github.io</div>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var R = 8, r = 3, d = 3.1, steps = 540, k = (R - r) / r, sc = 46 / (R - r + d), p = "";
+    for (var i = 0; i <= steps; i++) {
+      var t = (i / steps) * Math.PI * 6;
+      var x = ((R - r) * Math.cos(t) + d * Math.cos(k * t)) * sc;
+      var y = ((R - r) * Math.sin(t) - d * Math.sin(k * t)) * sc;
+      p += (i ? "L" : "M") + x.toFixed(2) + " " + y.toFixed(2);
+    }
+    document.getElementById("g").setAttribute("d", p + "Z");
+    var g = document.getElementById("copies"), n = 30;
+    for (var j = 0; j < n; j++) {
+      var u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+      u.setAttribute("href", "#g");
+      u.setAttribute("transform", "rotate(" + (360 / n / 5) * j + ")");
+      g.appendChild(u);
+    }
+  })();
+</script>
