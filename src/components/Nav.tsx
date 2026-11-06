@@ -23,6 +23,11 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-hair-inv bg-ink text-paper">
+      {/* Reading progress — a single hairline riding the bar's lower edge. */}
+      <span
+        aria-hidden="true"
+        className="scroll-progress absolute inset-x-0 -bottom-px h-px origin-left bg-paper"
+      />
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-10">
         <Link
           href="/"
@@ -33,17 +38,27 @@ export default function Nav() {
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="label link-rule text-paper-soft hover:text-paper"
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link href="/#newsletter" className="btn btn-paper -my-1">
+          {links
+            .filter((link) => link.href !== "/services")
+            .map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="label link-rule text-paper-soft hover:text-paper"
+              >
+                {link.label}
+              </Link>
+            ))}
+          <Link
+            href="/#newsletter"
+            className="label link-rule text-paper-soft hover:text-paper"
+          >
             Newsletter
+          </Link>
+          {/* The one filled control in the bar: the action the site exists
+              to produce. Newsletter is a text link beside the others. */}
+          <Link href="/services" className="btn btn-solid-paper -my-1">
+            Work with me
           </Link>
         </nav>
 

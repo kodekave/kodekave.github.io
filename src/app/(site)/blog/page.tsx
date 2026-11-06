@@ -109,34 +109,32 @@ export default function BlogIndexPage() {
           ) : (
             <ul>
               {posts.map((post, i) => (
-                <Reveal key={post.slug} delay={i * 60}>
-                  <li>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="group grid gap-x-10 gap-y-2 border-t border-hair py-9 sm:grid-cols-[9rem_1fr]"
+                <Reveal as="li" key={post.slug} delay={i * 60}>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="group grid gap-x-10 gap-y-2 border-t border-hair py-9 sm:grid-cols-[9rem_1fr]"
+                  >
+                    <time
+                      dateTime={post.published_at ?? post.created_at}
+                      className="label text-ink-faint sm:pt-2"
                     >
-                      <time
-                        dateTime={post.published_at ?? post.created_at}
-                        className="label text-ink-faint sm:pt-2"
-                      >
-                        {new Date(
-                          post.published_at ?? post.created_at
-                        ).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </time>
-                      <div>
-                        <h2 className="font-display text-[clamp(1.5rem,3vw,2.1rem)] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[6px]">
-                          {post.title}
-                        </h2>
-                        <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
-                          {post.excerpt}
-                        </p>
-                      </div>
-                    </Link>
-                  </li>
+                      {new Date(
+                        post.published_at ?? post.created_at
+                      ).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <div>
+                      <h2 className="font-display text-[clamp(1.5rem,3vw,2.1rem)] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[6px]">
+                        {post.title}
+                      </h2>
+                      <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </Link>
                 </Reveal>
               ))}
             </ul>

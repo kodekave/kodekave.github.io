@@ -129,34 +129,37 @@ export default function ServicesPage() {
 
           <ol className="mt-16">
             {engagements.map((e, i) => (
-              <Reveal key={e.name} delay={i * 60}>
-                <li className="grid gap-x-10 gap-y-5 border-t border-hair py-12 md:grid-cols-[3.5rem_1fr]">
-                  <span className="label tabular text-ink-faint md:pt-2">
-                    #{i + 1}
-                  </span>
-                  <div>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
-                      <h3 className="font-display text-[clamp(1.6rem,3.2vw,2.3rem)] leading-tight">
-                        {e.name}
-                      </h3>
-                      <span className="stamp">{e.stamp}</span>
-                    </div>
-                    <p className="mt-5 max-w-2xl text-lg leading-[1.75] text-ink-soft">
-                      {e.summary}
-                    </p>
-                    <ul className="mt-8 flex flex-col gap-3.5 border-t border-hair pt-7">
-                      {e.includes.map((item) => (
-                        <li key={item} className="flex gap-4 text-ink-soft">
-                          <span
-                            aria-hidden="true"
-                            className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-faint"
-                          />
-                          <span className="leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+              <Reveal
+                as="li"
+                key={e.name}
+                delay={i * 60}
+                className="grid gap-x-10 gap-y-5 border-t border-hair py-12 md:grid-cols-[3.5rem_1fr]"
+              >
+                <span className="label tabular text-ink-faint md:pt-2">
+                  #{i + 1}
+                </span>
+                <div>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
+                    <h3 className="font-display text-[clamp(1.6rem,3.2vw,2.3rem)] leading-tight">
+                      {e.name}
+                    </h3>
+                    <span className="stamp">{e.stamp}</span>
                   </div>
-                </li>
+                  <p className="mt-5 max-w-2xl text-lg leading-[1.75] text-ink-soft">
+                    {e.summary}
+                  </p>
+                  <ul className="mt-8 flex flex-col gap-3.5 border-t border-hair pt-7">
+                    {e.includes.map((item) => (
+                      <li key={item} className="flex gap-4 text-ink-soft">
+                        <span
+                          aria-hidden="true"
+                          className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-faint"
+                        />
+                        <span className="leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </Reveal>
             ))}
           </ol>

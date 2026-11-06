@@ -1,43 +1,48 @@
 import { route } from "@/lib/content";
 
 /**
- * The four countries in the order they were operated in. Drawn from
- * currentColor throughout so the same component sits on ink or on paper
- * without a variant.
+ * The four countries in the order they were operated in, set as a ruled
+ * itinerary: a square mark per stop, the route code in the display face, the
+ * country and years beneath. Drawn from currentColor throughout so the same
+ * component sits on ink or on paper without a variant.
+ *
+ * The connecting rule draws itself as the map scrolls into view, in browsers
+ * that support scroll-driven animation; elsewhere it is simply already drawn.
  */
 export default function RouteMap() {
   return (
     <ol
-      className="flex items-start"
+      className="route"
       aria-label="Countries operated in, in chronological order"
     >
       {route.map((stop, i) => {
         const isLast = i === route.length - 1;
         return (
-          <li
-            key={stop.code}
-            className={`flex items-start ${isLast ? "flex-none" : "flex-1"}`}
-          >
-            <div className="flex flex-none flex-col gap-2.5">
+          <li key={stop.code} className="route-stop">
+            <div className="flex items-center">
               {/* Square marks, not dots — the current stop is filled. */}
               <span
                 aria-hidden="true"
-                className={`h-2 w-2 border border-current ${
+                className={`route-mark h-2.5 w-2.5 flex-none border border-current ${
                   isLast ? "bg-current" : ""
                 }`}
               />
-              <span className="label leading-none">{stop.code}</span>
-              <span className="label leading-none opacity-55">
-                {stop.years}
-              </span>
-              <span className="sr-only">{stop.label}</span>
+              {!isLast && (
+                <span
+                  aria-hidden="true"
+                  className="route-line ml-3 h-px flex-1 bg-current opacity-30"
+                />
+              )}
             </div>
-            {!isLast && (
-              <span
-                aria-hidden="true"
-                className="mt-1 h-px flex-1 bg-current opacity-25"
-              />
-            )}
+            <span className="font-display mt-6 block text-4xl leading-none sm:text-5xl">
+              {stop.code}
+            </span>
+            {/* Years first: the country name can wrap in a narrow column,
+                and the last line is the one that may safely run long. */}
+            <span className="label mt-4 block leading-none opacity-55">
+              {stop.years}
+            </span>
+            <span className="label mt-2 block leading-snug">{stop.label}</span>
           </li>
         );
       })}

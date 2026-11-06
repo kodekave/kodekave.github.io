@@ -508,3 +508,422 @@ body {
   color: var(--color-paper-faint);
 }
 
+
+/* ------------------------------------------------------- the polish layer */
+
+/* Titles close up and break evenly rather than leaving a stranded word. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* Solid controls. The outlined `.btn-ink` / `.btn-paper` stay for secondary
+   actions; these carry the one primary action per field. */
+.btn-solid-paper {
+  background: var(--color-paper);
+  border-color: var(--color-paper);
+  color: var(--color-ink);
+}
+.btn-solid-paper:hover {
+  background: transparent;
+  color: var(--color-paper);
+}
+.btn-solid-ink {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-solid-ink:hover {
+  background: transparent;
+  color: var(--color-ink);
+}
+.btn .btn-arrow {
+  transition: transform 0.25s ease;
+}
+.btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn .btn-arrow {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .settle-4 {
+    animation-delay: 0.44s;
+  }
+  .settle-5 {
+    animation-delay: 0.6s;
+  }
+}
+
+/* ----------------------------------------------------------- ruled rows */
+
+/*
+ * The numbered rows (ventures, engagements): on hover the body steps right
+ * along its rule and an arrow draws in at the far edge. Transform and opacity
+ * only, so nothing reflows.
+ */
+.row-body {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.row-arrow {
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (hover: hover) {
+  .row-arrow {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  .group:hover .row-body,
+  .group:focus-visible .row-body {
+    transform: translateX(0.5rem);
+  }
+  .group:hover .row-arrow,
+  .group:focus-visible .row-arrow {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-body,
+  .row-arrow {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------- marquee */
+
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+.marquee-row {
+  display: flex;
+  flex: none;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    animation: marquee 56s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee-track {
+    width: auto;
+    padding-inline: 1.5rem;
+  }
+  .marquee-row {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+  .marquee-row[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------- route map */
+
+.route {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+.route-stop:last-child .route-mark {
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent);
+}
+
+/* ------------------------------------- scroll-driven motion (enhancement) */
+
+/*
+ * Everything below is progressive: where scroll-driven animation is not
+ * supported, the page is simply at rest. Nothing here carries meaning.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes route-draw {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+    .route-line {
+      transform-origin: left;
+      animation: route-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 55%;
+    }
+
+    @keyframes hero-exit {
+      to {
+        transform: translateY(-4vh);
+        opacity: 0.25;
+      }
+    }
+    .hero-exit {
+      animation: hero-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 70%;
+    }
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes read-progress {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+    .scroll-progress {
+      animation: read-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+.scroll-progress {
+  transform: scaleX(0);
+}
+@supports not (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------ signature details */
+
+/*
+ * The lit engraving. A second copy of the portrait, brighter, revealed only
+ * through a soft pool that follows the cursor — so the ruling under the
+ * pointer comes up out of the dark. Composited the same way as the base
+ * plate (screen), and only present for a fine pointer.
+ */
+.plate-lit {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .plate-lit {
+    display: block;
+    pointer-events: none;
+    filter: sepia(1) saturate(1.5) hue-rotate(-10deg) brightness(1.75) contrast(1.1);
+    opacity: var(--lit, 0);
+    transition: opacity 0.6s ease;
+    -webkit-mask-image: radial-gradient(
+        circle 210px at var(--mx, 50%) var(--my, 50%),
+        #000 0%,
+        rgba(0, 0, 0, 0.6) 38%,
+        transparent 100%
+      ),
+      linear-gradient(to right, transparent 0%, #000 30%);
+    mask-image: radial-gradient(
+        circle 210px at var(--mx, 50%) var(--my, 50%),
+        #000 0%,
+        rgba(0, 0, 0, 0.6) 38%,
+        transparent 100%
+      ),
+      linear-gradient(to right, transparent 0%, #000 30%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+}
+
+/*
+ * A warm bloom that rides with the cursor — a lamp held over the plate. It
+ * is screened onto the field, so it only ever adds light.
+ */
+.hero-glow {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-glow {
+    display: block;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      circle 320px at var(--gx, 50%) var(--gy, 50%),
+      rgba(255, 236, 200, 0.26),
+      rgba(255, 236, 200, 0.09) 45%,
+      transparent 72%
+    );
+    opacity: var(--glow, 0);
+    transition: opacity 0.7s ease;
+  }
+}
+
+/*
+ * The name, set letter by letter. Each glyph rises into its line from below
+ * a clipped edge, left to right, so the name is composed rather than faded
+ * in. The h1 carries the real name as an aria-label; the glyph spans are
+ * decoration.
+ */
+.name-word {
+  display: inline-block;
+  clip-path: inset(-0.3em -0.15em -0.04em -0.15em);
+}
+.name-glyph {
+  display: inline-block;
+}
+@keyframes glyph-rise {
+  from {
+    transform: translateY(115%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .name-glyph {
+    animation: glyph-rise 1s cubic-bezier(0.18, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.14s + var(--i, 0) * 34ms);
+  }
+}
+
+/* The live line: a square mark that breathes, like a lit indicator. */
+.now-mark {
+  position: relative;
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: currentColor;
+}
+@keyframes now-breathe {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0.6rem transparent;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .now-mark {
+    animation: now-breathe 2.4s ease-out infinite;
+  }
+}
+
+/* The floating action. Ink with a paper hairline, so it holds on both the
+   black and the paper fields; hover inverts it. */
+.sticky-cta {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 1em 1.4em;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border: 1px solid color-mix(in srgb, var(--color-paper) 45%, transparent);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 0.25s ease, color 0.25s ease;
+}
+.sticky-cta.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.sticky-cta:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+.sticky-cta:hover .btn-arrow {
+  transform: translateX(4px);
+}
+.sticky-cta .btn-arrow {
+  transition: transform 0.25s ease;
+}
+@media (max-width: 640px) {
+  .sticky-cta {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    justify-content: space-between;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta,
+  .sticky-cta .btn-arrow {
+    transition: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Words come up to full strength in reading order as the paragraph
+       scrolls through the viewport. */
+    @keyframes word-in {
+      from {
+        opacity: 0.16;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .scroll-text {
+      view-timeline: --st block;
+    }
+    .scroll-text .sw {
+      animation: word-in linear both;
+      animation-timeline: --st;
+      animation-range: cover var(--a) cover var(--b);
+    }
+
+    /* The rosette turns with the scroll, and only while it is scrolling —
+       no running animation, no continuous repaint under the grain. */
+    @keyframes guilloche-turn {
+      from {
+        transform: rotate(-28deg);
+      }
+      to {
+        transform: rotate(28deg);
+      }
+    }
+    .guilloche-turn {
+      animation: guilloche-turn linear both;
+      animation-timeline: view();
+    }
+  }
+}
