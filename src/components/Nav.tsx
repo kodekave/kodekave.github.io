@@ -23,6 +23,11 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-hair-inv bg-ink text-paper">
+      {/* Reading progress — a single hairline riding the bar's lower edge. */}
+      <span
+        aria-hidden="true"
+        className="scroll-progress absolute inset-x-0 -bottom-px h-px origin-left bg-paper"
+      />
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-10">
         <Link
           href="/"

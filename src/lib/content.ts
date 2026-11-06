@@ -40,13 +40,32 @@ export const profile = {
   currentEmployerUrl: "",
 };
 
-export const stats = [
-  { value: "6+", label: "Years as a founder's-office operator" },
-  { value: "4", label: "Countries — India, Maldives, US, UK" },
-  { value: "$2.1M+", label: "Raised by ventures I've operated for" },
-  { value: "250%", label: "Revenue growth delivered" },
-  { value: "17", label: "Cross-border team members led" },
-  { value: "5,000+", label: "Students & guests reached" },
+/**
+ * `short` is the one-word caption used where the stats are shown as a compact
+ * proof strip; `lead` marks the two figures the operating record sets large.
+ */
+export const stats: {
+  value: string;
+  label: string;
+  short: string;
+  lead?: boolean;
+}[] = [
+  { value: "6+", label: "Years as a founder's-office operator", short: "Years" },
+  { value: "4", label: "Countries — India, Maldives, US, UK", short: "Countries" },
+  {
+    value: "$2.1M+",
+    label: "Raised by ventures I've operated for",
+    short: "Raised",
+    lead: true,
+  },
+  {
+    value: "250%",
+    label: "Revenue growth delivered",
+    short: "Growth",
+    lead: true,
+  },
+  { value: "17", label: "Cross-border team members led", short: "Team" },
+  { value: "5,000+", label: "Students & guests reached", short: "Reached" },
 ];
 
 export type Venture = {
