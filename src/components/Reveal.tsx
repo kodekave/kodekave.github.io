@@ -8,6 +8,7 @@ export default function Reveal({
   delay = 0,
   direction = "up",
   id,
+  as = "div",
 }: {
   children: React.ReactNode;
   className?: string;
@@ -15,8 +16,15 @@ export default function Reveal({
   delay?: number;
   direction?: "up" | "none";
   id?: string;
+  /**
+   * The element to render. Use "li" when revealing a list item, so the list
+   * keeps its `<li>` children directly — a wrapping `<div>` is invalid HTML
+   * and breaks the list for screen readers.
+   */
+  as?: "div" | "li";
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const Tag = as as React.ElementType;
+  const ref = useRef<HTMLElement>(null);
   // Content is visible by default so it works with JS disabled and for
   // crawlers that don't render JS. useLayoutEffect below may flip this to
   // false — before the browser paints — only for elements confirmed to
@@ -53,7 +61,7 @@ export default function Reveal({
   const hidden = direction === "up" ? "opacity-0 translate-y-5" : "opacity-0";
 
   return (
-    <div
+    <Tag
       ref={ref}
       id={id}
       className={`transition-[opacity,transform] duration-700 ease-out ${
@@ -62,6 +70,6 @@ export default function Reveal({
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >
       {children}
-    </div>
+    </Tag>
   );
 }
