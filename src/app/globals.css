@@ -1003,3 +1003,40 @@ h3 {
     transition: none;
   }
 }
+
+/* ----------------------------------------------------- the interactive globe */
+
+.globe-canvas {
+  cursor: grab;
+  /* Horizontal drags turn the globe; vertical ones still scroll the page. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.route-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.route-code {
+  transition: color 0.25s ease;
+}
+.route-btn:hover .route-code,
+.route-stop.is-selected .route-code {
+  color: var(--color-brass-deep);
+}
+.route-stop.is-selected .route-mark {
+  background: var(--color-brass-deep);
+  border-color: var(--color-brass-deep);
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-code {
+    transition: none;
+  }
+}

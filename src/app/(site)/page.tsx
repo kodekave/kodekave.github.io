@@ -8,7 +8,6 @@ import HalftoneDivider from "@/components/HalftoneDivider";
 import Marquee from "@/components/Marquee";
 import Plate from "@/components/Plate";
 import Reveal from "@/components/Reveal";
-import RouteMap from "@/components/RouteMap";
 import ScrollText from "@/components/ScrollText";
 import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
@@ -212,9 +211,6 @@ export default function HomePage() {
                 pins={route}
                 label="A turning globe marking the four places worked: India, Malé in the Maldives, the United States, and London in the United Kingdom."
               />
-              <div className="mt-10">
-                <RouteMap />
-              </div>
             </div>
           </Reveal>
         </div>
