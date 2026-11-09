@@ -15,6 +15,7 @@ import StickyCta from "@/components/StickyCta";
 import {
   countryCode,
   engagements,
+  milestones,
   profile,
   route,
   stats,
@@ -128,15 +129,18 @@ export default function HomePage() {
             </span>
           </h1>
 
-          <p className="settle settle-3 mt-8 max-w-sm text-lg leading-relaxed text-paper-soft">
+          <p className="settle settle-3 mt-8 max-w-md text-lg leading-relaxed text-paper-soft">
             {profile.tagline}
           </p>
 
           <div className="settle settle-4 mt-9 flex flex-wrap items-center gap-3">
-            <Link href="/services" className="btn btn-solid-paper">
-              Work with me
+            <a
+              href={`mailto:${profile.email}`}
+              className="btn btn-solid-paper"
+            >
+              Start a conversation
               <Arrow className="btn-arrow" />
-            </Link>
+            </a>
             <Link href="#record" className="btn btn-paper">
               See the record
             </Link>
@@ -211,6 +215,35 @@ export default function HomePage() {
                 pins={route}
                 label="A turning globe marking the four places worked: India, Malé in the Maldives, the United States, and London in the United Kingdom."
               />
+            </div>
+          </Reveal>
+
+          {/* The arc in one line per stage, so the page can be read in thirty
+              seconds: curiosity and rigour first, then operating, then
+              crossing borders. Every entry restates a fact elsewhere here. */}
+          <Reveal className="lg:col-span-12">
+            <div className="border-t border-ink pt-8 text-ink">
+              <p className="label mb-10 text-ink-faint">The journey</p>
+              <ol className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+                {milestones.map((m, i) => (
+                  <li
+                    key={m.year}
+                    className={`milestone ${
+                      i === milestones.length - 1 ? "is-now" : ""
+                    }`}
+                  >
+                    <span className="font-display tabular block text-4xl leading-none text-brass-deep">
+                      {m.year}
+                    </span>
+                    <h3 className="font-display-text mt-4 text-xl leading-snug">
+                      {m.title}
+                    </h3>
+                    <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                      {m.note}
+                    </p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </Reveal>
         </div>
@@ -355,15 +388,15 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
           <Reveal>
             <SectionLabel n="03" className="text-ink-faint">
-              Work with me
+              What I bring
             </SectionLabel>
-            <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-              What an engagement covers.
+            <h2 className="font-display mt-6 max-w-3xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
+              What I bring to a founder, and to the people backing them.
             </h2>
-            <p className="mt-8 max-w-xl text-xl leading-[1.7] text-ink-soft">
-              A founder&rsquo;s office, without hiring one. Most engagements
-              are one of these, or an ongoing arrangement that absorbs
-              several.
+            <p className="mt-8 max-w-2xl text-xl leading-[1.7] text-ink-soft">
+              Founders and the people who back them ask the same question:
+              who can take this across a border, a currency or a function
+              nobody on the team has run? These are the four ways I do it.
             </p>
           </Reveal>
 
@@ -492,10 +525,11 @@ export default function HomePage() {
               Start a conversation
             </SectionLabel>
             <h2 className="font-display mt-8 max-w-4xl text-[clamp(2.6rem,7vw,6rem)] leading-[1]">
-              Have an idea that needs an operator?
+              Backing a founder who needs an operator?
             </h2>
             <p className="mt-9 max-w-xl text-xl leading-[1.7] text-paper-soft">
-              Tell me what you&rsquo;re building and where it&rsquo;s stuck.
+              Tell me the company, and the border or function it&rsquo;s
+              stuck on.
             </p>
           </Reveal>
 
@@ -532,7 +566,7 @@ export default function HomePage() {
         items={[
           { id: "about", label: "About", tone: "paper" },
           { id: "record", label: "Operating record", tone: "ink" },
-          { id: "work-with-me", label: "Work with me", tone: "paper" },
+          { id: "work-with-me", label: "What I bring", tone: "paper" },
           ...(posts.length > 0
             ? [{ id: "writing", label: "Writing", tone: "paper" as const }]
             : []),

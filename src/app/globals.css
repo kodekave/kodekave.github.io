@@ -1040,3 +1040,28 @@ h3 {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------ the journey */
+
+/*
+ * Each stage hangs from a hairline with a small square mark where it joins,
+ * the same square the route strip uses; the last (current) one is filled.
+ */
+.milestone {
+  position: relative;
+  border-top: 1px solid var(--color-hair);
+  padding-top: 1.5rem;
+}
+.milestone::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-brass-deep);
+}
+.milestone.is-now::before {
+  background: var(--color-brass-deep);
+}

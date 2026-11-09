@@ -6,11 +6,10 @@ import { useState } from "react";
 /** Unchanged routes and labels — the redesign restyles, it doesn't re-lay
  *  out the information architecture. */
 const links = [
-  { href: "/services", label: "Work with me" },
   { href: "/work", label: "Ventures" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
-  { href: "/sponsor", label: "Sponsor" },
+  { href: "/services", label: "Work with me" },
 ];
 
 /**
@@ -38,17 +37,15 @@ export default function Nav() {
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
-          {links
-            .filter((link) => link.href !== "/services")
-            .map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="label link-rule text-paper-soft hover:text-paper"
-              >
-                {link.label}
-              </Link>
-            ))}
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="label link-rule text-paper-soft hover:text-paper"
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link
             href="/#newsletter"
             className="label link-rule text-paper-soft hover:text-paper"
@@ -57,8 +54,8 @@ export default function Nav() {
           </Link>
           {/* The one filled control in the bar: the action the site exists
               to produce. Newsletter is a text link beside the others. */}
-          <Link href="/services" className="btn btn-solid-paper -my-1">
-            Work with me
+          <Link href="/#contact" className="btn btn-solid-paper -my-1">
+            Get in touch
           </Link>
         </nav>
 
