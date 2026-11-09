@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import LinkedInMark from "@/components/LinkedInMark";
+import { profile } from "@/lib/content";
 
 /** Unchanged routes and labels — the redesign restyles, it doesn't re-lay
  *  out the information architecture. */
@@ -31,9 +33,11 @@ export default function Nav() {
         <Link
           href="/"
           onClick={() => setOpen(false)}
-          className="wordmark text-base leading-none whitespace-nowrap"
+          className="wordmark flex items-center gap-2 text-base leading-none whitespace-nowrap"
         >
           Komal Kedarnath
+          {/* The prompt's cursor: a lamp left on beside the name. */}
+          <span aria-hidden="true" className="cursor-lamp" />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
@@ -46,14 +50,17 @@ export default function Nav() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/#newsletter"
-            className="label link-rule text-paper-soft hover:text-paper"
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="me noopener noreferrer"
+            aria-label="LinkedIn (opens in a new tab)"
+            className="nav-in -mr-2 flex h-9 w-9 items-center justify-center text-paper-soft hover:text-brass"
           >
-            Newsletter
-          </Link>
+            <LinkedInMark className="h-[18px] w-[18px]" />
+          </a>
           {/* The one filled control in the bar: the action the site exists
-              to produce. Newsletter is a text link beside the others. */}
+              to produce. The newsletter lives in the footer and the menu. */}
           <Link href="/#contact" className="btn btn-solid-paper -my-1">
             Get in touch
           </Link>
@@ -102,10 +109,20 @@ export default function Nav() {
           <Link
             href="/#newsletter"
             onClick={() => setOpen(false)}
-            className="label block px-6 py-4"
+            className="label block border-b border-hair-inv px-6 py-4 text-paper-soft"
           >
             Newsletter
           </Link>
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="me noopener noreferrer"
+            className="label flex items-center gap-3 px-6 py-4 text-brass"
+          >
+            <LinkedInMark className="h-4 w-4" />
+            LinkedIn
+            <span className="sr-only">(opens in a new tab)</span>
+          </a>
         </nav>
       )}
     </header>

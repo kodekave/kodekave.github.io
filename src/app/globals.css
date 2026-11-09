@@ -672,17 +672,6 @@ h3 {
   }
 }
 
-/* ------------------------------------------------------------- route map */
-
-.route {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-}
-.route-stop:last-child .route-mark {
-  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent);
-}
-
 /* ------------------------------------- scroll-driven motion (enhancement) */
 
 /*
@@ -1004,43 +993,6 @@ h3 {
   }
 }
 
-/* ----------------------------------------------------- the interactive globe */
-
-.globe-canvas {
-  cursor: grab;
-  /* Horizontal drags turn the globe; vertical ones still scroll the page. */
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.route-btn {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-.route-code {
-  transition: color 0.25s ease;
-}
-.route-btn:hover .route-code,
-.route-stop.is-selected .route-code {
-  color: var(--color-brass-deep);
-}
-.route-stop.is-selected .route-mark {
-  background: var(--color-brass-deep);
-  border-color: var(--color-brass-deep);
-}
-@media (prefers-reduced-motion: reduce) {
-  .route-code {
-    transition: none;
-  }
-}
-
 /* ------------------------------------------------------------ the journey */
 
 /*
@@ -1064,4 +1016,441 @@ h3 {
 }
 .milestone.is-now::before {
   background: var(--color-brass-deep);
+}
+
+/* =====================================================================
+ * The instrument layer
+ *
+ * Retro computing, drawn the way a good instrument maker would draw it
+ * today: the forest field is a phosphor screen, brass is the lamp, and
+ * everything that moves does so slowly and for a reason. Nothing here
+ * adds a colour; it all comes from the palette above.
+ * ===================================================================== */
+
+:root {
+  /* A screen a little deeper than the page field, for the map. */
+  --color-ink-deep: color-mix(in srgb, var(--color-ink) 74%, #000);
+}
+.on-deep {
+  background: var(--color-ink-deep);
+  color: var(--color-paper);
+}
+
+/* ---- scanlines: the faint raster of a CRT, on ink fields only ---- */
+.scanlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgb(0 0 0 / 0.17) 2px,
+    rgb(0 0 0 / 0.17) 3px
+  );
+}
+
+/* ---- the lamp left on beside the name ---- */
+.cursor-lamp {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.85rem;
+  background: var(--color-brass);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cursor-lamp,
+  .caret {
+    animation: lamp-blink 1.15s steps(1) infinite;
+  }
+}
+@keyframes lamp-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---- dot-matrix figures ---- */
+.dot-matrix {
+  display: block;
+  overflow: visible;
+  color: var(--color-brass);
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--color-brass) 40%, transparent));
+}
+.dot-matrix[data-armed][data-on="false"] .lamp {
+  opacity: 0;
+}
+.dot-matrix[data-armed][data-on="true"] .lamp {
+  animation: lamp-on 0.5s ease-out backwards;
+  animation-delay: calc(var(--c) * 24ms);
+}
+@keyframes lamp-on {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+    fill: var(--color-paper);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---- panels with registration corners ---- */
+.panel {
+  position: relative;
+  border: 1px solid var(--color-hair-inv);
+}
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--color-brass);
+  pointer-events: none;
+}
+.panel::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.panel::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* ---- hero: status line and boot sequence ---- */
+.statusbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  color: var(--color-paper-faint);
+}
+.boot {
+  font-family: var(--font-mono);
+  /* Sized so the longest line (about 52 characters with its prompt) fits the
+     width of a phone, and capped at the desktop size. */
+  font-size: min(0.78rem, calc((100vw - 3rem) / 31.2));
+  /* No tracking: the typing box is measured in `ch`, which ignores it. */
+  letter-spacing: 0;
+  line-height: 1.9;
+  color: var(--color-paper-soft);
+}
+.boot-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  white-space: nowrap;
+}
+.boot-cmd {
+  color: var(--color-brass);
+}
+.type {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  width: calc(var(--n) * 1ch);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .type {
+    animation: typing calc(var(--n) * 34ms) steps(var(--n)) var(--d, 0s) backwards;
+  }
+}
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
+.caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.2em;
+  vertical-align: -0.14em;
+  background: var(--color-brass);
+}
+
+/* ---- telemetry: a grid of panels separated by hairlines ---- */
+.tele {
+  display: grid;
+  gap: 1px;
+  background: var(--color-hair-inv);
+  border: 1px solid var(--color-hair-inv);
+}
+.tele > * {
+  background: var(--color-ink);
+}
+
+/* ---- the atlas ---- */
+.atlas-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-hair-inv);
+  border-bottom: 0;
+  color: var(--color-paper-faint);
+}
+.atlas-pause {
+  border: 1px solid var(--color-hair-inv);
+  padding: 0.35em 0.9em;
+  color: var(--color-paper-soft);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.atlas-pause:hover {
+  border-color: var(--color-brass);
+  color: var(--color-brass);
+}
+.atlas-screen {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-hair-inv);
+  background: color-mix(in srgb, var(--color-ink-deep) 80%, #000);
+}
+.atlas-canvas {
+  display: block;
+  width: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.atlas-canvas:active {
+  cursor: grabbing;
+}
+.atlas-stops {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-hair-inv);
+  border: 1px solid var(--color-hair-inv);
+  border-top: 0;
+}
+@media (min-width: 768px) {
+  .atlas-stops {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.atlas-stop {
+  display: grid;
+  gap: 0.3rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 1.1rem 1.1rem;
+  text-align: left;
+  color: var(--color-paper-soft);
+  background: var(--color-ink-deep);
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.atlas-stop:hover {
+  background: color-mix(in srgb, var(--color-brass) 8%, var(--color-ink-deep));
+}
+.atlas-stop[aria-pressed="true"] {
+  color: var(--color-paper);
+  background: color-mix(in srgb, var(--color-brass) 13%, var(--color-ink-deep));
+  box-shadow: inset 0 2px 0 var(--color-brass);
+}
+.atlas-code {
+  color: var(--color-brass);
+}
+.atlas-place {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  line-height: 1.1;
+}
+.atlas-meta {
+  color: var(--color-paper-faint);
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-pause {
+    display: none;
+  }
+}
+
+/* The one live engagement, struck in the deeper brass that reads on paper. */
+.stamp-now {
+  border-color: var(--color-brass-deep);
+  color: var(--color-brass-deep);
+}
+
+/* ---- the log: ventures as ruled rows ---- */
+.log-row {
+  position: relative;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .log-row:hover,
+  .log-row:focus-visible {
+    background: var(--color-mist);
+    box-shadow: inset 3px 0 0 var(--color-brass-deep);
+  }
+  .log-row:hover .row-arrow,
+  .log-row:focus-visible .row-arrow {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- the tape: a punched strip of milestones ---- */
+.tape {
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ink-faint) transparent;
+}
+.tape-track {
+  display: grid;
+  /* Equal stations that fill the row when there is room, and keep a readable
+     minimum width (so the strip scrolls) when there is not. */
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  min-width: calc(var(--cols) * 9.5rem);
+}
+.tape-rail {
+  position: relative;
+  height: 2.25rem;
+  border-block: 1px solid var(--color-ink);
+  /* feed holes, evenly pitched along the strip */
+  background:
+    radial-gradient(circle, var(--color-ink) 0 1.6px, transparent 2px) 0 50% / 14px 100% repeat-x;
+}
+.tape-cell {
+  position: relative;
+  scroll-snap-align: start;
+  padding: 0 1rem 0 0;
+}
+.tape-hole {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.95rem;
+  height: 0.95rem;
+  translate: 0 -50%;
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper);
+  border-radius: 50%;
+}
+.tape-hole::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--color-brass-deep);
+}
+.tape-cell.is-now .tape-hole {
+  background: var(--color-brass-deep);
+}
+.tape-cell.is-now .tape-hole::after {
+  background: var(--color-paper);
+}
+
+/* ---- the register: capabilities and writing as leader-dotted lines ---- */
+.reg-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding: 0.95rem 0;
+  border-top: 1px solid var(--color-hair);
+}
+.reg-lead {
+  flex: 1;
+  min-width: 1rem;
+  border-bottom: 1px dotted currentColor;
+  opacity: 0.35;
+  translate: 0 -0.3em;
+}
+.reg-box {
+  display: inline-block;
+  width: 0.62rem;
+  height: 0.62rem;
+  flex: none;
+  background: var(--color-brass-deep);
+  translate: 0 0.02em;
+}
+
+/* ---- the beacon: the radar that leads to LinkedIn ---- */
+.beacon {
+  position: relative;
+  color: var(--color-paper);
+  border-radius: 50%;
+}
+.beacon:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 6px;
+}
+.beacon-sweep,
+.beacon-text {
+  transform-origin: 220px 220px;
+  transform-box: view-box;
+}
+.beacon-ring-text {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  opacity: 0.78;
+}
+.beacon-core {
+  fill: var(--color-ink);
+  stroke: var(--color-brass);
+  transition: fill 0.3s ease;
+}
+.beacon-blip {
+  opacity: 0.8;
+}
+.beacon-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  color: var(--color-brass);
+  transition: color 0.3s ease;
+}
+.beacon:hover .beacon-core,
+.beacon:focus-visible .beacon-core {
+  fill: var(--color-brass);
+}
+.beacon:hover .beacon-mark,
+.beacon:focus-visible .beacon-mark {
+  color: var(--color-ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .beacon-sweep {
+    animation: beacon-spin 6s linear infinite;
+  }
+  .beacon:hover .beacon-sweep {
+    animation-duration: 2.4s;
+  }
+  .beacon-text {
+    animation: beacon-spin 120s linear infinite reverse;
+  }
+  .beacon-blip {
+    animation: beacon-blip 6s ease-out infinite;
+  }
+}
+@keyframes beacon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes beacon-blip {
+  0%,
+  4% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    opacity: 0.05;
+  }
 }
