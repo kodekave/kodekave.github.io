@@ -49,24 +49,32 @@ export const stats: {
   value: string;
   label: string;
   short: string;
+  /** Two or three words for the homepage telemetry panel; `label` carries the full claim. */
+  tag: string;
+  /** The venture the figure comes from, for the panel's footer. */
+  source: string;
   lead?: boolean;
 }[] = [
-  { value: "6+", label: "Years as a founder's-office operator", short: "Years" },
-  { value: "4", label: "Countries — India, Maldives, US, UK", short: "Countries" },
+  { value: "6+", label: "Years as a founder's-office operator", short: "Years", tag: "Years operating", source: "2019 — now" },
+  { value: "4", label: "Countries — India, Maldives, US, UK", short: "Countries", tag: "Countries", source: "IN · MV · US · UK" },
   {
     value: "$2.1M+",
     label: "Raised by Neuralzome Cybernetics, a VC-backed AI and robotics startup where I led international operations",
     short: "VC-backed",
+    tag: "Raised, VC-backed",
+    source: "Neuralzome",
     lead: true,
   },
   {
     value: "250%",
     label: "Growth in tourism and guest-experience revenue at Uduvilla Investments",
     short: "Growth",
+    tag: "Revenue growth",
+    source: "Uduvilla",
     lead: true,
   },
-  { value: "17", label: "Cross-border team members led", short: "Team" },
-  { value: "5,000+", label: "Students & guests reached", short: "Reached" },
+  { value: "17", label: "Cross-border team members led", short: "Team", tag: "Team led", source: "Uduvilla" },
+  { value: "5,000+", label: "Students & guests reached", short: "Reached", tag: "People reached", source: "Genex · SpaceCat" },
 ];
 
 export type Venture = {
@@ -358,10 +366,19 @@ export const milestones: { year: string; title: string; note: string }[] = [
  * (roughly the middle of the country) except where the site's own copy names
  * a city: London for the UK, Malé for the Maldives. `place` is the pin label.
  */
-export const route = [
-  { code: "IN", label: "India", years: "2019–22", place: "India", lat: 20.6, lon: 78.9 },
+export const route: {
+  code: string;
+  label: string;
+  years: string;
+  place: string;
+  lat: number;
+  lon: number;
+  /** Country-level rather than a named city, so the map shows whole degrees. */
+  approx?: boolean;
+}[] = [
+  { code: "IN", label: "India", years: "2019–22", place: "India", lat: 20.6, lon: 78.9, approx: true },
   { code: "MV", label: "Maldives", years: "2022–24", place: "Malé", lat: 4.18, lon: 73.51 },
-  { code: "US", label: "United States", years: "2025–26", place: "United States", lat: 39.8, lon: -98.6 },
+  { code: "US", label: "United States", years: "2025–26", place: "United States", lat: 39.8, lon: -98.6, approx: true },
   { code: "UK", label: "United Kingdom", years: "2026–", place: "London", lat: 51.51, lon: -0.13 },
 ];
 
