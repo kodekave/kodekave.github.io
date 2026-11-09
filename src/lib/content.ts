@@ -8,7 +8,8 @@ export const profile = {
    */
   alternateNames: ["Komal Kedarnath", "kodekave"],
   role: "Founder's Office Operator & GTM Strategist",
-  tagline: "Helping founders build and scale — from idea to operations.",
+  tagline:
+    "At a founder's side across four ventures in India, the Maldives, the US and the UK — building the launch, closing the first customers, and keeping the books and filings straight.",
   subTagline:
     "A founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — turning early-stage vision into go-to-market execution, revenue, and operating systems that hold.",
   /** One-sentence entity description, used in structured data. */
@@ -54,13 +55,13 @@ export const stats: {
   { value: "4", label: "Countries — India, Maldives, US, UK", short: "Countries" },
   {
     value: "$2.1M+",
-    label: "Raised by ventures I've operated for",
-    short: "Raised",
+    label: "Raised by Neuralzome Cybernetics, a VC-backed AI and robotics startup where I led international operations",
+    short: "VC-backed",
     lead: true,
   },
   {
     value: "250%",
-    label: "Revenue growth delivered",
+    label: "Growth in tourism and guest-experience revenue at Uduvilla Investments",
     short: "Growth",
     lead: true,
   },
@@ -305,6 +306,50 @@ export const journey = [
   {
     heading: "Where I am now",
     body: "I now work remotely for Travel Hands UK, a London-based accessibility-tech company improving mobility for blind and low-vision commuters — still in the founder's office, still turning priorities into execution. Every one of these ventures shares a throughline: founders who needed someone they could hand an idea to and trust it would come back as a working business.",
+  },
+];
+
+/**
+ * The journey in one line per stage, oldest first. Every entry restates a fact
+ * already on the Work and About pages; nothing here is new. It exists so a
+ * reader who gives the page thirty seconds can see the arc: curiosity and
+ * rigour first, then operating, then crossing borders.
+ */
+export const milestones: { year: string; title: string; note: string }[] = [
+  {
+    year: "2019",
+    title: "SSERD, space education",
+    note: "Publications and content strategy for space-education research; the first role working directly with founders on zero-to-one ideas.",
+  },
+  {
+    year: "2020",
+    title: "NASA Space Apps and an asteroid search",
+    note: "Recognised at NASA's Space Apps Challenge, and analysed Pan-STARRS imagery for near-Earth objects in an IASC campaign.",
+  },
+  {
+    year: "2021",
+    title: "CERN Webfest, and CFD on a phone",
+    note: "Winning team member at CERN openlab's Webfest. Ran OpenFOAM simulations on an Android phone and published the workflow with a DOI through IIT Bombay's FOSSEE.",
+  },
+  {
+    year: "2022",
+    title: "Genex Space and SpaceCat",
+    note: "Built the investor proposals, data rooms and decks that closed angel rounds alongside the founders of two space-tech ventures.",
+  },
+  {
+    year: "2023",
+    title: "Uduvilla Investments",
+    note: "Ran day-to-day operations across a multi-business portfolio in the Maldives and grew tourism and guest-experience revenue by 250%.",
+  },
+  {
+    year: "2025",
+    title: "Neuralzome Cybernetics",
+    note: "Led international operations for a 20-person, VC-backed AI and robotics startup: US entity and banking, then its first US customers.",
+  },
+  {
+    year: "2026",
+    title: "Travel Hands UK",
+    note: "The founder's direct operating partner at a London accessibility-tech company, working remotely.",
   },
 ];
 
