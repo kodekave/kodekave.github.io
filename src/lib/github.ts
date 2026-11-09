@@ -208,6 +208,31 @@ async function putFile(
   return { sha: res.commit.sha, fileSha: res.content.sha, url: res.commit.html_url };
 }
 
+/** The current `sha` of a file, or undefined when it does not exist yet. */
+async function fileSha(token: string, path: string): Promise<string | undefined> {
+  try {
+    const f = await call<{ sha: string }>(
+      token,
+      `${repoPath}/contents/${path}?ref=${REPO.branch}`,
+      "read a file"
+    );
+    return f.sha;
+  } catch (e) {
+    if (e instanceof GitHubError && e.status === 404) return undefined;
+    throw e;
+  }
+}
+
+/** Write the encrypted sign-in file, replacing the old one if there is one. */
+export async function saveVault(
+  token: string,
+  path: string,
+  json: string
+): Promise<CommitResult> {
+  const sha = await fileSha(token, path);
+  return putFile(token, path, textToBase64(json), "Update admin sign-in", sha);
+}
+
 /** Create or update `content/posts/<slug>.md`. Pass `sha` when updating. */
 export function savePost(
   token: string,

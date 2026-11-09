@@ -219,10 +219,11 @@ export default function AdminApp() {
 
   /* -------------------------------------------------------------- actions */
 
-  function signIn(t: string, remember: boolean) {
+  function signIn(t: string, remember: boolean, note?: string) {
     setLoginError("");
     setChecking(true);
     setSession({ token: t, remember });
+    if (note) setBanner(note);
   }
 
   function signOut() {
@@ -376,7 +377,7 @@ export default function AdminApp() {
   if (checking) {
     return (
       <p className="label mx-auto max-w-5xl px-6 py-24 text-ink-faint">
-        Checking your token…
+        Signing you in…
       </p>
     );
   }
