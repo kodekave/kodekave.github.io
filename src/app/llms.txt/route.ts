@@ -107,7 +107,7 @@ ${recognition
 
 ## Published research
 
-- ${publication.title} (${publication.type}, ${publication.publisher}, ${publication.datePublished}). DOI ${publication.doi} — ${publication.url}. ${publication.description} Licence: CC BY 4.0.
+- ${publication.title} (${publication.type}, ${publication.publisher}, first published ${publication.datePublished}, current version ${publication.version} ${publication.dateModified}). DOI ${publication.doi} — ${publication.url}. ${publication.description} Licence: CC BY 4.0.
 
 ## Distinctions
 

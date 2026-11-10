@@ -1265,6 +1265,20 @@ h3 {
 .atlas-code {
   color: var(--color-brass);
 }
+/* On a phone the buttons are just names, so the timeline under them stays on
+   screen when a place is chosen; the detail lives in the timeline. */
+@media (max-width: 767px) {
+  .atlas-stop {
+    gap: 0.15rem;
+    padding: 0.8rem 1rem 0.9rem;
+  }
+  .atlas-stop .atlas-meta {
+    display: none;
+  }
+  .atlas-place {
+    font-size: 1.3rem;
+  }
+}
 .atlas-place {
   font-family: var(--font-display);
   font-size: 1.55rem;
@@ -1279,81 +1293,202 @@ h3 {
   }
 }
 
+/* The timeline for the selected place, under the map. */
+.atlas-dossier {
+  border: 1px solid var(--color-hair-inv);
+  border-top: 0;
+  background: var(--color-ink-deep);
+}
+.atlas-stations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.atlas-station {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding: 1.6rem 1.5rem 1.8rem;
+  border-top: 1px solid var(--color-hair-inv);
+}
+.atlas-station:first-child {
+  border-top: 0;
+}
+@media (min-width: 768px) {
+  .atlas-station {
+    border-top: 0;
+    border-left: 1px solid var(--color-hair-inv);
+  }
+  .atlas-station:first-child {
+    border-left: 0;
+  }
+}
+.atlas-year {
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--color-brass);
+}
+.atlas-station-title {
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+.atlas-station-role {
+  font-size: 0.97rem;
+  line-height: 1.4;
+  color: var(--color-paper-soft);
+}
+.atlas-link {
+  justify-self: start;
+  margin-top: 0.4rem;
+  color: var(--color-paper-soft);
+}
+.atlas-link:hover {
+  color: var(--color-paper);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .atlas-stations {
+    animation: dossier-in 0.45s ease both;
+  }
+}
+@keyframes dossier-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---- the research phone: the paper's subject, drawn as an object ---- */
+@property --sim {
+  syntax: "<integer>";
+  initial-value: 10;
+  inherits: true;
+}
+.phone {
+  position: relative;
+  width: min(17.5rem, 78vw);
+  aspect-ratio: 9 / 18.5;
+  padding: 0.75rem;
+  border-radius: 2.7rem;
+  background: var(--color-ink);
+  box-shadow: 0 40px 70px -40px color-mix(in srgb, var(--color-ink) 70%, transparent);
+  color: var(--color-paper);
+}
+.phone-screen {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 1.5rem 1.1rem 1.1rem;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid var(--color-hair-inv);
+  background: var(--color-ink-deep);
+  font-family: var(--font-mono);
+}
+.phone-notch {
+  position: absolute;
+  top: 1.15rem;
+  left: 50%;
+  width: 3.4rem;
+  height: 0.38rem;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: var(--color-hair-inv);
+}
+.phone-term {
+  font-size: 0.64rem;
+  line-height: 1.85;
+  color: var(--color-paper-soft);
+}
+.phone-term .cmd {
+  color: var(--color-brass);
+}
+.phone-type {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  width: calc(var(--n) * 1ch);
+}
+/* Held at the start until the phone is on screen. Only when the script has
+   armed it, so without JavaScript the picture is simply finished. */
+@media (prefers-reduced-motion: no-preference) {
+  .phone[data-armed] .phone-type {
+    animation: typing calc(var(--n) * 55ms) steps(var(--n)) var(--d, 0s) backwards paused;
+  }
+  .phone[data-armed][data-live="true"] .phone-type {
+    animation-play-state: running;
+  }
+}
+.phone-elbow {
+  width: 100%;
+  margin-block: auto;
+  overflow: visible;
+}
+.flow-wall {
+  fill: none;
+  stroke: var(--color-paper-faint);
+  stroke-width: 1;
+}
+.flow-line {
+  fill: none;
+  stroke: var(--color-brass);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 9;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phone[data-armed] .flow-line {
+    animation: flow 1.6s linear infinite paused;
+  }
+  .phone[data-armed][data-live="true"] .flow-line {
+    animation-play-state: running;
+  }
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -19;
+  }
+}
+.phone-readout {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--color-hair-inv);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-paper-faint);
+}
+.phone-clock::after {
+  counter-reset: sim var(--sim);
+  content: counter(sim);
+  color: var(--color-brass);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phone[data-armed] .phone-clock {
+    animation: sim-run 11s steps(11, jump-none) infinite paused;
+  }
+  .phone[data-armed][data-live="true"] .phone-clock {
+    animation-play-state: running;
+  }
+}
+@keyframes sim-run {
+  from {
+    --sim: 0;
+  }
+  to {
+    --sim: 10;
+  }
+}
+
 /* The one live engagement, struck in the deeper brass that reads on paper. */
 .stamp-now {
   border-color: var(--color-brass-deep);
   color: var(--color-brass-deep);
-}
-
-/* ---- the log: ventures as ruled rows ---- */
-.log-row {
-  position: relative;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-@media (hover: hover) {
-  .log-row:hover,
-  .log-row:focus-visible {
-    background: var(--color-mist);
-    box-shadow: inset 3px 0 0 var(--color-brass-deep);
-  }
-  .log-row:hover .row-arrow,
-  .log-row:focus-visible .row-arrow {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ---- the tape: a punched strip of milestones ---- */
-.tape {
-  overflow-x: auto;
-  padding-bottom: 0.75rem;
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-ink-faint) transparent;
-}
-.tape-track {
-  display: grid;
-  /* Equal stations that fill the row when there is room, and keep a readable
-     minimum width (so the strip scrolls) when there is not. */
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  min-width: calc(var(--cols) * 9.5rem);
-}
-.tape-rail {
-  position: relative;
-  height: 2.25rem;
-  border-block: 1px solid var(--color-ink);
-  /* feed holes, evenly pitched along the strip */
-  background:
-    radial-gradient(circle, var(--color-ink) 0 1.6px, transparent 2px) 0 50% / 14px 100% repeat-x;
-}
-.tape-cell {
-  position: relative;
-  scroll-snap-align: start;
-  padding: 0 1rem 0 0;
-}
-.tape-hole {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 0.95rem;
-  height: 0.95rem;
-  translate: 0 -50%;
-  border: 1px solid var(--color-ink);
-  background: var(--color-paper);
-  border-radius: 50%;
-}
-.tape-hole::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: var(--color-brass-deep);
-}
-.tape-cell.is-now .tape-hole {
-  background: var(--color-brass-deep);
-}
-.tape-cell.is-now .tape-hole::after {
-  background: var(--color-paper);
 }
 
 /* ---- the register: capabilities and writing as leader-dotted lines ---- */

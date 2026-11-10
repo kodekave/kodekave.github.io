@@ -6,16 +6,17 @@ import DotMatrix from "@/components/DotMatrix";
 import LinkedInMark from "@/components/LinkedInMark";
 import Plate from "@/components/Plate";
 import Reveal from "@/components/Reveal";
+import ResearchPhone from "@/components/ResearchPhone";
 import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
 import SignalBeacon from "@/components/SignalBeacon";
 import StickyCta from "@/components/StickyCta";
 import UtcClock from "@/components/UtcClock";
 import {
-  countryCode,
   engagements,
   milestones,
   profile,
+  publication,
   route,
   stats,
   ventures,
@@ -90,6 +91,42 @@ export default function HomePage() {
   const boot = bootLines(
     current ? `${current.company} · ${current.location}` : ""
   );
+
+  // What happened at each place, for the atlas to show when one is chosen.
+  // A stage that is a venture carries its role and dates from the venture
+  // record, so those are written once.
+  const pins = route.map((r) => ({
+    ...r,
+    stations: milestones
+      .filter((m) => m.place === r.code)
+      .map((m) => {
+        const v = m.slug ? ventures.find((x) => x.slug === m.slug) : undefined;
+        return {
+          year: m.year,
+          title: v?.company ?? m.title,
+          role: v?.role,
+          period: v?.period,
+          category: v?.category,
+          current: v?.current,
+          href: v ? `/work#${v.slug}` : m.href,
+          hrefLabel: v ? "Open the record" : m.hrefLabel,
+        };
+      }),
+  }));
+
+  // The paper's own figures, plus the one number that is Zenodo's.
+  const researchFacts = [
+    { value: `${publication.facts.simulatedSeconds} s`, label: "Simulated on the phone" },
+    { value: String(publication.facts.courantBelow), label: "Courant number, stayed below about" },
+    { value: `${publication.facts.memoryGb} GB`, label: `Memory, ${publication.facts.device}` },
+    { value: String(publication.zenodo.downloads), label: "Downloads on Zenodo" },
+  ];
+  const zenodoDate = new Date(publication.zenodo.asOf).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
   return (
     <div>
@@ -259,99 +296,84 @@ export default function HomePage() {
 
           <Reveal delay={80} className="mt-12">
             <Atlas
-              pins={route}
-              label="A flat dot-matrix world map that drifts sideways, marking the four places worked, in order: India, Malé in the Maldives, the United States, and London in the United Kingdom."
+              pins={pins}
+              label="A flat dot-matrix world map that drifts sideways, marking the four places worked, in order: India, Malé in the Maldives, the United States, and London in the United Kingdom. Choosing a place lists what happened there."
             />
           </Reveal>
         </div>
       </section>
 
-      {/* --------------------------------------------- 03 · the log and tape */}
-      <section id="ventures" className="on-paper grain scroll-mt-16">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+      {/* ------------------------------------------------- 03 · the research */}
+      <section
+        id="research"
+        className="on-paper grain relative scroll-mt-16 overflow-hidden"
+      >
+        <div className="mx-auto grid max-w-6xl items-center gap-x-20 gap-y-16 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
             <SectionLabel n="03" className="text-ink-faint">
-              Log
+              Research
             </SectionLabel>
             <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-              Four ventures, newest first.
+              CFD on a phone.
             </h2>
+            <p className="font-display-text mt-6 text-xl italic text-ink-soft">
+              {publication.title}
+            </p>
+            <p className="label mt-3 text-ink-faint">
+              {publication.type} · FOSSEE, IIT Bombay · {publication.version} · CC BY 4.0
+            </p>
+            <p className="mt-7 max-w-xl text-lg leading-[1.65] text-ink-soft">
+              A step-by-step workflow for running OpenFOAM, a solver built for
+              desktops and clusters, on an Android phone, taken through every
+              stage on the device with the elbow tutorial.
+            </p>
+
+            <dl className="mt-10 grid max-w-xl grid-cols-2 border-t border-hair">
+              {researchFacts.map((m) => (
+                <div
+                  key={m.label}
+                  className="border-b border-hair py-6 odd:border-r odd:pr-6 even:pl-6"
+                >
+                  <dt className="label text-ink-faint">{m.label}</dt>
+                  <dd className="font-display tabular mt-3 text-5xl leading-none">
+                    {m.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a
+                href={publication.recordUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-solid-ink"
+              >
+                Read the paper
+                <span className="sr-only"> (opens Zenodo in a new tab)</span>
+                <Arrow className="btn-arrow" />
+              </a>
+              <a
+                href={publication.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ink"
+              >
+                DOI {publication.doi}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </div>
+            <p className="label mt-6 text-ink-faint">
+              A feasibility study: one device, one tutorial case. Downloads
+              counted across versions on Zenodo, {zenodoDate}.
+            </p>
           </Reveal>
 
-          <ol className="mt-14 border-b border-hair">
-            {ventures.map((v, i) => (
-              <Reveal as="li" key={v.slug} delay={i * 50}>
-                <Link
-                  href={`/work#${v.slug}`}
-                  className="log-row group grid grid-cols-[2.25rem_1fr_auto] items-baseline gap-x-4 gap-y-1 border-t border-hair px-2 py-6 md:grid-cols-[3rem_10.5rem_1fr_12rem_auto] md:gap-x-6"
-                >
-                  <span className="label tabular text-ink-faint">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="label tabular order-last col-start-2 text-ink-faint md:order-none md:col-start-auto">
-                    {v.period}
-                  </span>
-                  <span className="row-body">
-                    <span className="font-display flex flex-wrap items-center gap-x-4 gap-y-1 text-[1.7rem] leading-tight sm:text-3xl">
-                      {v.company}
-                      {v.current && (
-                        <span className="stamp stamp-now font-mono">Current</span>
-                      )}
-                    </span>
-                    <span className="mt-1.5 block text-[0.95rem] leading-snug text-ink-soft">
-                      {v.role}
-                    </span>
-                  </span>
-                  <span className="hidden md:block">
-                    <span className="stamp">{v.category}</span>
-                  </span>
-                  <span className="flex items-center gap-3 justify-self-end">
-                    <span className="stamp">{countryCode(v.country)}</span>
-                    <Arrow className="row-arrow hidden text-ink md:block" />
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </ol>
-
-          {/* The tape: seven punched stations, 2019 to now. */}
-          <Reveal className="mt-20">
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <p className="label text-ink-faint">
-                Tape · {milestones[0].year} → {milestones[milestones.length - 1].year}
-              </p>
-              <p className="label text-ink-faint sm:hidden">Swipe →</p>
-            </div>
-            <div
-              className="tape mt-6"
-              role="region"
-              aria-label="Career timeline, scrolls sideways"
-              tabIndex={0}
-            >
-              <ol
-                className="tape-track"
-                style={{ "--cols": milestones.length } as React.CSSProperties}
-              >
-                {milestones.map((m, i) => (
-                  <li
-                    key={m.year}
-                    className={`tape-cell ${
-                      i === milestones.length - 1 ? "is-now" : ""
-                    }`}
-                  >
-                    <div className="tape-rail">
-                      <span className="tape-hole" aria-hidden="true" />
-                    </div>
-                    <p className="font-display tabular mt-5 text-4xl leading-none text-brass-deep">
-                      {m.year}
-                    </p>
-                    <p className="font-display-text mt-3 text-[1.02rem] leading-snug text-ink-soft">
-                      {m.title}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            </div>
+          <Reveal delay={120} className="justify-self-center lg:justify-self-end">
+            <ResearchPhone courant={publication.facts.courantBelow} />
+            <p className="label mt-6 text-center text-ink-faint">
+              Schematic, not a recording
+            </p>
           </Reveal>
         </div>
       </section>
@@ -493,7 +515,7 @@ export default function HomePage() {
         items={[
           { id: "record", label: "Telemetry", tone: "ink" },
           { id: "atlas", label: "Atlas", tone: "ink" },
-          { id: "ventures", label: "Log", tone: "paper" },
+          { id: "research", label: "Research", tone: "paper" },
           { id: "writing", label: "Register", tone: "paper" },
           { id: "contact", label: "Signal", tone: "ink" },
         ]}
