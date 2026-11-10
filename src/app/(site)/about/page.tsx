@@ -47,6 +47,8 @@ export default function AboutPage() {
               description: publication.description,
               author: { "@id": PERSON_ID },
               datePublished: publication.datePublished,
+              dateModified: publication.dateModified,
+              version: publication.version,
               publisher: { "@type": "Organization", name: publication.publisher },
               identifier: {
                 "@type": "PropertyValue",

@@ -284,12 +284,34 @@ export const publication = {
   title: "Running OpenFOAM on Android — A Workflow Study",
   type: "Report",
   publisher: "Zenodo",
+  /** First published (version 1). */
   datePublished: "2022-01-20",
-  doi: "10.5281/zenodo.6044898",
-  url: "https://doi.org/10.5281/zenodo.6044898",
+  /** Version 2, the current one. */
+  version: "v2",
+  dateModified: "2026-11-10",
+  /**
+   * The concept DOI, which always resolves to the newest version, so links
+   * and citations never go stale. Version 1 is 10.5281/zenodo.6044898 and
+   * version 2 is 10.5281/zenodo.24120078.
+   */
+  doi: "10.5281/zenodo.6044897",
+  url: "https://doi.org/10.5281/zenodo.6044897",
+  /** The record page for version 2, which carries the PDF. */
+  recordUrl: "https://zenodo.org/records/24120078",
   license: "https://creativecommons.org/licenses/by/4.0/",
   description:
     "A step-by-step workflow study of running OpenFOAM on Android, worked through with a simple elbow case.",
+  /** Read from the paper itself: Samsung Galaxy M31, Android 11, Termux, OpenFOAM v2106, icoFoam elbow tutorial. */
+  facts: {
+    pages: 17,
+    device: "Samsung Galaxy M31",
+    memoryGb: 6,
+    simulatedSeconds: 10,
+    /** The paper reports the maximum Courant number stayed below about this. */
+    courantBelow: 0.53,
+  },
+  /** From Zenodo, counting every version. A snapshot, so it carries its date. */
+  zenodo: { downloads: 211, views: 180, asOf: "2026-11-11" },
 };
 
 export const distinctions: {
@@ -323,39 +345,63 @@ export const journey = [
  * reader who gives the page thirty seconds can see the arc: curiosity and
  * rigour first, then operating, then crossing borders.
  */
-export const milestones: { year: string; title: string; note: string }[] = [
+export const milestones: {
+  year: string;
+  title: string;
+  note: string;
+  /** The `route` code of the place it happened, which puts it on the atlas. */
+  place: "IN" | "MV" | "US" | "UK";
+  /** A venture this stage is, so the atlas can show its role and dates. */
+  slug?: string;
+  /** Somewhere else on the site to read more. */
+  href?: string;
+  hrefLabel?: string;
+}[] = [
   {
     year: "2019",
+    place: "IN",
     title: "SSERD, space education",
     note: "Publications and content strategy for space-education research; the first role working directly with founders on zero-to-one ideas.",
   },
   {
     year: "2020",
+    place: "IN",
     title: "NASA Space Apps and an asteroid search",
     note: "Recognised at NASA's Space Apps Challenge, and analysed Pan-STARRS imagery for near-Earth objects in an IASC campaign.",
   },
   {
     year: "2021",
+    place: "IN",
+    href: "#research",
+    hrefLabel: "Read the paper",
     title: "CERN Webfest, and CFD on a phone",
     note: "Winning team member at CERN openlab's Webfest. Ran OpenFOAM simulations on an Android phone and published the workflow with a DOI through IIT Bombay's FOSSEE.",
   },
   {
     year: "2022",
+    place: "MV",
+    slug: "genex-space-spacecat",
     title: "Genex Space and SpaceCat",
     note: "Built the investor proposals, data rooms and decks that closed angel rounds alongside the founders of two space-tech ventures.",
   },
   {
     year: "2023",
+    place: "MV",
+    slug: "uduvilla-investments",
     title: "Uduvilla Investments",
     note: "Ran day-to-day operations across a multi-business portfolio in the Maldives and grew tourism and guest-experience revenue by 250%.",
   },
   {
     year: "2025",
+    place: "US",
+    slug: "neuralzome-cybernetics",
     title: "Neuralzome Cybernetics",
     note: "Led international operations for a 20-person, VC-backed AI and robotics startup: US entity and banking, then its first US customers.",
   },
   {
     year: "2026",
+    place: "UK",
+    slug: "travel-hands-uk",
     title: "Travel Hands UK",
     note: "The founder's direct operating partner at a London accessibility-tech company, working remotely.",
   },
