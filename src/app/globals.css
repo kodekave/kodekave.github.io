@@ -1293,72 +1293,6 @@ h3 {
   }
 }
 
-/* The timeline for the selected place, under the map. */
-.atlas-dossier {
-  border: 1px solid var(--color-hair-inv);
-  border-top: 0;
-  background: var(--color-ink-deep);
-}
-.atlas-stations {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.atlas-station {
-  display: grid;
-  align-content: start;
-  gap: 0.55rem;
-  padding: 1.6rem 1.5rem 1.8rem;
-  border-top: 1px solid var(--color-hair-inv);
-}
-.atlas-station:first-child {
-  border-top: 0;
-}
-@media (min-width: 768px) {
-  .atlas-station {
-    border-top: 0;
-    border-left: 1px solid var(--color-hair-inv);
-  }
-  .atlas-station:first-child {
-    border-left: 0;
-  }
-}
-.atlas-year {
-  font-size: 2.6rem;
-  line-height: 1;
-  color: var(--color-brass);
-}
-.atlas-station-title {
-  font-size: 1.45rem;
-  line-height: 1.15;
-}
-.atlas-station-role {
-  font-size: 0.97rem;
-  line-height: 1.4;
-  color: var(--color-paper-soft);
-}
-.atlas-link {
-  justify-self: start;
-  margin-top: 0.4rem;
-  color: var(--color-paper-soft);
-}
-.atlas-link:hover {
-  color: var(--color-paper);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .atlas-stations {
-    animation: dossier-in 0.45s ease both;
-  }
-}
-@keyframes dossier-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-
 /* ---- the research phone: the paper's subject, drawn as an object ---- */
 @property --sim {
   syntax: "<integer>";
@@ -1588,4 +1522,313 @@ h3 {
   100% {
     opacity: 0.05;
   }
+}
+
+/* =====================================================================
+ * The trace
+ *
+ * The journey as a program stepped through by scrolling. Two variables do
+ * all the work: `--p` on a station is its own 0-to-1 progress across the
+ * screen, `--sp` on the listing is how much of the line is filled. Both
+ * default to 1, so with no script and with reduced motion (the script does
+ * not run then) everything is simply complete.
+ * ===================================================================== */
+
+.trace {
+  --sp: 1;
+  position: relative;
+}
+
+/* The registers, pinned under the navigation while the trace is on screen. */
+.trace-reg {
+  position: sticky;
+  top: 4.3rem;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.6rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-hair-inv);
+  background: var(--color-ink);
+  color: var(--color-paper-faint);
+}
+.trace-reg b {
+  /* Addresses are written 0x2019, so the label's capitals stop here. */
+  text-transform: none;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brass);
+}
+.trace-lamps {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.trace-lamps i {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--color-hair-inv);
+}
+.trace-lamps i[data-lit="true"] {
+  background: var(--color-brass);
+}
+
+/* The listing, with the line down its left edge. */
+.trace-list {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 1.75rem;
+  list-style: none;
+}
+.trace-list::before,
+.trace-list::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.4rem;
+  width: 1px;
+}
+.trace-list::before {
+  background: var(--color-hair-inv);
+}
+.trace-list::after {
+  background: var(--color-brass);
+  transform: scaleY(var(--sp));
+  transform-origin: top;
+}
+
+.trace-station {
+  --p: 1;
+  position: relative;
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding: 3.25rem 0;
+}
+/* The node where the line meets the station, and the branch off it. */
+.trace-station::before {
+  content: "";
+  position: absolute;
+  top: 3.75rem;
+  left: calc(-1.35rem - 4px);
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--color-brass);
+  background: var(--color-brass);
+}
+.trace-station[data-on="false"]::before {
+  background: var(--color-ink);
+}
+.trace-station::after {
+  content: "";
+  position: absolute;
+  top: calc(3.75rem + 4px);
+  left: calc(-1.35rem + 6px);
+  width: 1rem;
+  height: 1px;
+  background: var(--color-brass);
+  transform: scaleX(clamp(0, calc(var(--p) * 4), 1));
+  transform-origin: left;
+}
+@media (min-width: 768px) {
+  .trace-list {
+    padding-left: 2.75rem;
+  }
+  .trace-station {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    gap: 3rem;
+    min-height: 25rem;
+    padding: 2.5rem 0;
+  }
+  .trace-station::before {
+    top: 50%;
+    left: calc(-2.35rem - 4px);
+    translate: 0 -50%;
+  }
+  .trace-station::after {
+    top: 50%;
+    left: calc(-2.35rem + 6px);
+    width: 1.75rem;
+  }
+}
+
+.trace-copy {
+  opacity: clamp(0.22, calc(var(--p) * 3), 1);
+  transform: translateY(calc((1 - clamp(0, calc(var(--p) * 2.5), 1)) * 18px));
+}
+.trace-op {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.9em;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--color-paper-faint);
+}
+.trace-ins {
+  color: var(--color-brass);
+}
+.trace-year {
+  margin-top: 1rem;
+  font-size: clamp(3.2rem, 7vw, 5rem);
+  line-height: 1;
+  color: var(--color-brass);
+}
+.trace-title {
+  margin-top: 0.9rem;
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  line-height: 1.1;
+}
+.trace-role {
+  margin-top: 0.7rem;
+  color: var(--color-paper-soft);
+}
+.trace-meta {
+  margin-top: 0.6rem;
+  color: var(--color-paper-faint);
+}
+.trace-link {
+  display: inline-block;
+  margin-top: 1.1rem;
+  color: var(--color-paper-soft);
+}
+.trace-link:hover {
+  color: var(--color-paper);
+}
+
+.trace-art {
+  width: min(100%, 20rem);
+}
+@media (min-width: 768px) {
+  .trace-art {
+    justify-self: center;
+    width: min(100%, 24rem);
+  }
+}
+
+/* The last instruction. */
+.trace-halt {
+  padding: 2.5rem 0 0.5rem;
+}
+.trace-halt .trace-op {
+  font-size: 0.9rem;
+  opacity: 1;
+}
+.trace-halt[data-on="false"] .trace-op {
+  opacity: 0.3;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .trace-halt .trace-op {
+    transition: opacity 0.6s ease;
+  }
+}
+
+/* ---- the instruments ---- */
+.trace-art-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: var(--color-brass);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Stages: the first, middle and last third of a station's scroll. */
+.trace-art-svg .s1 {
+  --q: clamp(0, calc(var(--p) * 3), 1);
+}
+.trace-art-svg .s2 {
+  --q: clamp(0, calc((var(--p) - 0.3) * 3), 1);
+}
+.trace-art-svg .s3 {
+  --q: clamp(0, calc((var(--p) - 0.6) * 3), 1);
+}
+.trace-art-svg .draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--q, var(--p)));
+}
+.trace-art-svg .fade {
+  opacity: var(--q, var(--p));
+}
+.trace-art-svg .guide {
+  stroke: var(--color-paper-faint);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+.trace-art-svg .dashed {
+  stroke-width: 1;
+  opacity: 0.8;
+}
+.trace-art-svg .solid {
+  fill: currentColor;
+  stroke: none;
+}
+.trace-art-svg .dim {
+  fill: var(--color-paper-faint);
+  stroke: none;
+  opacity: 0.55;
+}
+.trace-art-svg .note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  fill: var(--color-paper-faint);
+  stroke: none;
+}
+.trace-art-svg .eq {
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-style: italic;
+  fill: var(--color-paper);
+  stroke: none;
+}
+.trace-art-svg .figure {
+  font-family: var(--font-display);
+  font-size: 36px;
+  fill: var(--color-brass);
+  stroke: none;
+}
+.trace-art-svg .bar {
+  fill: color-mix(in srgb, var(--color-paper-faint) 30%, transparent);
+  stroke: var(--color-paper-faint);
+  stroke-width: 1;
+  transform: scaleY(var(--q, var(--p)));
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+.trace-art-svg .bar-top {
+  fill: var(--color-brass);
+  stroke: none;
+}
+/* The planet turns about the orbit's centre; its own shape counter-turns. */
+.trace-art-svg .orbit-spin {
+  transform: rotate(calc(-40deg + var(--p) * 300deg));
+}
+.trace-art-svg .orbit-planet {
+  transform: rotate(calc(40deg - var(--p) * 300deg));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* The asteroid crosses from frame A to frame B. */
+.trace-art-svg .blink-move {
+  transform: translate(calc(var(--p) * 120px), calc(var(--p) * -50px));
+}
+/* The arm unfolds joint by joint. */
+.trace-art-svg .arm-1 {
+  transform: rotate(calc(-8deg - var(--p) * 52deg));
+  transform-origin: 74px 160px;
+}
+.trace-art-svg .arm-2 {
+  transform: rotate(calc(12deg + var(--p) * 68deg));
+  transform-origin: 154px 160px;
+}
+.trace-art-svg .arm-3 {
+  transform: rotate(calc(var(--p) * -24deg));
+  transform-origin: 222px 160px;
 }

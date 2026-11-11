@@ -1,20 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MAP_GRID } from "@/lib/map-grid";
-
-/** One stop on a place's timeline: a year, what happened, and where to read more. */
-export type Station = {
-  year: string;
-  title: string;
-  role?: string;
-  period?: string;
-  category?: string;
-  current?: boolean;
-  href?: string;
-  hrefLabel?: string;
-};
 
 export type AtlasPin = {
   code: string;
@@ -25,8 +12,6 @@ export type AtlasPin = {
   lon: number;
   /** Country-level rather than a named city: shown to the nearest degree. */
   approx?: boolean;
-  /** What happened here, oldest first. Shown under the map when selected. */
-  stations: Station[];
 };
 
 type Api = { focus: (i: number) => void; setPaused: (p: boolean) => void };
@@ -606,42 +591,6 @@ export default function Atlas({
           </li>
         ))}
       </ul>
-
-      {/* The timeline for the selected place. Remounted on each change so it
-          fades in, and announced politely to screen readers. */}
-      <div
-        className="atlas-dossier"
-        role="region"
-        aria-live="polite"
-        aria-label={`${pins[selected]?.place ?? ""}: timeline`}
-      >
-        <ol key={selected} className="atlas-stations">
-          {(pins[selected]?.stations ?? []).map((s) => (
-            <li key={`${s.year}-${s.title}`} className="atlas-station">
-              <span className="font-display tabular atlas-year">{s.year}</span>
-              <span className="font-display atlas-station-title">
-                {s.title}
-                {s.current && (
-                  <span className="stamp stamp-brass label ml-3 align-middle">
-                    Current
-                  </span>
-                )}
-              </span>
-              {s.role && <span className="atlas-station-role">{s.role}</span>}
-              {(s.period || s.category) && (
-                <span className="label atlas-meta">
-                  {[s.period, s.category].filter(Boolean).join(" · ")}
-                </span>
-              )}
-              {s.href && (
-                <Link href={s.href} className="label link-rule atlas-link">
-                  {s.hrefLabel ?? "Open the record"}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
     </figure>
   );
 }
