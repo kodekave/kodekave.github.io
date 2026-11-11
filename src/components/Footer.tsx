@@ -10,6 +10,7 @@ import Reveal from "./Reveal";
 const footerLinks = [
   { href: "/services", label: "Work with me" },
   { href: "/work", label: "Ventures" },
+  { href: "/research", label: "Research" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
   { href: "/bookshelf", label: "Bookshelf" },

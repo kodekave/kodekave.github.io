@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/",
     "/services",
     "/work",
+    "/research",
     "/about",
     "/blog",
     "/bookshelf",

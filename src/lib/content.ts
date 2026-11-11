@@ -17,7 +17,7 @@ export const profile = {
     "Founder's-office operator and GTM strategist with 6+ years building and scaling four early-stage ventures across India, the Maldives, the United States, and the United Kingdom — covering go-to-market execution, cross-border operations, financial operations, and fundraising support.",
   email: "kmailstation@gmail.com",
   linkedin: "https://www.linkedin.com/in/komalkedarnath",
-  location: "India (open to relocation / remote)",
+  location: "India",
   /**
    * Verified profiles for schema `sameAs`. This is the strongest single
    * signal for entity consolidation, so add every profile you control.
@@ -372,7 +372,7 @@ export const milestones: {
   {
     year: "2021",
     place: "IN",
-    href: "#research",
+    href: "/research",
     hrefLabel: "Read the paper",
     title: "CERN Webfest, and CFD on a phone",
     note: "Winning team member at CERN openlab's Webfest. Ran OpenFOAM simulations on an Android phone and published the workflow with a DOI through IIT Bombay's FOSSEE.",

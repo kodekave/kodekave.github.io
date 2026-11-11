@@ -48,6 +48,7 @@ is often confused with.
 - [Home](${absoluteUrl("/")}): overview, operating record, latest writing.
 - [Services](${absoluteUrl("/services")}): how founders can work with Komal, and what a founder's office engagement covers.
 - [Work](${absoluteUrl("/work")}): the four ventures, with role, period, country and measurable outcomes for each.
+- [Research](${absoluteUrl("/research")}): the published OpenFOAM-on-Android study and related research programmes.
 - [About](${absoluteUrl("/about")}): background, earlier roles, distinctions.
 - [What is a founder's office](${absoluteUrl("/founders-office-guide")}): definitional guide to the function.
 - [Cross-border startup operations](${absoluteUrl("/cross-border-operations")}): field guide to running ops across multiple countries.
