@@ -26,7 +26,7 @@ export const metadata = buildMetadata({
   path: "/",
   title: "Founder's Office Operator & GTM Strategist — Komal Kedarnath",
   description:
-    "Komal Kedarnath is a founder's-office operator and GTM strategist who has scaled four ventures across India, the Maldives, the US, and the UK.",
+    "Komal Kedarnath helps founders build from idea to execution: four ventures across India, the Maldives, the US and the UK in more than six years.",
 });
 
 /**
@@ -65,13 +65,11 @@ function glyphs(words: string[], startAt: number) {
 }
 
 /**
- * The boot sequence under the name. Each output line types itself out in
- * turn with CSS alone (see `.type`), starting once the name has landed.
+ * The line of record under the statement. It types itself out with CSS alone
+ * (see `.type`), starting once the name has landed.
  */
-function bootLines(now: string) {
+function bootLines() {
   const lines: { cmd: string; out: string }[] = [
-    { cmd: "role", out: profile.role },
-    { cmd: "now", out: now },
     { cmd: "record", out: "4 ventures · 4 countries · 6+ years" },
   ];
   let t = 1.0;
@@ -86,10 +84,7 @@ export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
   // "Komal" / "Kedarnath G" — set as two lines without hardcoding the split.
   const [firstName, ...restOfName] = profile.name.split(" ");
-  const current = ventures.find((v) => v.current);
-  const boot = bootLines(
-    current ? `${current.company} · ${current.location}` : ""
-  );
+  const boot = bootLines();
 
   // What happened at each place, for the atlas to show when one is chosen.
   // A stage that is a venture carries its role and dates from the venture
@@ -165,7 +160,11 @@ export default function HomePage() {
               </span>
             </h1>
 
-            <div className="boot mt-9 max-w-full overflow-hidden" aria-hidden="true">
+            <p className="settle settle-3 font-display mt-8 max-w-2xl text-balance text-[clamp(1.7rem,3.6vw,2.75rem)] leading-[1.12]">
+              {profile.tagline}
+            </p>
+
+            <div className="boot mt-7 max-w-full overflow-hidden" aria-hidden="true">
               {boot.map((l, i) => (
                 <p key={l.cmd} className="boot-line">
                   <span className="boot-cmd">&gt; {l.cmd}</span>
@@ -186,9 +185,8 @@ export default function HomePage() {
                 </p>
               ))}
             </div>
-            {/* The same three facts, for screen readers and crawlers. */}
+            {/* The same record, for screen readers and crawlers. */}
             <p className="sr-only">
-              {profile.role}. {current ? `Now at ${current.company}. ` : ""}
               Four ventures across four countries and more than six years.
             </p>
 
@@ -379,7 +377,7 @@ export default function HomePage() {
               Signal
             </SectionLabel>
             <h2 className="font-display mt-8 max-w-3xl text-[clamp(2.6rem,6.4vw,5.4rem)] leading-[1]">
-              Backing a founder who needs an operator?
+              Building something? Let&rsquo;s talk.
             </h2>
 
             <div className="mt-12 flex flex-wrap items-center gap-3">

@@ -280,11 +280,7 @@ export default function ServicesPage() {
             </div>
             <p className="mt-10 max-w-xl border-t border-hair-inv pt-6 text-sm leading-relaxed text-paper-faint">
               Currently in a founder&rsquo;s-office role at Travel Hands UK.
-              Selective about additional work — see{" "}
-              <Link href="/sponsor" className="ref">
-                sponsorship
-              </Link>{" "}
-              if you are here about the newsletter instead.
+              Selective about additional work.
             </p>
           </Reveal>
         </div>

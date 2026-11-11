@@ -1,7 +1,6 @@
 import Masthead from "@/components/Masthead";
 import Reveal from "@/components/Reveal";
 import {
-  distinctions,
   earlierRoles,
   education,
   journey,
@@ -99,7 +98,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* The record: roles, recognition, distinctions. Each block is a ruled
+      {/* The record: roles and recognition. Each block is a ruled
           entry in one document rather than a panel of its own. */}
       <section className="grain border-t border-hair bg-mist">
         <div className="mx-auto max-w-3xl px-6 py-20">
@@ -193,39 +192,6 @@ export default function AboutPage() {
                 They are not published here because they carry third-party
                 names and contact details.
               </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={90}>
-            <div className="mt-16 border-t border-hair pt-8">
-              <h2 className="label text-ink-faint">Distinctions &amp; mobility</h2>
-              <ul className="mt-8 flex flex-col gap-4">
-                {distinctions.map((d) => (
-                  <li key={d.text} className="flex gap-4 text-ink-soft">
-                    {/* Square compositor's mark, matching the prose lists. */}
-                    <span
-                      aria-hidden="true"
-                      className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-faint"
-                    />
-                    <span className="leading-relaxed">
-                      {d.text}
-                      {d.url && (
-                        <>
-                          {" "}
-                          <a
-                            href={d.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ref"
-                          >
-                            {d.linkLabel ?? "Reference"}
-                          </a>
-                        </>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
             </div>
           </Reveal>
 

@@ -16,7 +16,6 @@ const footerLinks = [
   { href: "/bookshelf", label: "Bookshelf" },
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
-  { href: "/sponsor", label: "Sponsor" },
 ];
 
 const elsewhere = [

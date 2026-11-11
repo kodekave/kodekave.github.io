@@ -1,7 +1,6 @@
 import { getPublishedPosts } from "@/lib/posts";
 import { getBookshelf } from "@/lib/books";
 import {
-  distinctions,
   earlierRoles,
   education,
   profile,
@@ -49,13 +48,12 @@ is often confused with.
 - [Services](${absoluteUrl("/services")}): how founders can work with Komal, and what a founder's office engagement covers.
 - [Work](${absoluteUrl("/work")}): the four ventures, with role, period, country and measurable outcomes for each.
 - [Research](${absoluteUrl("/research")}): the published OpenFOAM-on-Android study and related research programmes.
-- [About](${absoluteUrl("/about")}): background, earlier roles, distinctions.
+- [About](${absoluteUrl("/about")}): background, earlier roles, recognition.
 - [What is a founder's office](${absoluteUrl("/founders-office-guide")}): definitional guide to the function.
 - [Cross-border startup operations](${absoluteUrl("/cross-border-operations")}): field guide to running ops across multiple countries.
 - [Fractional COO vs founder's office vs chief of staff](${absoluteUrl("/fractional-coo-vs-founders-office")}): comparison of the three roles.
 - [Writing](${absoluteUrl("/blog")}): all essays.
 - [Bookshelf](${absoluteUrl("/bookshelf")}): book recommendations.
-- [Sponsor](${absoluteUrl("/sponsor")}): newsletter and blog sponsorship, with pricing.
 
 ## Ventures
 
@@ -109,12 +107,6 @@ ${recognition
 ## Published research
 
 - ${publication.title} (${publication.type}, ${publication.publisher}, first published ${publication.datePublished}, current version ${publication.version} ${publication.dateModified}). DOI ${publication.doi} — ${publication.url}. ${publication.description} Licence: CC BY 4.0.
-
-## Distinctions
-
-${distinctions
-  .map((d) => `- ${d.text}` + (d.url ? ` Reference: ${d.url}` : ""))
-  .join("\n")}
 
 ## Bookshelf
 
