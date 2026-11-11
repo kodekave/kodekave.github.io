@@ -10,12 +10,12 @@ import Reveal from "./Reveal";
 const footerLinks = [
   { href: "/services", label: "Work with me" },
   { href: "/work", label: "Ventures" },
+  { href: "/research", label: "Research" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
   { href: "/bookshelf", label: "Bookshelf" },
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
-  { href: "/sponsor", label: "Sponsor" },
 ];
 
 const elsewhere = [

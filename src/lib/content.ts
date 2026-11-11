@@ -8,8 +8,8 @@ export const profile = {
    */
   alternateNames: ["Komal Kedarnath", "kodekave"],
   role: "Founder's Office Operator & GTM Strategist",
-  tagline:
-    "At a founder's side across four ventures in India, the Maldives, the US and the UK — building the launch, closing the first customers, and keeping the books and filings straight.",
+  /** Her own line. It leads the homepage. */
+  tagline: "Helping founders build from idea to execution.",
   subTagline:
     "A founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — turning early-stage vision into go-to-market execution, revenue, and operating systems that hold.",
   /** One-sentence entity description, used in structured data. */
@@ -17,7 +17,7 @@ export const profile = {
     "Founder's-office operator and GTM strategist with 6+ years building and scaling four early-stage ventures across India, the Maldives, the United States, and the United Kingdom — covering go-to-market execution, cross-border operations, financial operations, and fundraising support.",
   email: "kmailstation@gmail.com",
   linkedin: "https://www.linkedin.com/in/komalkedarnath",
-  location: "India (open to relocation / remote)",
+  location: "India",
   /**
    * Verified profiles for schema `sameAs`. This is the strongest single
    * signal for entity consolidation, so add every profile you control.
@@ -42,8 +42,10 @@ export const profile = {
 };
 
 /**
- * `short` is the one-word caption used where the stats are shown as a compact
- * proof strip; `lead` marks the two figures the operating record sets large.
+ * Every figure here is something I did, not something a company I worked at
+ * achieved without me: a raise belongs to the company that raised it, so it
+ * is stated on /work in that company's entry and not counted here.
+ * `short` is a one-word caption; `lead` marks the two strongest.
  */
 export const stats: {
   value: string;
@@ -55,16 +57,6 @@ export const stats: {
   source: string;
   lead?: boolean;
 }[] = [
-  { value: "6+", label: "Years as a founder's-office operator", short: "Years", tag: "Years operating", source: "2019 — now" },
-  { value: "4", label: "Countries — India, Maldives, US, UK", short: "Countries", tag: "Countries", source: "IN · MV · US · UK" },
-  {
-    value: "$2.1M+",
-    label: "Raised by Neuralzome Cybernetics, a VC-backed AI and robotics startup where I led international operations",
-    short: "VC-backed",
-    tag: "Raised, VC-backed",
-    source: "Neuralzome",
-    lead: true,
-  },
   {
     value: "250%",
     label: "Growth in tourism and guest-experience revenue at Uduvilla Investments",
@@ -73,8 +65,30 @@ export const stats: {
     source: "Uduvilla",
     lead: true,
   },
+  {
+    value: "4+",
+    label: "Product launches led at Neuralzome Cybernetics, across go-to-market execution and program management",
+    short: "Launches",
+    tag: "Launches led",
+    source: "Neuralzome",
+    lead: true,
+  },
+  {
+    value: "100%",
+    label: "Accuracy in the multi-currency monthly close at Neuralzome Cybernetics",
+    short: "Close",
+    tag: "Close accuracy",
+    source: "Neuralzome",
+  },
   { value: "17", label: "Cross-border team members led", short: "Team", tag: "Team led", source: "Uduvilla" },
   { value: "5,000+", label: "Students & guests reached", short: "Reached", tag: "People reached", source: "Genex · SpaceCat" },
+  {
+    value: "10+",
+    label: "Hours a week of manual data retrieval saved for leadership at Uduvilla Investments, through automated reporting",
+    short: "Hours",
+    tag: "Hours saved weekly",
+    source: "Uduvilla",
+  },
 ];
 
 export type Venture = {
@@ -219,8 +233,7 @@ export const earlierRoles: EarlierRole[] = [
 ];
 
 /**
- * Recognition and research participation, kept separate from `distinctions`
- * (visas, test scores) because these are third-party verifiable and name
+ * Recognition and research participation. These are third-party verifiable and name
  * well-known institutions — which is exactly what search engines and
  * language models use to place a person in a field.
  *
@@ -314,24 +327,6 @@ export const publication = {
   zenodo: { downloads: 211, views: 180, asOf: "2026-11-11" },
 };
 
-export const distinctions: {
-  text: string;
-  url?: string;
-  /** Descriptive anchor text — "Reference" tells a crawler nothing. */
-  linkLabel?: string;
-}[] = [
-  {
-    text: "Valid US B1/B2 visa, with a multi-country travel and remote-work history across the US, Maldives, and India",
-  },
-  {
-    text: "Multi-country work-visa experience in the Maldives, including cross-border compliance navigation",
-  },
-  { text: "TOEFL iBT: 105/120" },
-  {
-    text: "AFCAT cleared twice, advanced to the Services Selection Board (SSB) interview stage",
-  },
-];
-
 export const journey = [
   {
     heading: "Where I am now",
@@ -372,7 +367,7 @@ export const milestones: {
   {
     year: "2021",
     place: "IN",
-    href: "#research",
+    href: "/research",
     hrefLabel: "Read the paper",
     title: "CERN Webfest, and CFD on a phone",
     note: "Winning team member at CERN openlab's Webfest. Ran OpenFOAM simulations on an Android phone and published the workflow with a DOI through IIT Bombay's FOSSEE.",
@@ -496,26 +491,5 @@ export const engagements: {
       "Investor-facing deck support and narrative pressure-testing",
       "Post-raise reporting cadence for new investors",
     ],
-  },
-];
-
-export const sponsorTiers = [
-  {
-    name: "Newsletter Mention",
-    price: "From $150 / issue",
-    description:
-      "A dedicated mention in one issue of the newsletter, reaching founders and operators interested in GTM, cross-border ops, and founder's-office work.",
-  },
-  {
-    name: "Blog Sponsorship",
-    price: "From $250 / post",
-    description:
-      "Feature your product or service alongside original writing on startup scaling, operations, and founder's-office work.",
-  },
-  {
-    name: "Ongoing Partnership",
-    price: "Custom",
-    description:
-      "For tools and services I actually use and would recommend to other founders and operators — a recurring placement across the newsletter and site.",
   },
 ];

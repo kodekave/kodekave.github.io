@@ -9,9 +9,9 @@ import { profile } from "@/lib/content";
  *  out the information architecture. */
 const links = [
   { href: "/work", label: "Ventures" },
+  { href: "/research", label: "Research" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
-  { href: "/services", label: "Work with me" },
 ];
 
 /**
@@ -40,7 +40,7 @@ export default function Nav() {
           <span aria-hidden="true" className="cursor-lamp" />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -68,7 +68,7 @@ export default function Nav() {
 
         <button
           type="button"
-          className="-mr-2.5 flex h-11 w-11 items-center justify-center md:hidden"
+          className="-mr-2.5 flex h-11 w-11 items-center justify-center lg:hidden"
           aria-label="Toggle menu"
           aria-expanded={open}
           aria-controls="nav-menu"
@@ -94,7 +94,7 @@ export default function Nav() {
         <nav
           id="nav-menu"
           aria-label="Primary"
-          className="border-t border-hair-inv md:hidden"
+          className="border-t border-hair-inv lg:hidden"
         >
           {links.map((link) => (
             <Link

@@ -6,7 +6,6 @@ import DotMatrix from "@/components/DotMatrix";
 import LinkedInMark from "@/components/LinkedInMark";
 import Plate from "@/components/Plate";
 import Reveal from "@/components/Reveal";
-import ResearchPhone from "@/components/ResearchPhone";
 import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
 import SignalBeacon from "@/components/SignalBeacon";
@@ -16,7 +15,6 @@ import {
   engagements,
   milestones,
   profile,
-  publication,
   route,
   stats,
   ventures,
@@ -28,16 +26,17 @@ export const metadata = buildMetadata({
   path: "/",
   title: "Founder's Office Operator & GTM Strategist — Komal Kedarnath",
   description:
-    "Komal Kedarnath is a founder's-office operator and GTM strategist who has scaled four ventures across India, the Maldives, the US, and the UK.",
+    "Komal Kedarnath helps founders build from idea to execution: four ventures across India, the Maldives, the US and the UK in more than six years.",
 });
 
 /**
  * The homepage is an instrument panel, not a brochure.
  *
- * Six short readings, in the order a backer wants them: who (the card),
- * what (the telemetry), where (the atlas), when and for whom (the log and
- * the tape), what is on offer (the register), and how to reach me (the
- * signal). Anything longer than a line lives on its own page.
+ * Five short readings, in the order a backer wants them: who (the card),
+ * what (the telemetry), where and when (the atlas, with its timeline), what
+ * is on offer (the register), and how to reach me (the signal). Anything
+ * longer than a line lives on its own page: the ventures on /work, the
+ * research on /research.
  */
 
 /**
@@ -66,13 +65,11 @@ function glyphs(words: string[], startAt: number) {
 }
 
 /**
- * The boot sequence under the name. Each output line types itself out in
- * turn with CSS alone (see `.type`), starting once the name has landed.
+ * The line of record under the statement. It types itself out with CSS alone
+ * (see `.type`), starting once the name has landed.
  */
-function bootLines(now: string) {
+function bootLines() {
   const lines: { cmd: string; out: string }[] = [
-    { cmd: "role", out: profile.role },
-    { cmd: "now", out: now },
     { cmd: "record", out: "4 ventures · 4 countries · 6+ years" },
   ];
   let t = 1.0;
@@ -87,10 +84,7 @@ export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
   // "Komal" / "Kedarnath G" — set as two lines without hardcoding the split.
   const [firstName, ...restOfName] = profile.name.split(" ");
-  const current = ventures.find((v) => v.current);
-  const boot = bootLines(
-    current ? `${current.company} · ${current.location}` : ""
-  );
+  const boot = bootLines();
 
   // What happened at each place, for the atlas to show when one is chosen.
   // A stage that is a venture carries its role and dates from the venture
@@ -113,20 +107,6 @@ export default function HomePage() {
         };
       }),
   }));
-
-  // The paper's own figures, plus the one number that is Zenodo's.
-  const researchFacts = [
-    { value: `${publication.facts.simulatedSeconds} s`, label: "Simulated on the phone" },
-    { value: String(publication.facts.courantBelow), label: "Courant number, stayed below about" },
-    { value: `${publication.facts.memoryGb} GB`, label: `Memory, ${publication.facts.device}` },
-    { value: String(publication.zenodo.downloads), label: "Downloads on Zenodo" },
-  ];
-  const zenodoDate = new Date(publication.zenodo.asOf).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
 
   return (
     <div>
@@ -162,7 +142,7 @@ export default function HomePage() {
               UTC <UtcClock className="text-paper-soft" />
             </span>
             <span className="hidden sm:inline">
-              Base · India — open to relocation
+              Base · India
             </span>
           </p>
 
@@ -180,7 +160,11 @@ export default function HomePage() {
               </span>
             </h1>
 
-            <div className="boot mt-9 max-w-full overflow-hidden" aria-hidden="true">
+            <p className="settle settle-3 font-display mt-8 max-w-2xl text-balance text-[clamp(1.7rem,3.6vw,2.75rem)] leading-[1.12]">
+              {profile.tagline}
+            </p>
+
+            <div className="boot mt-7 max-w-full overflow-hidden" aria-hidden="true">
               {boot.map((l, i) => (
                 <p key={l.cmd} className="boot-line">
                   <span className="boot-cmd">&gt; {l.cmd}</span>
@@ -201,9 +185,8 @@ export default function HomePage() {
                 </p>
               ))}
             </div>
-            {/* The same three facts, for screen readers and crawlers. */}
+            {/* The same record, for screen readers and crawlers. */}
             <p className="sr-only">
-              {profile.role}. {current ? `Now at ${current.company}. ` : ""}
               Four ventures across four countries and more than six years.
             </p>
 
@@ -303,89 +286,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------- 03 · the research */}
-      <section
-        id="research"
-        className="on-paper grain relative scroll-mt-16 overflow-hidden"
-      >
-        <div className="mx-auto grid max-w-6xl items-center gap-x-20 gap-y-16 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal>
-            <SectionLabel n="03" className="text-ink-faint">
-              Research
-            </SectionLabel>
-            <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-              CFD on a phone.
-            </h2>
-            <p className="font-display-text mt-6 text-xl italic text-ink-soft">
-              {publication.title}
-            </p>
-            <p className="label mt-3 text-ink-faint">
-              {publication.type} · FOSSEE, IIT Bombay · {publication.version} · CC BY 4.0
-            </p>
-            <p className="mt-7 max-w-xl text-lg leading-[1.65] text-ink-soft">
-              A step-by-step workflow for running OpenFOAM, a solver built for
-              desktops and clusters, on an Android phone, taken through every
-              stage on the device with the elbow tutorial.
-            </p>
-
-            <dl className="mt-10 grid max-w-xl grid-cols-2 border-t border-hair">
-              {researchFacts.map((m) => (
-                <div
-                  key={m.label}
-                  className="border-b border-hair py-6 odd:border-r odd:pr-6 even:pl-6"
-                >
-                  <dt className="label text-ink-faint">{m.label}</dt>
-                  <dd className="font-display tabular mt-3 text-5xl leading-none">
-                    {m.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <a
-                href={publication.recordUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-solid-ink"
-              >
-                Read the paper
-                <span className="sr-only"> (opens Zenodo in a new tab)</span>
-                <Arrow className="btn-arrow" />
-              </a>
-              <a
-                href={publication.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-ink"
-              >
-                DOI {publication.doi}
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </div>
-            <p className="label mt-6 text-ink-faint">
-              A feasibility study: one device, one tutorial case. Downloads
-              counted across versions on Zenodo, {zenodoDate}.
-            </p>
-          </Reveal>
-
-          <Reveal delay={120} className="justify-self-center lg:justify-self-end">
-            <ResearchPhone courant={publication.facts.courantBelow} />
-            <p className="label mt-6 text-center text-ink-faint">
-              Schematic, not a recording
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------- 04 · the register */}
+      {/* ------------------------------------------------- 03 · the register */}
       <section
         id="writing"
         className="grain scroll-mt-16 border-t border-hair bg-mist"
       >
         <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <Reveal>
-            <SectionLabel n="04" className="text-ink-faint">
+            <SectionLabel n="03" className="text-ink-faint">
               Register
             </SectionLabel>
           </Reveal>
@@ -458,18 +366,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------- 05 · the signal */}
+      {/* ---------------------------------------------------- 04 · the signal */}
       <section
         id="contact"
         className="on-ink grain scanlines relative scroll-mt-16 overflow-hidden"
       >
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-x-16 gap-y-14 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
-            <SectionLabel n="05" onInk className="text-paper-faint">
+            <SectionLabel n="04" onInk className="text-paper-faint">
               Signal
             </SectionLabel>
             <h2 className="font-display mt-8 max-w-3xl text-[clamp(2.6rem,6.4vw,5.4rem)] leading-[1]">
-              Backing a founder who needs an operator?
+              Building something? Let&rsquo;s talk.
             </h2>
 
             <div className="mt-12 flex flex-wrap items-center gap-3">
@@ -515,7 +423,6 @@ export default function HomePage() {
         items={[
           { id: "record", label: "Telemetry", tone: "ink" },
           { id: "atlas", label: "Atlas", tone: "ink" },
-          { id: "research", label: "Research", tone: "paper" },
           { id: "writing", label: "Register", tone: "paper" },
           { id: "contact", label: "Signal", tone: "ink" },
         ]}
