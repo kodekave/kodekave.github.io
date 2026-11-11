@@ -351,21 +351,38 @@ export const milestones: {
   /** Somewhere else on the site to read more. */
   href?: string;
   hrefLabel?: string;
+  /**
+   * The stage as one line of an assembly listing, for the homepage trace: an
+   * instruction and its operand. Decoration, not a claim.
+   */
+  op: string;
+  arg: string;
+  /** Which instrument the trace turns into at this stage. */
+  motif: "orbit" | "blink" | "flow" | "stars" | "ledger" | "arm" | "braille";
 }[] = [
   {
     year: "2019",
+    op: "LOAD",
+    arg: "sserd",
+    motif: "orbit",
     place: "IN",
     title: "SSERD, space education",
     note: "Publications and content strategy for space-education research; the first role working directly with founders on zero-to-one ideas.",
   },
   {
     year: "2020",
+    op: "SCAN",
+    arg: "pan_starrs",
+    motif: "blink",
     place: "IN",
     title: "NASA Space Apps and an asteroid search",
     note: "Recognised at NASA's Space Apps Challenge, and analysed Pan-STARRS imagery for near-Earth objects in an IASC campaign.",
   },
   {
     year: "2021",
+    op: "SOLVE",
+    arg: "icofoam",
+    motif: "flow",
     place: "IN",
     href: "/research",
     hrefLabel: "Read the paper",
@@ -374,6 +391,9 @@ export const milestones: {
   },
   {
     year: "2022",
+    op: "JMP",
+    arg: "male",
+    motif: "stars",
     place: "MV",
     slug: "genex-space-spacecat",
     title: "Genex Space and SpaceCat",
@@ -381,6 +401,9 @@ export const milestones: {
   },
   {
     year: "2023",
+    op: "ADD",
+    arg: "revenue, 250%",
+    motif: "ledger",
     place: "MV",
     slug: "uduvilla-investments",
     title: "Uduvilla Investments",
@@ -388,6 +411,9 @@ export const milestones: {
   },
   {
     year: "2025",
+    op: "CALL",
+    arg: "us_entry",
+    motif: "arm",
     place: "US",
     slug: "neuralzome-cybernetics",
     title: "Neuralzome Cybernetics",
@@ -395,6 +421,9 @@ export const milestones: {
   },
   {
     year: "2026",
+    op: "RUN",
+    arg: "travel_hands",
+    motif: "braille",
     place: "UK",
     slug: "travel-hands-uk",
     title: "Travel Hands UK",

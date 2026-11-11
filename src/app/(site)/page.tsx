@@ -10,6 +10,7 @@ import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
 import SignalBeacon from "@/components/SignalBeacon";
 import StickyCta from "@/components/StickyCta";
+import Trace from "@/components/Trace";
 import UtcClock from "@/components/UtcClock";
 import {
   engagements,
@@ -32,11 +33,11 @@ export const metadata = buildMetadata({
 /**
  * The homepage is an instrument panel, not a brochure.
  *
- * Five short readings, in the order a backer wants them: who (the card),
- * what (the telemetry), where and when (the atlas, with its timeline), what
- * is on offer (the register), and how to reach me (the signal). Anything
- * longer than a line lives on its own page: the ventures on /work, the
- * research on /research.
+ * Six readings, in order: who (the card), what (the telemetry), what is on
+ * offer (the register), where (the atlas), when (the trace, which steps
+ * through the journey as the page scrolls and ends on HCF), and how to reach
+ * me (the signal). Anything longer than a line lives on its own page: the
+ * ventures on /work, the research on /research.
  */
 
 /**
@@ -86,27 +87,29 @@ export default function HomePage() {
   const [firstName, ...restOfName] = profile.name.split(" ");
   const boot = bootLines();
 
-  // What happened at each place, for the atlas to show when one is chosen.
-  // A stage that is a venture carries its role and dates from the venture
-  // record, so those are written once.
-  const pins = route.map((r) => ({
-    ...r,
-    stations: milestones
-      .filter((m) => m.place === r.code)
-      .map((m) => {
-        const v = m.slug ? ventures.find((x) => x.slug === m.slug) : undefined;
-        return {
-          year: m.year,
-          title: v?.company ?? m.title,
-          role: v?.role,
-          period: v?.period,
-          category: v?.category,
-          current: v?.current,
-          href: v ? `/work#${v.slug}` : m.href,
-          hrefLabel: v ? "Open the record" : m.hrefLabel,
-        };
-      }),
-  }));
+  // The journey, one station per stage, for the trace. A stage that is a
+  // venture carries its role and dates from the venture record, so those are
+  // written once. The two counts are running totals: how many countries and
+  // ventures there had been by that stage.
+  const traceStations = milestones.map((m, i) => {
+    const v = m.slug ? ventures.find((x) => x.slug === m.slug) : undefined;
+    const soFar = milestones.slice(0, i + 1);
+    return {
+      addr: `0x${m.year}`,
+      op: m.op,
+      arg: m.arg,
+      year: m.year,
+      title: v?.company ?? m.title,
+      role: v?.role,
+      meta: v ? `${v.period} · ${v.category}` : undefined,
+      current: v?.current,
+      href: v ? `/work#${v.slug}` : m.href,
+      hrefLabel: v ? "Open the record" : m.hrefLabel,
+      motif: m.motif,
+      countries: new Set(soFar.map((x) => x.place)).size,
+      ventures: soFar.filter((x) => x.slug).length,
+    };
+  });
 
   return (
     <div>
@@ -255,45 +258,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------- 02 · the atlas */}
-      <section
-        id="atlas"
-        className="on-deep grain scanlines relative scroll-mt-16"
-      >
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
-              <div>
-                <SectionLabel n="02" onInk className="text-paper-faint">
-                  Atlas
-                </SectionLabel>
-                <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-                  Where the work was done.
-                </h2>
-              </div>
-              <p className="label text-paper-faint">
-                {route.map((r) => r.code).join(" → ")}
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={80} className="mt-12">
-            <Atlas
-              pins={pins}
-              label="A flat dot-matrix world map that drifts sideways, marking the four places worked, in order: India, Malé in the Maldives, the United States, and London in the United Kingdom. Choosing a place lists what happened there."
-            />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------- 03 · the register */}
+      {/* ------------------------------------------------- 02 · the register */}
       <section
         id="writing"
         className="grain scroll-mt-16 border-t border-hair bg-mist"
       >
         <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <Reveal>
-            <SectionLabel n="03" className="text-ink-faint">
+            <SectionLabel n="02" className="text-ink-faint">
               Register
             </SectionLabel>
           </Reveal>
@@ -366,14 +338,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------- 04 · the signal */}
+      {/* ---------------------------------------------------- 03 · the atlas */}
+      <section
+        id="atlas"
+        className="on-deep grain scanlines relative scroll-mt-16"
+      >
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+              <div>
+                <SectionLabel n="03" onInk className="text-paper-faint">
+                  Atlas
+                </SectionLabel>
+                <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
+                  Where the work was done.
+                </h2>
+              </div>
+              <p className="label text-paper-faint">
+                {route.map((r) => r.code).join(" → ")}
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80} className="mt-12">
+            <Atlas
+              pins={route}
+              label="A flat dot-matrix world map that drifts sideways, marking the four places worked, in order: India, Malé in the Maldives, the United States, and London in the United Kingdom."
+            />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------- 04 · the trace */}
+      <section
+        id="trace"
+        className="on-ink grain relative scroll-mt-16 border-t border-hair-inv"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+          <Reveal>
+            <SectionLabel n="04" onInk className="text-paper-faint">
+              Trace
+            </SectionLabel>
+            <h2 className="font-display mt-6 max-w-3xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
+              The journey, one instruction at a time.
+            </h2>
+          </Reveal>
+
+          <div className="mt-12">
+            <Trace stations={traceStations} />
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------- 05 · the signal */}
       <section
         id="contact"
         className="on-ink grain scanlines relative scroll-mt-16 overflow-hidden"
       >
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-x-16 gap-y-14 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
-            <SectionLabel n="04" onInk className="text-paper-faint">
+            <SectionLabel n="05" onInk className="text-paper-faint">
               Signal
             </SectionLabel>
             <h2 className="font-display mt-8 max-w-3xl text-[clamp(2.6rem,6.4vw,5.4rem)] leading-[1]">
@@ -422,8 +446,9 @@ export default function HomePage() {
       <SectionRail
         items={[
           { id: "record", label: "Telemetry", tone: "ink" },
-          { id: "atlas", label: "Atlas", tone: "ink" },
           { id: "writing", label: "Register", tone: "paper" },
+          { id: "atlas", label: "Atlas", tone: "ink" },
+          { id: "trace", label: "Trace", tone: "ink" },
           { id: "contact", label: "Signal", tone: "ink" },
         ]}
         hideWhileVisible={["hero", "newsletter"]}
