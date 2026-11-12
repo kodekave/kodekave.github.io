@@ -314,6 +314,15 @@ body {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 30%);
   mask-image: linear-gradient(to right, transparent 0%, #000 30%);
 }
+/*
+ * The homepage portrait runs the full height of the hero, so the equation on
+ * the hoodie (the bottom quarter of the plate, left of centre) stays in frame,
+ * and its fade is shorter so the left of that equation is not swallowed.
+ */
+.plate-hero {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 14%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 14%);
+}
 
 /* --------------------------------------------------------------- controls */
 

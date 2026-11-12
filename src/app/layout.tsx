@@ -25,8 +25,14 @@ const archivo = Archivo({
   axes: ["wdth"],
 });
 
+/*
+ * The reading face is not on the first screen (the hero is Archivo and Plex
+ * Mono), so it is not preloaded: on a slow connection its two files, about
+ * 270 KB, would queue ahead of the portrait that is the largest paint.
+ */
 const newsreader = Newsreader({
   variable: "--font-newsreader",
+  preload: false,
   subsets: ["latin"],
   axes: ["opsz"],
   style: ["normal", "italic"],

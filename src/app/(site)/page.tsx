@@ -114,11 +114,11 @@ export default function HomePage() {
           alt={`${profile.name} — engraved portrait`}
           priority
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 54vw, 44vw"
-          className="plate-fade settle-plate absolute opacity-40 sm:opacity-100 -top-8 -right-[3%] h-[112%] w-[86%] max-w-none object-cover object-[46%_20%] sm:w-[54%] lg:w-[44%]"
+          className="plate-fade plate-hero settle-plate absolute right-0 top-0 h-[54%] w-auto max-w-none opacity-90 sm:-right-[3%] sm:h-full sm:w-[54%] sm:object-cover sm:object-[46%_20%] sm:opacity-100 lg:w-[44%]"
         />
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/25 sm:hidden"
+          className="absolute inset-0 bg-gradient-to-t from-ink from-36% to-transparent to-50% sm:hidden"
         />
         <span
           aria-hidden="true"
