@@ -77,10 +77,7 @@ export default function Masthead({
         {/* On a page whose trail already ends in its own name, the label
             would just say it twice. */}
         {breadcrumb?.at(-1)?.name.toLowerCase() !== label.toLowerCase() && (
-          <p className="settle settle-1 statusbar label text-paper-soft">
-            <span aria-hidden="true" className="now-mark text-brass" />
-            {label}
-          </p>
+          <p className="settle settle-1 label text-paper-faint">{label}</p>
         )}
         <h1 className="settle settle-2 font-display mt-6 max-w-3xl text-[clamp(2rem,5.4vw,3.9rem)] leading-[1.05]">
           {title}

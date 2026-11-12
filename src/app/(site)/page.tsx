@@ -8,7 +8,6 @@ import Plate from "@/components/Plate";
 import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
 import StickyCta from "@/components/StickyCta";
-import Terminal from "@/components/Terminal";
 import UtcClock from "@/components/UtcClock";
 import {
   engagements,
@@ -29,14 +28,12 @@ export const metadata = buildMetadata({
 });
 
 /**
- * The homepage is one machine.
- *
- * Four panels after the screen that powers on: the telemetry (the readings),
- * the register (what is on offer, as a printout), the trace (the journey as a
- * program listing, with the map as its detail) and the signal (a terminal
- * awaiting input). Each carries a silkscreen designator, U1 to U4. Anything
- * longer than a line lives on its own page: the ventures on /work, the
- * research on /research.
+ * The homepage is one machine, kept as plain as it can be: the screen that
+ * powers on, then four panels. The telemetry (the readings), the register
+ * (what is on offer, as a printout), the trace (the journey as a program
+ * listing, with the map as its detail) and the signal (how to reach me).
+ * Anything longer than a line lives on its own page: the ventures on /work,
+ * the research on /research.
  */
 
 /**
@@ -70,12 +67,9 @@ export default function HomePage() {
   const [firstName, ...restOfName] = profile.name.split(" ");
 
   // The journey, one stop per stage. A stage that is a venture carries its
-  // role and dates from the venture record, so those are written once. The two
-  // counts are running totals: how many countries and ventures there had been
-  // by that stage, for the registers.
-  const stops = milestones.map((m, i) => {
+  // role and dates from the venture record, so those are written once.
+  const stops = milestones.map((m) => {
     const v = m.slug ? ventures.find((x) => x.slug === m.slug) : undefined;
-    const soFar = milestones.slice(0, i + 1);
     return {
       addr: `0x${m.year}`,
       op: m.op,
@@ -89,8 +83,6 @@ export default function HomePage() {
       hrefLabel: v ? "Open the record" : m.hrefLabel,
       motif: m.motif,
       place: m.place,
-      countries: new Set(soFar.map((x) => x.place)).size,
-      ventures: soFar.filter((x) => x.slug).length,
     };
   });
   const pins = route.map((r) => ({
@@ -189,22 +181,12 @@ export default function HomePage() {
             <p className="label text-paper-faint">
               4 ventures · 4 countries · 6+ years
             </p>
-            <span className="label hidden items-center gap-3 text-paper-faint sm:flex">
-              <span aria-hidden="true" className="lamp-d" />
-              Sig
-              <span className="desig">U1</span>
-            </span>
           </div>
 
           <dl className="panel tele-panel">
-            {stats.map((s, i) => (
+            {stats.map((s) => (
               <div key={s.tag} className="tele-ch">
-                <dt className="tele-top label">
-                  <span>{s.tag}</span>
-                  <span aria-hidden="true" className="tele-no tabular">
-                    {i + 1}
-                  </span>
-                </dt>
+                <dt className="tele-top label">{s.tag}</dt>
                 <dd>
                   <DotMatrix text={s.value} label={s.label} />
                 </dd>
@@ -227,7 +209,6 @@ export default function HomePage() {
                 <SectionLabel n="02" className="text-ink-faint">
                   Register
                 </SectionLabel>
-                <span className="desig text-ink-faint">U2</span>
               </div>
 
               <div className="mt-10 grid gap-x-16 gap-y-14 lg:grid-cols-2">
@@ -311,7 +292,6 @@ export default function HomePage() {
             <SectionLabel n="03" onInk className="text-paper-faint">
               Trace
             </SectionLabel>
-            <span className="desig text-paper-faint">U3</span>
           </div>
           <h2 className="font-display mt-4 mb-7 max-w-3xl text-[clamp(2rem,4.2vw,3rem)] leading-[1.04]">
             The journey, one instruction at a time.
@@ -325,7 +305,7 @@ export default function HomePage() {
         id="contact"
         className="on-ink grain scanlines rule-2 relative scroll-mt-16 overflow-hidden"
       >
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-x-16 gap-y-12 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <div>
             <SectionLabel n="04" onInk className="text-paper-faint">
               Signal
@@ -353,8 +333,6 @@ export default function HomePage() {
 
             <p className="label mt-10 text-paper-faint">{profile.location}</p>
           </div>
-
-          <Terminal address={profile.linkedin.replace(/^https?:\/\/(www\.)?/, "")} />
         </div>
       </section>
 

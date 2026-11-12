@@ -65,7 +65,6 @@ export default function Footer() {
 
             <div className="grid gap-8 sm:grid-cols-2">
               <nav aria-label="Footer" className="flex flex-col gap-2.5">
-                <span aria-hidden="true" className="desig text-paper-faint">J1</span>
                 {footerLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -77,7 +76,6 @@ export default function Footer() {
                 ))}
               </nav>
               <nav aria-label="Elsewhere" className="flex flex-col gap-2.5">
-                <span aria-hidden="true" className="desig text-paper-faint">J2</span>
                 {elsewhere.map((link) => (
                   <a
                     key={link.label}

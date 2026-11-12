@@ -21,9 +21,6 @@ export type Stop = {
   motif: Motif;
   /** The route code of the place it happened. */
   place: string;
-  /** Running totals by this stop, for the registers. */
-  countries: number;
-  ventures: number;
 };
 
 export type Pin = {
@@ -35,7 +32,6 @@ export type Pin = {
 };
 
 const STEP_MS = 340;
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /** True from the wide breakpoint up, where the detail has its own pane. */
 function useWide() {
@@ -51,20 +47,19 @@ function useWide() {
 }
 
 /**
- * The journey as a program listing and a debugger.
+
+ * The journey as a program listing.
  *
  * Every stop is one line of the listing: year, opcode, title. The line that is
  * selected drives one detail: a flat map showing where the program has jumped
- * so far, the PC / CTRY / VENT registers, and the stop's year, title, role,
- * dates, link and drawing. On first view the program runs once, a line every
- * third of a second, and stops on the last stop: the registers hold their
- * final values and the D1 lamp comes on. After that any line can be chosen by
- * hover, focus, click or the arrow keys, and STEP and RUN are real controls.
- * Nothing is pinned and nothing hijacks the scroll.
+ * so far, and the stop's year, title, role, dates, link and drawing. On first
+ * view the listing runs once, a line every third of a second, and stops on the
+ * last stop. After that any line can be chosen by hover, focus, click or the
+ * arrow keys. Nothing is pinned and nothing hijacks the scroll.
  *
- * What the server sends is the finished state: the last stop selected, the
- * registers at their final values. That is also what anyone with reduced motion sees, and
- * every stop's detail is in the HTML whether or not it is open.
+ * What the server sends is the finished state, the last stop selected. That is
+ * also what anyone with reduced motion sees, and every stop's detail is in the
+ * HTML whether or not it is open.
  */
 export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] }) {
   const N = stops.length;
@@ -74,7 +69,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
   const wide = useWide();
 
   const [pc, setPc] = useState(N - 1);
-  const [done, setDone] = useState(true);
   const [running, setRunning] = useState(false);
 
   const stopTimers = () => {
@@ -88,15 +82,11 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
   /** Go to a line. Reaching the last stop ends the run. */
   const goto = (i: number) => {
     setPc(i);
-    if (i >= N - 1) {
-      setDone(true);
-      setRunning(false);
-    }
+    if (i >= N - 1) setRunning(false);
   };
 
   const run = () => {
     stopTimers();
-    setDone(false);
     setRunning(true);
     setPc(0);
     for (let i = 1; i < N; i++) later(() => goto(i), i * STEP_MS);
@@ -106,15 +96,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
     stopTimers();
     setRunning(false);
     goto(i);
-  };
-
-  const step = () => {
-    stopTimers();
-    setRunning(false);
-    if (done || pc >= N - 1) {
-      setDone(false);
-      setPc(0);
-    } else goto(pc + 1);
   };
 
   // Arm the run just before the listing scrolls into view, and start it once
@@ -130,7 +111,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
       ([e]) => {
         if (!e.isIntersecting || armed) return;
         armed = true;
-        setDone(false);
         setPc(-1);
         arm.disconnect();
       },
@@ -169,51 +149,15 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
 
   const at = Math.max(0, Math.min(pc, N - 1));
   const shown = stops[at];
-  const final = stops[N - 1];
-  // The registers follow the program while it runs and hold when it ends.
-  const regs = done
-    ? { pc: final.addr, countries: final.countries, ventures: final.ventures, lit: N }
-    : { pc: pc < 0 ? "0x0000" : shown.addr, countries: pc < 0 ? 0 : shown.countries, ventures: pc < 0 ? 0 : shown.ventures, lit: pc + 1 };
-
   return (
     <div ref={rootRef} className="jl corners">
       <noscript>
         <style>{`.jl-inline,.jl-inline[hidden]{display:block!important}.jl-pane{display:none!important}`}</style>
       </noscript>
-      <div className="jl-bar label">
-        <span>Program listing · {N} instructions</span>
-        <span className="jl-ctl">
-          <button type="button" className="jl-btn" onClick={step}>
-            Step
-          </button>
-          <button type="button" className="jl-btn" data-on={running} onClick={run}>
-            Run
-          </button>
-        </span>
-      </div>
-
       <div className="jl-cols">
-        {/* The map and the registers: the program's state. */}
+        {/* The map: where the program has jumped so far. */}
         <div className="jl-top">
           <JourneyMap stops={stops} pins={pins} at={at} started={pc >= 0} />
-          <div className="jl-regs label" aria-hidden="true">
-            <span>
-              PC <b>{regs.pc}</b>
-            </span>
-            <span>
-              CTRY <b>{pad(regs.countries)}</b>
-            </span>
-            <span>
-              VENT <b>{pad(regs.ventures)}</b>
-            </span>
-            <span className="jl-lamps">
-              {stops.map((s, i) => (
-                <i key={s.addr} data-lit={i < regs.lit} />
-              ))}
-              <i className="jl-done-lamp" data-lit={done} />
-              <span className="desig ml-1">D1</span>
-            </span>
-          </div>
         </div>
 
         <ol className="jl-list" aria-label="The journey, as a program listing" onKeyDown={onKey}>
@@ -540,9 +484,6 @@ function JourneyMap({
       aria-label={`A flat dot-matrix world map of the route so far, now at ${here?.label ?? "the start"}.`}
     >
       <canvas ref={canvasRef} />
-      <span className="jl-cap jl-cap-top desig" aria-hidden="true">
-        Atlas · {pins.map((p) => p.code).join(" → ")}
-      </span>
       {started && here && (
         <span className="jl-cap jl-cap-bot label" aria-hidden="true">
           {here.code} · {here.label} · {here.years}

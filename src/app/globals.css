@@ -1181,9 +1181,8 @@ h3 {
  *
  * One unit, five surfaces. Ink is the screen and the solder mask, brass is
  * amber phosphor and copper trace, paper is tractor-feed stock, chalk is the
- * case. Every section is a part of the same machine and carries one
- * silkscreen designator (U1 to U4); the rules, corner brackets, labels and
- * keycaps below are the whole vocabulary. Everything that moves is off under
+ * case. Every section is a part of the same machine; the rules, corner
+ * brackets, labels and keycaps below are the whole vocabulary. Everything that moves is off under
  * `prefers-reduced-motion`.
  * ===================================================================== */
 
@@ -1218,13 +1217,6 @@ header :focus-visible,
   }
 }
 
-/* ---- the silkscreen: one designator per panel ---- */
-.desig {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
 .sec-head {
   display: flex;
   flex-wrap: wrap;
@@ -1235,15 +1227,6 @@ header :focus-visible,
 .rule-2 {
   border-top: 2px solid var(--color-hair-inv);
 }
-.lamp-d {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--color-brass-hot);
-  box-shadow: 0 0 6px var(--color-brass);
-  vertical-align: 0.08em;
-}
-
 /* ---- hero: the status strip is a front-panel readout ---- */
 .statusbar {
   width: fit-content;
@@ -1355,9 +1338,6 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 .tele-ch > dd:last-child {
   line-height: 1.3;
 }
-.tele-no {
-  color: var(--color-brass);
-}
 /* Every numeral has one height, sized so the widest ("5,000+") fills its cell. */
 .tele-ch .dot-matrix {
   height: min(36px, calc(100cqw / 4.4));
@@ -1394,38 +1374,6 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 /* ---- the journey: a program listing with its detail pane ---- */
 .jl {
   background: color-mix(in srgb, var(--color-ink) 88%, #000);
-}
-.jl-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem 1rem;
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid var(--color-hair-inv);
-  color: var(--color-paper-faint);
-}
-.jl-ctl {
-  display: flex;
-  gap: 0.5rem;
-}
-.jl-btn {
-  min-width: 2.75rem;
-  min-height: 2.25rem;
-  padding: 0.45rem 0.9rem;
-  border: 1px solid var(--color-hair-inv);
-  background: transparent;
-  color: var(--color-paper-soft);
-  font: 400 0.6875rem/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color 0.14s ease-out, color 0.14s ease-out;
-}
-.jl-btn:hover,
-.jl-btn[data-on="true"] {
-  border-color: var(--color-brass);
-  color: var(--color-brass-hot);
 }
 .jl-cols {
   display: grid;
@@ -1553,57 +1501,9 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   background: color-mix(in srgb, var(--color-ink-deep) 82%, transparent);
   color: var(--color-paper-faint);
 }
-.jl-cap-top {
-  top: 0.7rem;
-  display: none;
-}
-@media (min-width: 640px) {
-  .jl-cap-top {
-    display: block;
-  }
-}
 .jl-cap-bot {
   bottom: 0.7rem;
   color: var(--color-paper-soft);
-}
-.jl-regs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 1.6rem;
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid var(--color-hair-inv);
-  color: var(--color-paper-faint);
-}
-.jl-regs b {
-  font-weight: 400;
-  text-transform: none;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-brass);
-}
-.jl-lamps {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-}
-.jl-lamps i {
-  width: 0.55rem;
-  height: 0.55rem;
-  background: var(--color-hair-inv);
-}
-.jl-lamps i[data-lit="true"] {
-  background: var(--color-brass);
-}
-.jl-lamps .jl-done-lamp {
-  margin-left: 0.6rem;
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-}
-.jl-lamps .jl-done-lamp[data-lit="true"] {
-  background: var(--color-brass-hot);
-  box-shadow: 0 0 8px var(--color-brass);
 }
 .jl-detail {
   display: grid;
@@ -1775,59 +1675,4 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 .feed .reg-list {
   border-bottom: 2px solid var(--color-ink);
   border-top: 1px solid var(--color-hair);
-}
-
-/* ---- the signal: a terminal awaiting input ---- */
-.term {
-  position: relative;
-  border: 1px solid var(--color-hair-inv);
-  background: #07140f;
-  box-shadow: inset 0 0 40px color-mix(in srgb, var(--color-glow) 55%, transparent);
-}
-.term::before,
-.term::after {
-  content: "";
-  position: absolute;
-  width: 11px;
-  height: 11px;
-  border: 1px solid var(--color-brass);
-  pointer-events: none;
-}
-.term::before {
-  top: -1px;
-  left: -1px;
-  border-right: 0;
-  border-bottom: 0;
-}
-.term::after {
-  right: -1px;
-  bottom: -1px;
-  border-left: 0;
-  border-top: 0;
-}
-.term-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.55rem 1rem;
-  border-bottom: 1px solid var(--color-hair-inv);
-  color: var(--color-paper-faint);
-}
-.term-body {
-  min-height: 10.5rem;
-  padding: 1.1rem 1.25rem 1.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  line-height: 1.9;
-  color: var(--color-paper-soft);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--color-brass) 35%, transparent);
-  overflow-wrap: anywhere;
-}
-.term-line[data-hide="true"] {
-  visibility: hidden;
-}
-.term-p {
-  color: var(--color-brass-hot);
-}
-.term-ok {
-  color: #8fd6a6;
 }
