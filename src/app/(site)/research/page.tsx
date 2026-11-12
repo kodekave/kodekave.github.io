@@ -58,7 +58,6 @@ export default function ResearchPage() {
 
       <Masthead
         label="Research"
-        ghost="Research"
         title={<>Research and projects.</>}
         lead={<>One published study, and the research programmes around it.</>}
       />
@@ -76,7 +75,7 @@ export default function ResearchPage() {
             <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
               CFD on a phone.
             </h2>
-            <p className="font-display-text mt-6 text-xl italic text-ink-soft">
+            <p className="font-read mt-6 text-xl italic text-ink-soft">
               {publication.title}
             </p>
             <p className="label mt-3 text-ink-faint">

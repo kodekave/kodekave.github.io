@@ -52,7 +52,6 @@ export default function BlogIndexPage() {
 
       <Masthead
         label="Writing"
-        ghost="Notes"
         title={<>Notes from the founder&rsquo;s office.</>}
         lead={
           <>

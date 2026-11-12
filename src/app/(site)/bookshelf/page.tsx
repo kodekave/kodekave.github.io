@@ -69,7 +69,6 @@ export default function BookshelfPage() {
 
       <Masthead
         label="Bookshelf"
-        ghost="Shelf"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Bookshelf" }]}
         title={<>What&rsquo;s on the shelf.</>}
         lead={shelf.intro || undefined}

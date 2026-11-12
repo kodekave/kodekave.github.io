@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <style>
-  @font-face { font-family: "IS"; src: url("{{INSTRUMENT}}") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "AR"; src: url("{{ARCHIVO}}") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
   @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
   @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
   * { box-sizing: border-box; margin: 0; }
@@ -12,8 +12,8 @@
           display: grid; place-items: center; }
   .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; color: #bc9660; opacity: 0.85; }
   .seal i { position: relative; display: grid; place-items: center; width: 62px; height: 62px;
-            border-radius: 50%; background: #0e2a22; font: 400 25px/1 "IS", serif; color: #eeeadf;
-            letter-spacing: 0.045em; font-style: normal; }
+            border-radius: 50%; background: #0e2a22; font: 800 24px/1 "AR", sans-serif; font-stretch: 80%; color: #eeeadf;
+            letter-spacing: 0.02em; font-style: normal; }
   .plate { position: absolute; top: -34px; right: -34px; width: 560px; height: 704px;
            object-fit: cover; object-position: 46% 20%; mix-blend-mode: screen;
            filter: brightness(0.93) sepia(0.06);
@@ -23,9 +23,11 @@
   .frame { position: absolute; inset: 22px; border: 1px solid rgba(188,150,96,0.55); }
   .text { position: absolute; inset: 0; padding: 74px 72px 70px; width: 780px;
           display: flex; flex-direction: column; }
-  .label { font: 400 17px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
-  h1 { font: 400 100px/0.95 "IS", serif; text-transform: uppercase; letter-spacing: 0.045em; margin-top: 30px; }
-  .tag { font: 400 31px/1.45 "NR", serif; margin-top: 34px; max-width: 520px; text-wrap: balance;
+  .label { display: inline-flex; align-items: center; gap: 14px; align-self: flex-start; padding: 10px 16px; border: 1px solid rgba(238,234,223,0.22); background: rgba(7,20,15,0.6);
+           font: 400 16px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
+  .label::before { content: ""; width: 9px; height: 16px; background: #e0b36a; }
+  h1 { font: 800 98px/0.9 "AR", sans-serif; font-stretch: 80%; text-transform: uppercase; letter-spacing: -0.012em; margin-top: 30px; }
+  .tag { font: 500 32px/1.25 "AR", sans-serif; font-stretch: 88%; letter-spacing: -0.012em; margin-top: 34px; max-width: 540px; text-wrap: balance;
          color: color-mix(in srgb, #eeeadf 80%, #0e2a22); }
   .foot { margin-top: auto; }
   .rule { width: 64px; height: 2px; background: #bc9660; margin-bottom: 22px; }

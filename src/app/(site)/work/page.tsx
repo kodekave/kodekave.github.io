@@ -69,7 +69,6 @@ export default function WorkPage() {
 
       <Masthead
         label="Work"
-        ghost="Ventures"
         title={<>4 ventures, 4 countries.</>}
         lead={
           <>

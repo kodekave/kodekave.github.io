@@ -34,14 +34,6 @@ export default function Footer() {
     <footer className="on-ink grain overflow-hidden">
       <div id="newsletter" className="scroll-mt-20">
         <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
-          {/* Cropped wordmark, bleeding off the bottom edge. */}
-          <span
-            aria-hidden="true"
-            className="ghost absolute -bottom-[0.24em] -left-2 text-[22vw] text-paper/[0.05] md:text-[15vw]"
-          >
-            Kodekave
-          </span>
-
           <Reveal className="relative">
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-[1fr_auto] md:items-end">
               <div>
@@ -60,10 +52,10 @@ export default function Footer() {
           </Reveal>
         </div>
 
-        <div className="relative border-t border-hair-inv">
+        <div className="relative border-t-2 border-hair-inv">
           <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between md:px-10">
             <div className="flex flex-col gap-3">
-              <Link href="/" className="wordmark text-sm leading-none">
+              <Link href="/" className="wordmark text-sm leading-none tracking-[0.04em]">
                 Komal Kedarnath
               </Link>
               <p className="label text-paper-faint">
@@ -73,6 +65,7 @@ export default function Footer() {
 
             <div className="grid gap-8 sm:grid-cols-2">
               <nav aria-label="Footer" className="flex flex-col gap-2.5">
+                <span aria-hidden="true" className="desig text-paper-faint">J1</span>
                 {footerLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -84,6 +77,7 @@ export default function Footer() {
                 ))}
               </nav>
               <nav aria-label="Elsewhere" className="flex flex-col gap-2.5">
+                <span aria-hidden="true" className="desig text-paper-faint">J2</span>
                 {elsewhere.map((link) => (
                   <a
                     key={link.label}

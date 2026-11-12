@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Newsreader, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
@@ -11,20 +11,18 @@ import {
 } from "@/lib/seo";
 
 /**
- * Three faces, three jobs: a serif for display, a text serif for reading,
- * and a monospace for every label, date and control.
+ * Three faces, three jobs: a grotesque for the nameplate and headings, a text
+ * serif for reading, and a monospace for every label, date and control.
  *
- * Display was Bodoni Moda driven to `opsz` 96 — its most extreme display
- * cut, where the hairlines thin to roughly a pixel. Under the grain overlay,
- * in light type on a black field, they disappeared and the titles stopped
- * being readable. Instrument Serif keeps the editorial, high-contrast feel
- * but carries its thins at a weight that survives all three.
+ * The headline face is Archivo with its width axis, drawn narrow and heavy: the
+ * lettering of a case, a datasheet masthead or a front panel. It replaced
+ * Instrument Serif, whose high-contrast editorial cut read as the 2020s rather
+ * than the early 1980s the site is built to evoke.
  */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  axes: ["wdth"],
 });
 
 const newsreader = Newsreader({
@@ -74,6 +72,14 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Decides, before first paint, whether this visit gets the boot sequence: the
+ * homepage only, no hash in the URL, once per session, never with reduced
+ * motion and never for automation (crawlers, audits, tests). It only sets an attribute; the stylesheet does the rest (see
+ * BootPost). Wrapped so a blocked storage API cannot break the page.
+ */
+const POST_SCRIPT = `try{var d=document.documentElement;if(location.pathname==="/"&&!location.hash&&!navigator.webdriver&&!sessionStorage.getItem("post")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){d.setAttribute("data-post","1");sessionStorage.setItem("post","1")}}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: {
@@ -82,8 +88,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: POST_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*
           One @graph containing the Person and WebSite nodes, cross-referenced

@@ -14,7 +14,6 @@ export default function Masthead({
   label,
   title,
   lead,
-  ghost,
   plate = false,
   breadcrumb,
   children,
@@ -22,8 +21,6 @@ export default function Masthead({
   label: string;
   title: React.ReactNode;
   lead?: React.ReactNode;
-  /** Oversized watermark, cropped by the section. Omit on busier pages. */
-  ghost?: string;
   /** Show the engraved portrait. Only for pages actually about the person. */
   plate?: boolean;
   /**
@@ -36,15 +33,6 @@ export default function Masthead({
 }) {
   return (
     <section className="on-ink grain relative overflow-hidden">
-      {ghost && (
-        <span
-          aria-hidden="true"
-          className="ghost absolute -right-6 -top-6 text-[24vw] text-paper/[0.045]"
-        >
-          {ghost}
-        </span>
-      )}
-
       {plate && (
         <>
           <Plate
@@ -89,7 +77,10 @@ export default function Masthead({
         {/* On a page whose trail already ends in its own name, the label
             would just say it twice. */}
         {breadcrumb?.at(-1)?.name.toLowerCase() !== label.toLowerCase() && (
-          <p className="settle settle-1 label text-paper-faint">{label}</p>
+          <p className="settle settle-1 statusbar label text-paper-soft">
+            <span aria-hidden="true" className="now-mark text-brass" />
+            {label}
+          </p>
         )}
         <h1 className="settle settle-2 font-display mt-6 max-w-3xl text-[clamp(2rem,5.4vw,3.9rem)] leading-[1.05]">
           {title}

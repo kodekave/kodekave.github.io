@@ -1,16 +1,14 @@
 import Link from "next/link";
 import Arrow from "@/components/Arrow";
-import Atlas from "@/components/Atlas";
-import BlueprintFrame from "@/components/BlueprintFrame";
+import BootPost from "@/components/BootPost";
 import DotMatrix from "@/components/DotMatrix";
+import Journey from "@/components/Journey";
 import LinkedInMark from "@/components/LinkedInMark";
 import Plate from "@/components/Plate";
-import Reveal from "@/components/Reveal";
 import SectionLabel from "@/components/SectionLabel";
 import SectionRail from "@/components/SectionRail";
-import SignalBeacon from "@/components/SignalBeacon";
 import StickyCta from "@/components/StickyCta";
-import Trace from "@/components/Trace";
+import Terminal from "@/components/Terminal";
 import UtcClock from "@/components/UtcClock";
 import {
   engagements,
@@ -31,13 +29,14 @@ export const metadata = buildMetadata({
 });
 
 /**
- * The homepage is an instrument panel, not a brochure.
+ * The homepage is one machine, and the page ends on HCF.
  *
- * Six readings, in order: who (the card), what (the telemetry), what is on
- * offer (the register), where (the atlas), when (the trace, which steps
- * through the journey as the page scrolls and ends on HCF), and how to reach
- * me (the signal). Anything longer than a line lives on its own page: the
- * ventures on /work, the research on /research.
+ * Four panels after the screen that powers on: the telemetry (the readings),
+ * the register (what is on offer, as a printout), the trace (the journey as a
+ * program listing, with the map as its detail) and the signal (a terminal
+ * awaiting input). Each carries a silkscreen designator, U1 to U4. Anything
+ * longer than a line lives on its own page: the ventures on /work, the
+ * research on /research.
  */
 
 /**
@@ -65,33 +64,16 @@ function glyphs(words: string[], startAt: number) {
   ));
 }
 
-/**
- * The line of record under the statement. It types itself out with CSS alone
- * (see `.type`), starting once the name has landed.
- */
-function bootLines() {
-  const lines: { cmd: string; out: string }[] = [
-    { cmd: "record", out: "4 ventures · 4 countries · 6+ years" },
-  ];
-  let t = 1.0;
-  return lines.map((l) => {
-    const delay = t;
-    t += l.out.length * 0.034 + 0.25;
-    return { ...l, delay };
-  });
-}
-
 export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
   // "Komal" / "Kedarnath G" — set as two lines without hardcoding the split.
   const [firstName, ...restOfName] = profile.name.split(" ");
-  const boot = bootLines();
 
-  // The journey, one station per stage, for the trace. A stage that is a
-  // venture carries its role and dates from the venture record, so those are
-  // written once. The two counts are running totals: how many countries and
-  // ventures there had been by that stage.
-  const traceStations = milestones.map((m, i) => {
+  // The journey, one stop per stage. A stage that is a venture carries its
+  // role and dates from the venture record, so those are written once. The two
+  // counts are running totals: how many countries and ventures there had been
+  // by that stage, for the registers.
+  const stops = milestones.map((m, i) => {
     const v = m.slug ? ventures.find((x) => x.slug === m.slug) : undefined;
     const soFar = milestones.slice(0, i + 1);
     return {
@@ -106,14 +88,24 @@ export default function HomePage() {
       href: v ? `/work#${v.slug}` : m.href,
       hrefLabel: v ? "Open the record" : m.hrefLabel,
       motif: m.motif,
+      place: m.place,
       countries: new Set(soFar.map((x) => x.place)).size,
       ventures: soFar.filter((x) => x.slug).length,
     };
   });
+  const pins = route.map((r) => ({
+    code: r.code,
+    label: r.label,
+    years: r.years,
+    lat: r.lat,
+    lon: r.lon,
+  }));
 
   return (
     <div>
-      {/* ------------------------------------------------------ 00 · the card */}
+      <BootPost />
+
+      {/* ------------------------------------------------------ 00 · the screen */}
       <section
         id="hero"
         className="on-ink grain scanlines relative overflow-hidden"
@@ -132,10 +124,9 @@ export default function HomePage() {
           aria-hidden="true"
           className="absolute inset-0 hidden bg-gradient-to-r from-ink from-20% via-ink/10 to-transparent to-45% sm:block"
         />
-        <BlueprintFrame />
 
         <div className="hero-exit relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col px-6 pb-14 pt-12 md:px-10 md:pb-16 md:pt-14">
-          {/* The status line: a live clock and where the work is based. */}
+          {/* The status strip: a live clock and where the work is based. */}
           <p className="statusbar label settle settle-1">
             <span className="flex items-center gap-2.5 text-paper-soft">
               <span aria-hidden="true" className="now-mark text-brass" />
@@ -144,9 +135,7 @@ export default function HomePage() {
             <span>
               UTC <UtcClock className="text-paper-soft" />
             </span>
-            <span className="hidden sm:inline">
-              Base · India
-            </span>
+            <span className="hidden sm:inline">Base · India</span>
           </p>
 
           <div className="mt-auto pt-24">
@@ -163,34 +152,8 @@ export default function HomePage() {
               </span>
             </h1>
 
-            <p className="settle settle-3 font-display mt-8 max-w-2xl text-balance text-[clamp(1.7rem,3.6vw,2.75rem)] leading-[1.12]">
+            <p className="settle settle-3 tagline mt-8 max-w-2xl text-balance text-[clamp(1.7rem,3.6vw,2.5rem)] leading-[1.14]">
               {profile.tagline}
-            </p>
-
-            <div className="boot mt-7 max-w-full overflow-hidden" aria-hidden="true">
-              {boot.map((l, i) => (
-                <p key={l.cmd} className="boot-line">
-                  <span className="boot-cmd">&gt; {l.cmd}</span>
-                  <span>
-                    <span
-                      className="type"
-                      style={
-                        {
-                          "--n": l.out.length,
-                          "--d": `${l.delay}s`,
-                        } as React.CSSProperties
-                      }
-                    >
-                      {l.out}
-                    </span>
-                    {i === boot.length - 1 && <span className="caret" />}
-                  </span>
-                </p>
-              ))}
-            </div>
-            {/* The same record, for screen readers and crawlers. */}
-            <p className="sr-only">
-              Four ventures across four countries and more than six years.
             </p>
 
             <div className="settle settle-4 mt-10 flex flex-wrap items-center gap-3">
@@ -217,190 +180,157 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------- 01 · the telemetry */}
-      <section id="record" className="on-ink grain relative scroll-mt-16">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <SectionLabel n="01" onInk className="text-paper-faint">
-                Telemetry
-              </SectionLabel>
-              <p className="label text-paper-faint">
-                Readings from four ventures
-              </p>
-            </div>
-          </Reveal>
+      <section id="record" className="on-ink grain rule-2 relative scroll-mt-16">
+        <div className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-9">
+          <div className="sec-head mb-4">
+            <SectionLabel n="01" onInk className="text-paper-faint">
+              Telemetry
+            </SectionLabel>
+            <p className="label text-paper-faint">
+              4 ventures · 4 countries · 6+ years
+            </p>
+            <span className="label hidden items-center gap-3 text-paper-faint sm:flex">
+              <span aria-hidden="true" className="lamp-d" />
+              Sig
+              <span className="desig">U1</span>
+            </span>
+          </div>
 
-          <Reveal delay={80}>
-            <dl className="tele mt-10 grid-cols-2 lg:grid-cols-3">
-              {stats.map((s) => (
-                <div
-                  key={s.tag}
-                  className="flex flex-col justify-between gap-8 p-5 sm:p-7"
-                >
-                  <dt className="label text-paper-faint">{s.tag}</dt>
-                  <dd>
-                    <DotMatrix
-                      text={s.value}
-                      label={s.label}
-                      className="h-9 max-w-full sm:h-12 lg:h-14"
-                    />
-                    <span
-                      aria-hidden="true"
-                      className="label mt-5 block text-paper-faint"
-                    >
-                      {s.source}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
+          <dl className="panel tele-panel">
+            {stats.map((s, i) => (
+              <div key={s.tag} className="tele-ch">
+                <dt className="tele-top label">
+                  <span>{s.tag}</span>
+                  <span aria-hidden="true" className="tele-no tabular">
+                    {i + 1}
+                  </span>
+                </dt>
+                <dd>
+                  <DotMatrix text={s.value} label={s.label} />
+                </dd>
+                <dd aria-hidden="true" className="label text-paper-faint">
+                  {s.source}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
       {/* ------------------------------------------------- 02 · the register */}
-      <section
-        id="writing"
-        className="grain scroll-mt-16 border-t border-hair bg-mist"
-      >
-        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <SectionLabel n="02" className="text-ink-faint">
-              Register
-            </SectionLabel>
-          </Reveal>
-
-          <div className="mt-12 grid gap-x-20 gap-y-16 lg:grid-cols-2">
-            <Reveal id="work-with-me">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-display text-3xl sm:text-4xl">
-                  What I bring
-                </h2>
-                <Link
-                  href="/services"
-                  className="label link-rule text-ink-soft hover:text-ink"
-                >
-                  How it works
-                </Link>
+      <section id="writing" className="regsec grain scroll-mt-16">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:px-10 md:py-20">
+          <div className="feed">
+            <div className="feed-perf" aria-hidden="true" />
+            <div className="feed-page">
+              <div className="feed-head sec-head">
+                <SectionLabel n="02" className="text-ink-faint">
+                  Register
+                </SectionLabel>
+                <span className="desig text-ink-faint">U2</span>
               </div>
-              <ul className="mt-8 border-b border-hair">
-                {engagements.map((e) => (
-                  <li key={e.name}>
-                    <Link href="/services" className="reg-row group">
-                      <span className="reg-box" aria-hidden="true" />
-                      <span className="font-display-text text-xl leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
-                        {e.name}
-                      </span>
-                      <span className="reg-lead" aria-hidden="true" />
-                      <span className="stamp">{e.stamp}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
 
-            {posts.length > 0 && (
-              <Reveal delay={100}>
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 className="font-display text-3xl sm:text-4xl">
-                    Latest writing
-                  </h2>
-                  <Link
-                    href="/blog"
-                    className="label link-rule text-ink-soft hover:text-ink"
-                  >
-                    All posts
-                  </Link>
+              <div className="mt-10 grid gap-x-16 gap-y-14 lg:grid-cols-2">
+                <div id="work-with-me">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h2 className="font-display text-3xl sm:text-4xl">
+                      What I bring
+                    </h2>
+                    <Link
+                      href="/services"
+                      className="label link-rule text-ink-soft hover:text-ink"
+                    >
+                      How it works
+                    </Link>
+                  </div>
+                  <ul className="reg-list mt-6">
+                    {engagements.map((e) => (
+                      <li key={e.name}>
+                        <Link href="/services" className="reg-row group">
+                          <span className="reg-box" aria-hidden="true" />
+                          <span className="font-display-text text-lg leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                            {e.name}
+                          </span>
+                          <span className="reg-lead" aria-hidden="true" />
+                          <span className="stamp">{e.stamp}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mt-8 border-b border-hair">
-                  {posts.map((post) => (
-                    <li key={post.slug}>
+
+                {posts.length > 0 && (
+                  <div>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <h2 className="font-display text-3xl sm:text-4xl">
+                        Latest writing
+                      </h2>
                       <Link
-                        href={`/blog/${post.slug}`}
-                        className="reg-row group"
+                        href="/blog"
+                        className="label link-rule text-ink-soft hover:text-ink"
                       >
-                        <time
-                          dateTime={post.published_at}
-                          className="label tabular w-[6.4rem] flex-none text-ink-faint"
-                        >
-                          {post.published_at.slice(0, 10)}
-                        </time>
-                        <span className="font-display-text text-lg leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
-                          {post.title}
-                        </span>
+                        All posts
                       </Link>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            )}
+                    </div>
+                    <ul className="reg-list mt-6">
+                      {posts.map((post) => (
+                        <li key={post.slug}>
+                          <Link
+                            href={`/blog/${post.slug}`}
+                            className="reg-row group"
+                          >
+                            <time
+                              dateTime={post.published_at}
+                              className="label tabular w-[6.4rem] flex-none text-ink-faint"
+                            >
+                              {post.published_at.slice(0, 10)}
+                            </time>
+                            <span className="font-display-text text-base leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                              {post.title}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="feed-perf" aria-hidden="true" />
           </div>
         </div>
       </section>
 
-      {/* ---------------------------------------------------- 03 · the atlas */}
-      <section
-        id="atlas"
-        className="on-deep grain scanlines relative scroll-mt-16"
-      >
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
-              <div>
-                <SectionLabel n="03" onInk className="text-paper-faint">
-                  Atlas
-                </SectionLabel>
-                <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-                  Where the work was done.
-                </h2>
-              </div>
-              <p className="label text-paper-faint">
-                {route.map((r) => r.code).join(" → ")}
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={80} className="mt-12">
-            <Atlas
-              pins={route}
-              label="A flat dot-matrix world map that drifts sideways, marking the four places worked, in order: India, Malé in the Maldives, the United States, and London in the United Kingdom."
-            />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------- 04 · the trace */}
+      {/* ---------------------------------------------------- 03 · the trace */}
       <section
         id="trace"
-        className="on-ink grain relative scroll-mt-16 border-t border-hair-inv"
+        className="on-ink grain rule-2 relative scroll-mt-16"
       >
-        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <SectionLabel n="04" onInk className="text-paper-faint">
+        <div className="mx-auto max-w-7xl px-6 py-12 md:px-10 md:py-16">
+          <div className="sec-head">
+            <SectionLabel n="03" onInk className="text-paper-faint">
               Trace
             </SectionLabel>
-            <h2 className="font-display mt-6 max-w-3xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
-              The journey, one instruction at a time.
-            </h2>
-          </Reveal>
-
-          <div className="mt-12">
-            <Trace stations={traceStations} />
+            <span className="desig text-paper-faint">U3</span>
           </div>
+          <h2 className="font-display mt-4 mb-7 max-w-3xl text-[clamp(2rem,4.2vw,3rem)] leading-[1.04]">
+            The journey, one instruction at a time.
+          </h2>
+          <Journey stops={stops} pins={pins} />
         </div>
       </section>
 
-      {/* ---------------------------------------------------- 05 · the signal */}
+      {/* ---------------------------------------------------- 04 · the signal */}
       <section
         id="contact"
-        className="on-ink grain scanlines relative scroll-mt-16 overflow-hidden"
+        className="on-ink grain scanlines rule-2 relative scroll-mt-16 overflow-hidden"
       >
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-x-16 gap-y-14 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal>
-            <SectionLabel n="05" onInk className="text-paper-faint">
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-x-16 gap-y-12 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
+          <div>
+            <SectionLabel n="04" onInk className="text-paper-faint">
               Signal
             </SectionLabel>
-            <h2 className="font-display mt-8 max-w-3xl text-[clamp(2.6rem,6.4vw,5.4rem)] leading-[1]">
+            <h2 className="font-display mt-8 max-w-3xl text-[clamp(2.6rem,6.4vw,5.4rem)] leading-[0.98]">
               Building something? Let&rsquo;s talk.
             </h2>
 
@@ -421,19 +351,10 @@ export default function HomePage() {
               </a>
             </div>
 
-            <p className="label mt-10 break-all text-paper-faint">
-              linkedin.com/in/komalkedarnath
-            </p>
-            <p className="label mt-2 text-paper-faint">{profile.location}</p>
-          </Reveal>
+            <p className="label mt-10 text-paper-faint">{profile.location}</p>
+          </div>
 
-          <Reveal delay={120} className="justify-self-center lg:justify-self-end">
-            <SignalBeacon
-              href={profile.linkedin}
-              name={profile.name}
-              className="h-[min(78vw,26rem)] w-[min(78vw,26rem)]"
-            />
-          </Reveal>
+          <Terminal address={profile.linkedin.replace(/^https?:\/\/(www\.)?/, "")} />
         </div>
       </section>
 
@@ -447,7 +368,6 @@ export default function HomePage() {
         items={[
           { id: "record", label: "Telemetry", tone: "ink" },
           { id: "writing", label: "Register", tone: "paper" },
-          { id: "atlas", label: "Atlas", tone: "ink" },
           { id: "trace", label: "Trace", tone: "ink" },
           { id: "contact", label: "Signal", tone: "ink" },
         ]}

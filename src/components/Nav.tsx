@@ -33,7 +33,7 @@ export default function Nav() {
         <Link
           href="/"
           onClick={() => setOpen(false)}
-          className="wordmark flex items-center gap-2 text-base leading-none whitespace-nowrap"
+          className="wordmark flex items-center gap-2 text-base leading-none tracking-[0.04em] whitespace-nowrap"
         >
           Komal Kedarnath
           {/* The prompt's cursor: a lamp left on beside the name. */}

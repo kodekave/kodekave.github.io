@@ -92,7 +92,6 @@ export default function ServicesPage() {
 
       <Masthead
         label="Work with me"
-        ghost="Office"
         title={<>A founder&rsquo;s office, without hiring one.</>}
         /*
           Answer-first opening: this paragraph is written to stand alone as a
@@ -249,12 +248,6 @@ export default function ServicesPage() {
 
       {/* Start a conversation — the page's close, on ink. */}
       <section className="on-ink grain relative overflow-hidden">
-        <span
-          aria-hidden="true"
-          className="ghost absolute -bottom-[0.22em] -left-4 text-[20vw] text-paper/[0.05]"
-        >
-          Start
-        </span>
         <div className="relative mx-auto max-w-3xl px-6 py-24">
           <Reveal>
             <h2 className="font-display text-[clamp(1.9rem,4.4vw,3rem)] leading-tight">
