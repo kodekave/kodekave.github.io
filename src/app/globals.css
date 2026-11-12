@@ -1825,6 +1825,15 @@ noscript .jl-inline,
   padding: 0.8rem 0.7rem;
   border-top: 0;
 }
+@media (max-width: 639px) {
+  /* Narrow: the dotted leader gives its room to the name. */
+  .feed .reg-lead {
+    display: none;
+  }
+  .feed .reg-box + span {
+    flex: 1;
+  }
+}
 .feed .reg-list {
   border-bottom: 2px solid var(--color-ink);
   border-top: 1px solid var(--color-hair);

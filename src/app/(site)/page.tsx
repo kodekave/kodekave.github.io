@@ -277,11 +277,11 @@ export default function HomePage() {
                         <li key={post.slug}>
                           <Link
                             href={`/blog/${post.slug}`}
-                            className="reg-row group"
+                            className="reg-row group flex-wrap sm:flex-nowrap"
                           >
                             <time
                               dateTime={post.published_at}
-                              className="label tabular w-[6.4rem] flex-none text-ink-faint"
+                              className="label tabular w-full flex-none text-ink-faint sm:w-[6.4rem]"
                             >
                               {post.published_at.slice(0, 10)}
                             </time>
