@@ -52,7 +52,6 @@ export default function BlogIndexPage() {
 
       <Masthead
         label="Writing"
-        ghost="Notes"
         title={<>Notes from the founder&rsquo;s office.</>}
         lead={
           <>
@@ -94,7 +93,7 @@ export default function BlogIndexPage() {
 
       {/* The index. A ruled list, with the date in the left column so the
           run of posts reads chronologically at a glance. */}
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-4xl px-6 py-20">
           {posts.length === 0 ? (
             <div className="border border-dashed border-hair p-10">
@@ -145,7 +144,7 @@ export default function BlogIndexPage() {
       {/* Reference guides */}
       <section
         id="guides"
-        className="grain scroll-mt-20 border-t border-hair bg-mist"
+        className="scroll-mt-20 border-t border-hair bg-mist"
       >
         <div className="mx-auto max-w-4xl px-6 py-20">
           <Reveal>

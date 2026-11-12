@@ -92,7 +92,6 @@ export default function ServicesPage() {
 
       <Masthead
         label="Work with me"
-        ghost="Office"
         title={<>A founder&rsquo;s office, without hiring one.</>}
         /*
           Answer-first opening: this paragraph is written to stand alone as a
@@ -117,7 +116,7 @@ export default function ServicesPage() {
       />
 
       {/* The engagements, numbered to match the homepage's offering. */}
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-5xl px-6 py-24 md:px-10">
           <Reveal>
             <p className="label text-ink-faint">What I take off your plate</p>
@@ -167,7 +166,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Why founders bring me in */}
-      <section className="grain border-t border-hair bg-mist">
+      <section className="border-t border-hair bg-mist">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <Reveal>
             <h2 className="font-display text-[clamp(1.7rem,3.6vw,2.5rem)] leading-tight">
@@ -220,7 +219,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Common questions */}
-      <section className="on-paper grain border-t border-hair">
+      <section className="on-paper border-t border-hair">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <Reveal>
             <h2
@@ -248,13 +247,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Start a conversation — the page's close, on ink. */}
-      <section className="on-ink grain relative overflow-hidden">
-        <span
-          aria-hidden="true"
-          className="ghost absolute -bottom-[0.22em] -left-4 text-[20vw] text-paper/[0.05]"
-        >
-          Start
-        </span>
+      <section className="on-ink relative overflow-hidden">
         <div className="relative mx-auto max-w-3xl px-6 py-24">
           <Reveal>
             <h2 className="font-display text-[clamp(1.9rem,4.4vw,3rem)] leading-tight">

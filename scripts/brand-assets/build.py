@@ -81,12 +81,12 @@ def render(template: str, size: tuple[int, int], values: dict[str, Path]) -> Ima
 
 
 def main() -> None:
-    instrument = font_file("Instrument Serif")
+    archivo = font_file("Archivo")
     card = render(
         "card.html.tmpl",
         (1200, 630),
         {
-            "INSTRUMENT": instrument,
+            "ARCHIVO": archivo,
             "PLEX": font_file("IBM Plex Mono", "400"),
             "NEWSREADER": font_file("Newsreader"),
             "PLATE": ROOT / "public/images/plate-2x.png",
@@ -96,7 +96,7 @@ def main() -> None:
         ROOT / "public/images/og-card.jpg", quality=90, optimize=True, progressive=True
     )
 
-    icon = render("favicon.html.tmpl", (512, 512), {"INSTRUMENT": instrument})
+    icon = render("favicon.html.tmpl", (512, 512), {"ARCHIVO": archivo})
     icon.save(
         ROOT / "src/app/favicon.ico",
         format="ICO",

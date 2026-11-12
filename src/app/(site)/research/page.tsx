@@ -58,7 +58,6 @@ export default function ResearchPage() {
 
       <Masthead
         label="Research"
-        ghost="Research"
         title={<>Research and projects.</>}
         lead={<>One published study, and the research programmes around it.</>}
       />
@@ -66,7 +65,7 @@ export default function ResearchPage() {
       {/* --------------------------------------------------- 01 · the paper */}
       <section
         id="openfoam-on-android"
-        className="on-paper grain relative scroll-mt-16 overflow-hidden"
+        className="on-paper relative scroll-mt-16 overflow-hidden"
       >
         <div className="mx-auto grid max-w-6xl items-center gap-x-20 gap-y-16 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
@@ -76,7 +75,7 @@ export default function ResearchPage() {
             <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
               CFD on a phone.
             </h2>
-            <p className="font-display-text mt-6 text-xl italic text-ink-soft">
+            <p className="font-read mt-6 text-xl italic text-ink-soft">
               {publication.title}
             </p>
             <p className="label mt-3 text-ink-faint">
@@ -140,7 +139,7 @@ export default function ResearchPage() {
 
       {/* ---------------------------------------------- 02 · around the paper */}
       {related.length > 0 && (
-        <section className="grain border-t border-hair bg-mist">
+        <section className="border-t border-hair bg-mist">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
               <SectionLabel n="02" className="text-ink-faint">

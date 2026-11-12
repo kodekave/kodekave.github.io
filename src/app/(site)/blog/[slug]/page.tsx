@@ -95,7 +95,7 @@ export default async function BlogPostPage({
       />
 
       {/* The post opens on ink, like every other page on the site. */}
-      <header className="on-ink grain relative overflow-hidden">
+      <header className="on-ink relative overflow-hidden">
         <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-20">
           {/* Visible breadcrumb, matching the BreadcrumbList above. */}
           <nav
@@ -139,7 +139,7 @@ export default async function BlogPostPage({
         </div>
       </header>
 
-      <div className="on-paper grain">
+      <div className="on-paper">
         <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
           {post.cover_image && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -164,7 +164,7 @@ export default async function BlogPostPage({
       {post.faqs.length > 0 && (
         <section
           aria-labelledby="faq-heading"
-          className="grain border-t border-hair bg-mist"
+          className="border-t border-hair bg-mist"
         >
           <div className="mx-auto max-w-2xl px-6 py-16">
             <Reveal>
@@ -189,7 +189,7 @@ export default async function BlogPostPage({
       )}
 
       {related.length > 0 && (
-        <section className="on-paper grain border-t border-hair">
+        <section className="on-paper border-t border-hair">
           <div className="mx-auto max-w-2xl px-6 py-16">
             <Reveal>
               <h2 className="label text-ink-faint">Keep reading</h2>
@@ -228,7 +228,7 @@ export default async function BlogPostPage({
 
       {/* The post's own subscribe prompt. The footer's newsletter still
           closes the page below it. */}
-      <section className="grain border-t border-hair bg-mist">
+      <section className="border-t border-hair bg-mist">
         <div className="mx-auto max-w-2xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">

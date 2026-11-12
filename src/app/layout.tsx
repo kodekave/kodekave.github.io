@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Newsreader, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
@@ -11,24 +11,28 @@ import {
 } from "@/lib/seo";
 
 /**
- * Three faces, three jobs: a serif for display, a text serif for reading,
- * and a monospace for every label, date and control.
+ * Three faces, three jobs: a grotesque for the nameplate and headings, a text
+ * serif for reading, and a monospace for every label, date and control.
  *
- * Display was Bodoni Moda driven to `opsz` 96 — its most extreme display
- * cut, where the hairlines thin to roughly a pixel. Under the grain overlay,
- * in light type on a black field, they disappeared and the titles stopped
- * being readable. Instrument Serif keeps the editorial, high-contrast feel
- * but carries its thins at a weight that survives all three.
+ * The headline face is Archivo with its width axis, drawn narrow and heavy: the
+ * lettering of a case, a datasheet masthead or a front panel. It replaced
+ * Instrument Serif, whose high-contrast editorial cut read as the 2020s rather
+ * than the early 1980s the site is built to evoke.
  */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  axes: ["wdth"],
 });
 
+/*
+ * The reading face is not on the first screen (the hero is Archivo and Plex
+ * Mono), so it is not preloaded: on a slow connection its two files, about
+ * 270 KB, would queue ahead of the portrait that is the largest paint.
+ */
 const newsreader = Newsreader({
   variable: "--font-newsreader",
+  preload: false,
   subsets: ["latin"],
   axes: ["opsz"],
   style: ["normal", "italic"],
@@ -82,7 +86,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*

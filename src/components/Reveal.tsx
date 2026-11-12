@@ -58,7 +58,9 @@ export default function Reveal({
     return () => observer.disconnect();
   }, []);
 
-  const hidden = direction === "up" ? "opacity-0 translate-y-5" : "opacity-0";
+  // The slide-up was on every section of every page; a plain fade is enough.
+  const hidden = "opacity-0";
+  void direction;
 
   return (
     <Tag

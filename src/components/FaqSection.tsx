@@ -20,7 +20,7 @@ export default function FaqSection({
   if (faqs.length === 0) return null;
 
   return (
-    <section aria-labelledby={id} className="grain border-t border-hair bg-mist">
+    <section aria-labelledby={id} className="border-t border-hair bg-mist">
       <div className="mx-auto max-w-2xl px-6 py-16">
         <Reveal>
           <h2 id={id} className="label text-ink-faint">

@@ -111,7 +111,7 @@ export default function FoundersOfficeGuidePage() {
         </p>
       </Masthead>
 
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
 
       <div className="prose-post">
@@ -209,7 +209,7 @@ export default function FoundersOfficeGuidePage() {
 
       <FaqSection faqs={faqs} id="founders-office-faq" />
 
-      <section className="on-paper grain border-t border-hair">
+      <section className="on-paper border-t border-hair">
         <div className="mx-auto max-w-2xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">
