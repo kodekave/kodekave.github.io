@@ -74,7 +74,7 @@ export default function BookshelfPage() {
         lead={shelf.intro || undefined}
       />
 
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-3xl px-6 py-20">
       {shelf.books.length === 0 ? (
         <p className="border border-dashed border-hair p-10 text-lg text-ink-soft">
@@ -142,7 +142,7 @@ export default function BookshelfPage() {
         </div>
       </section>
 
-      <section className="grain border-t border-hair bg-mist">
+      <section className="border-t border-hair bg-mist">
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">

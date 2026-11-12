@@ -82,7 +82,7 @@ export default function WorkPage() {
         The full record, most recent first. Numbered because the order is the
         information: it is a career read backwards, not a ranked list.
       */}
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-5xl px-6 py-20 md:px-10">
           <ol>
             {ventures.map((v, i) => (

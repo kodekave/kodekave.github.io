@@ -42,12 +42,6 @@
      (5.0:1). */
   --color-brass: #bc9660;
   --color-brass-deep: #7c5e2a;
-  /* The lit lamp: the active line, the focus ring, the numerals' core. 7.9:1 on ink. */
-  --color-brass-hot: #e0b36a;
-  /* Phosphor persistence behind lit areas. Never text. */
-  --color-glow: #1b4538;
-  /* The green-bar stripe on tractor-feed paper. */
-  --color-bar: #dce0d3;
 
   /* Ink on paper. */
   --color-ink-soft: color-mix(in srgb, var(--color-ink) 80%, var(--color-paper));
@@ -82,9 +76,6 @@
   --color-chalk: var(--color-chalk);
   --color-brass: var(--color-brass);
   --color-brass-deep: var(--color-brass-deep);
-  --color-brass-hot: var(--color-brass-hot);
-  --color-glow: var(--color-glow);
-  --color-bar: var(--color-bar);
   --color-paper-soft: var(--color-paper-soft);
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
@@ -137,34 +128,33 @@ body {
  */
 .font-display {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-variation-settings: "wdth" 82;
-  letter-spacing: -0.014em;
+  font-weight: 300;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.03em;
 }
 /* The same face at text sizes, where the tightening is unhelpful. */
 .font-display-text {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-variation-settings: "wdth" 94;
-  letter-spacing: -0.004em;
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.012em;
 }
 /* The line under the nameplate: the same face, lighter and a little wider. */
 .tagline {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-variation-settings: "wdth" 88;
-  letter-spacing: -0.012em;
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.015em;
 }
 
 /* The name treatment: uppercase, tight leading, and opened up because caps
    at this size need the air that lowercase does not. */
 .wordmark {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-variation-settings: "wdth" 80;
-  text-transform: uppercase;
-  letter-spacing: -0.012em;
-  line-height: 0.9;
+  font-weight: 300;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
   text-wrap: balance;
 }
 
@@ -199,36 +189,6 @@ body {
 .on-paper {
   background: var(--color-paper);
   color: var(--color-ink);
-}
-
-/*
- * Paper grain. A single fractal-noise tile over solid fields, so a large
- * flat area reads as printed stock instead of as a filled div. Strength is
- * per-surface: black needs more of it to be perceptible at all.
- */
-.grain {
-  position: relative;
-  isolation: isolate;
-}
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /*
-   * Above the content rather than beneath it: a press texture sits on top of
-   * the ink, and at this opacity it costs type nothing. Putting it below
-   * instead would mean giving every child a stacking position, and
-   * `.grain > *` would then out-specify Tailwind's own `absolute`.
-   */
-  z-index: 5;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-  opacity: var(--grain-strength, 0.1);
-  mix-blend-mode: overlay;
-}
-.on-ink.grain {
-  --grain-strength: 0.2;
 }
 
 /* ------------------------------------------------------- the opening beat */
@@ -407,8 +367,8 @@ body {
 .prose-post h3 {
   font-family: var(--font-display);
   color: var(--color-ink);
-  font-weight: 700;
-  font-variation-settings: "wdth" 88;
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
   margin-top: 2.2em;
   margin-bottom: 0.5em;
   line-height: 1.12;
@@ -521,8 +481,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  border: 1px solid var(--color-hair);
-  padding: 0.42em 0.7em;
+  padding: 0;
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.16em;
@@ -632,93 +591,9 @@ h3 {
  * Everything below is progressive: where scroll-driven animation is not
  * supported, the page is simply at rest. Nothing here carries meaning.
  */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    @keyframes route-draw {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
-    }
-    .route-line {
-      transform-origin: left;
-      animation: route-draw linear both;
-      animation-timeline: view();
-      animation-range: entry 20% cover 55%;
-    }
 
-    @keyframes hero-exit {
-      to {
-        transform: translateY(-4vh);
-        opacity: 0.25;
-      }
-    }
-    .hero-exit {
-      animation: hero-exit linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 70%;
-    }
-  }
-}
 
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    @keyframes read-progress {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
-    }
-    .scroll-progress {
-      animation: read-progress linear both;
-      animation-timeline: scroll(root);
-    }
-  }
-}
-.scroll-progress {
-  transform: scaleX(0);
-}
-@supports not (animation-timeline: scroll()) {
-  .scroll-progress {
-    display: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .scroll-progress {
-    display: none;
-  }
-}
 
-/* ------------------------------------------------------ signature details */
-
-/*
- * The name, set letter by letter. Each glyph rises into its line from below
- * a clipped edge, left to right, so the name is composed rather than faded
- * in. The h1 carries the real name as an aria-label; the glyph spans are
- * decoration.
- */
-.name-word {
-  display: inline-block;
-  clip-path: inset(-0.3em -0.15em -0.04em -0.15em);
-}
-.name-glyph {
-  display: inline-block;
-}
-@keyframes glyph-rise {
-  from {
-    transform: translateY(115%);
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .name-glyph {
-    animation: glyph-rise 1s cubic-bezier(0.18, 0.8, 0.2, 1) backwards;
-    animation-delay: calc(0.14s + var(--i, 0) * 34ms);
-  }
-}
 
 /* The live line: a square mark that breathes, like a lit indicator. */
 .now-mark {
@@ -727,70 +602,6 @@ h3 {
   width: 0.5rem;
   height: 0.5rem;
   background: currentColor;
-}
-@keyframes now-breathe {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0.6rem transparent;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .now-mark {
-    animation: now-breathe 2.4s ease-out infinite;
-  }
-}
-
-/* The floating action. Ink with a paper hairline, so it holds on both the
-   black and the paper fields; hover inverts it. */
-.sticky-cta {
-  position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
-  z-index: 40;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7em;
-  padding: 1em 1.4em;
-  background: var(--color-ink);
-  color: var(--color-paper);
-  border: 1px solid var(--color-brass);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  transform: translateY(14px);
-  pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
-    background-color 0.25s ease, color 0.25s ease;
-}
-.sticky-cta.is-on {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-.sticky-cta:hover {
-  background: var(--color-brass);
-  color: var(--color-ink);
-}
-.sticky-cta:hover .btn-arrow {
-  transform: translateX(4px);
-}
-.sticky-cta .btn-arrow {
-  transition: transform 0.25s ease;
-}
-@media (max-width: 640px) {
-  .sticky-cta {
-    left: 1rem;
-    right: 1rem;
-    bottom: 1rem;
-    justify-content: space-between;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sticky-cta,
-  .sticky-cta .btn-arrow {
-    transition: none;
-  }
 }
 
 @supports (animation-timeline: view()) {
@@ -831,71 +642,6 @@ h3 {
   }
 }
 
-/*
- * The section rail. It takes its colour from the field it is over (`data-tone`
- * is the active section's field) and lights the current section in brass.
- */
-.section-rail {
-  position: fixed;
-  left: 1.25rem;
-  top: 50%;
-  z-index: 30;
-  transform: translateY(-50%);
-  color: var(--color-ink);
-  --rail-accent: var(--color-brass-deep);
-  transition: opacity 0.45s ease, color 0.35s ease;
-}
-.section-rail[data-tone="ink"] {
-  color: var(--color-paper);
-  --rail-accent: var(--color-brass);
-}
-.section-rail.is-off {
-  opacity: 0;
-  pointer-events: none;
-}
-.section-rail ol {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-left: 1px solid color-mix(in srgb, currentColor 30%, transparent);
-}
-.rail-link {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-left: -1px;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
-.rail-link:hover,
-.rail-link.is-active {
-  opacity: 1;
-}
-.rail-tick {
-  display: block;
-  width: 0.5rem;
-  height: 1px;
-  background: currentColor;
-  transition: width 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.3s ease;
-}
-.rail-link.is-active .rail-tick {
-  width: 1.3rem;
-  background: var(--rail-accent);
-}
-.rail-link.is-active .rail-num {
-  color: var(--rail-accent);
-}
-@media (prefers-reduced-motion: reduce) {
-  .section-rail,
-  .rail-link,
-  .rail-tick {
-    transition: none;
-  }
-}
-
 /* =====================================================================
  * The instrument layer
  *
@@ -914,47 +660,11 @@ h3 {
   color: var(--color-paper);
 }
 
-/* ---- scanlines: the faint raster of a CRT, on ink fields only ---- */
-.scanlines::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 2px,
-    rgb(0 0 0 / 0.1) 2px,
-    rgb(0 0 0 / 0.1) 3px
-  );
-}
-
-/* ---- the lamp left on beside the name ---- */
-.cursor-lamp {
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.85rem;
-  background: var(--color-brass);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .cursor-lamp,
-  .caret {
-    animation: lamp-blink 1.15s steps(1) infinite;
-  }
-}
-@keyframes lamp-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 /* ---- dot-matrix figures ---- */
 .dot-matrix {
   display: block;
   overflow: visible;
   color: var(--color-brass);
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--color-brass) 40%, transparent));
 }
 .dot-matrix[data-armed][data-on="false"] .lamp {
   opacity: 0;
@@ -974,42 +684,6 @@ h3 {
   100% {
     opacity: 1;
   }
-}
-
-/* ---- panels with registration corners ---- */
-.panel {
-  position: relative;
-  border: 1px solid var(--color-hair-inv);
-}
-.panel::before,
-.panel::after {
-  content: "";
-  position: absolute;
-  width: 11px;
-  height: 11px;
-  border: 1px solid var(--color-brass);
-  pointer-events: none;
-}
-.panel::before {
-  top: -1px;
-  left: -1px;
-  border-right: 0;
-  border-bottom: 0;
-}
-.panel::after {
-  right: -1px;
-  bottom: -1px;
-  border-left: 0;
-  border-top: 0;
-}
-
-/* ---- hero: status line and boot sequence ---- */
-.statusbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1.75rem;
-  color: var(--color-paper-faint);
 }
 .caret {
   display: inline-block;
@@ -1177,46 +851,43 @@ h3 {
 }
 
 /* =====================================================================
- * The machine
+ * The machine, kept quiet
  *
- * One unit, five surfaces. Ink is the screen and the solder mask, brass is
- * amber phosphor and copper trace, paper is tractor-feed stock, chalk is the
- * case. Every section is a part of the same machine; the rules, corner
- * brackets, labels and keycaps below are the whole vocabulary. Everything that moves is off under
- * `prefers-reduced-motion`.
+ * Ink and paper do the work; brass is the one accent. Hairlines and space
+ * do the structure. There is no texture, no glow and nothing that loops.
+ * The era shows in a handful of exact details: dot-matrix numerals, a status
+ * line, opcodes in the journey, mono labels, and one block cursor.
  * ===================================================================== */
 
-/* The focus ring is the lit lamp, on the dark fields. */
 .on-ink :focus-visible,
-.on-deep :focus-visible,
-header :focus-visible,
-.sticky-cta:focus-visible {
-  outline-color: var(--color-brass-hot);
+header :focus-visible {
+  outline-color: var(--color-brass);
 }
 
-/* ---- keycaps: the action controls, with a lip that presses down ---- */
-.btn {
-  border-radius: 2px;
-  box-shadow: 0 2px 0 color-mix(in srgb, currentColor 40%, transparent);
-  transition: background-color 0.25s ease, color 0.25s ease,
-    transform 0.14s ease-out, box-shadow 0.14s ease-out;
+/* The block cursor beside the name: still. */
+.cursor-lamp {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.85rem;
+  background: var(--color-brass);
 }
-.btn-solid-paper {
-  box-shadow: 0 2px 0 var(--color-brass-deep);
+
+/* Buttons are flat. The fill is the action. */
+.btn {
+  border-radius: 0;
+  box-shadow: none;
 }
 .btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 0 0 transparent;
-}
-@media (prefers-reduced-motion: reduce) {
-  .btn {
-    transition: none;
-  }
-  .btn:active {
-    transform: none;
-  }
+  opacity: 0.8;
 }
 
+.statusbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  color: var(--color-paper-faint);
+}
 .sec-head {
   display: flex;
   flex-wrap: wrap;
@@ -1224,182 +895,92 @@ header :focus-visible,
   justify-content: space-between;
   gap: 0.6rem 1.5rem;
 }
-.rule-2 {
-  border-top: 2px solid var(--color-hair-inv);
-}
-/* ---- hero: the status strip is a front-panel readout ---- */
-.statusbar {
-  width: fit-content;
-  max-width: 100%;
-  padding: 0.6rem 0.95rem;
-  border: 1px solid var(--color-hair-inv);
-  background: color-mix(in srgb, var(--color-ink) 84%, #000);
+.rule-1 {
+  border-top: 1px solid var(--color-hair-inv);
 }
 
-/* ---- POST: the boot sequence, first visit of a session, homepage only ---- */
-.post {
-  display: none;
-}
-html[data-post] .post {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: block;
-  background: #07140f;
-  color: var(--color-paper-soft);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1.9;
-  animation: post-out 0.18s ease-in 1.12s forwards;
-}
-.post-inner {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 4.5rem 1.5rem 0;
-}
-.post-line {
-  opacity: 0;
-  animation: post-in 0s steps(1) var(--d, 0s) forwards;
-}
-.post-ok {
-  color: #8fd6a6;
-}
-.post-strip {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.75rem;
-  margin-top: 0.9rem;
-  padding: 0.6rem 0.95rem;
-  border: 1px solid var(--color-hair-inv);
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-paper-faint);
-}
-.post-skip {
-  position: absolute;
-  right: 1.25rem;
-  bottom: 1rem;
-  font-size: 0.625rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-paper-faint);
-}
-@keyframes post-in {
-  to {
-    opacity: 1;
-  }
-}
-@keyframes post-out {
-  to {
-    clip-path: inset(0 0 100% 0);
-    visibility: hidden;
-  }
-}
-/* While the boot runs, the hero waits behind it and then settles as usual. */
-html[data-post] .settle-1 { animation-delay: 1.24s; }
-html[data-post] .settle-2 { animation-delay: 1.36s; }
-html[data-post] .settle-3 { animation-delay: 1.5s; }
-html[data-post] .settle-4 { animation-delay: 1.64s; }
-html[data-post] .settle-plate { animation-delay: 1.28s; }
-html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); }
-@media (prefers-reduced-motion: reduce) {
-  html[data-post] .post {
-    display: none;
-  }
-}
-
-/* ---- telemetry: one instrument, six channels ---- */
-.tele-panel {
+/* ---- telemetry: one slim readout, hairlines only ---- */
+.tele-row {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--color-hair-inv);
 }
 .tele-ch {
   container-type: inline-size;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem 0.8rem;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem 0 0;
+}
+.tele-ch + .tele-ch {
+  padding-left: 1rem;
   border-left: 1px solid var(--color-hair-inv);
 }
-.tele-ch:first-child {
-  border-left: 0;
+.tele-top,
+.tele-src {
+  color: var(--color-paper-faint);
+  line-height: 1.3;
 }
 .tele-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
   min-height: 2.7em;
-  line-height: 1.3;
   letter-spacing: 0.12em;
-  color: var(--color-paper-faint);
 }
-.tele-ch > dd:last-child {
-  line-height: 1.3;
-}
-/* Every numeral has one height, sized so the widest ("5,000+") fills its cell. */
+/* One height for every numeral, sized so the widest ("5,000+") fills its cell. */
 .tele-ch .dot-matrix {
-  height: min(36px, calc(100cqw / 4.4));
+  height: min(32px, calc(100cqw / 4.4));
   width: auto;
   max-width: 100%;
-  color: var(--color-brass-hot);
+  color: var(--color-brass);
 }
 @media (max-width: 1023px) {
-  .tele-panel {
+  .tele-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .tele-ch:nth-child(4) {
     border-left: 0;
+    padding-left: 0;
   }
   .tele-ch:nth-child(n + 4) {
     border-top: 1px solid var(--color-hair-inv);
+    margin-top: 0.9rem;
   }
 }
 @media (max-width: 639px) {
-  .tele-panel {
+  .tele-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .tele-ch:nth-child(odd) {
     border-left: 0;
+    padding-left: 0;
   }
   .tele-ch:nth-child(even) {
     border-left: 1px solid var(--color-hair-inv);
+    padding-left: 1rem;
   }
   .tele-ch:nth-child(n + 3) {
     border-top: 1px solid var(--color-hair-inv);
+    margin-top: 0.9rem;
   }
 }
 
-/* ---- the journey: a program listing with its detail pane ---- */
+/* ---- the journey: a listing on hairlines, one detail, one route line ---- */
 .jl {
-  background: color-mix(in srgb, var(--color-ink) 88%, #000);
+  border-top: 1px solid var(--color-hair-inv);
 }
 .jl-cols {
   display: grid;
-}
-@media (min-width: 1024px) {
-  .jl-cols {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  }
 }
 .jl-list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-@media (min-width: 1024px) {
-  .jl-list {
-    border-right: 1px solid var(--color-hair-inv);
-  }
-}
 .jl-row {
   position: relative;
-  display: grid;
-  grid-template-columns: 1.4rem minmax(0, 1fr);
+  display: block;
   width: 100%;
-  min-height: 3.9rem;
-  padding: 0.65rem 1rem 0.65rem 0.9rem;
+  min-height: 3.8rem;
+  padding: 0.8rem 1rem 0.8rem 0;
   border: 0;
   border-bottom: 1px solid var(--color-hair-inv);
   background: transparent;
@@ -1407,33 +988,6 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.14s ease-out;
-}
-.jl-row:hover {
-  background: color-mix(in srgb, var(--color-brass) 7%, transparent);
-}
-.jl-row[data-active="true"] {
-  background: color-mix(in srgb, var(--color-brass) 13%, var(--color-ink));
-}
-.jl-row[data-active="true"]::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: var(--color-brass-hot);
-}
-.jl-mk {
-  width: 9px;
-  height: 9px;
-  margin-top: 0.28rem;
-  border: 1px solid var(--color-brass);
-}
-.jl-row[data-done="true"] .jl-mk {
-  background: var(--color-brass);
-}
-.jl-row[data-active="true"] .jl-mk {
-  background: var(--color-brass-hot);
-  box-shadow: 0 0 8px var(--color-brass);
 }
 .jl-l1 {
   display: flex;
@@ -1446,82 +1000,99 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 }
 .jl-op {
   margin: 0 0.7em;
+}
+.jl-row[data-active="true"] .jl-op {
   color: var(--color-brass);
 }
 .jl-yr {
-  color: var(--color-paper-soft);
   font-variant-numeric: tabular-nums;
 }
+.jl-row[data-active="true"] .jl-yr {
+  color: var(--color-brass);
+}
 .jl-l2 {
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-variation-settings: "wdth" 90;
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
   font-size: 1.15rem;
   line-height: 1.2;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.012em;
+  color: var(--color-paper-soft);
+}
+.jl-row[data-active="true"] .jl-l2,
+.jl-row:hover .jl-l2 {
   color: var(--color-paper);
 }
-/* The pane (wide screens) and the inline detail (narrow screens). */
-.jl-pane {
-  display: none;
+
+/* The route, as one hairline with four places on it. */
+.jl-route ol {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-@media (min-width: 1024px) {
-  .jl-list {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-  }
-  .jl-top {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .jl-pane {
-    display: block;
-    grid-column: 2;
-    grid-row: 2;
-    min-width: 0;
-  }
-  .jl-inline {
-    display: none !important;
-  }
-}
-.jl-mapbox {
+.jl-route li {
   position: relative;
-  border-bottom: 1px solid var(--color-hair-inv);
-  background: color-mix(in srgb, var(--color-ink-deep) 80%, #000);
-}
-.jl-mapbox canvas {
-  display: block;
-  width: 100%;
-}
-.jl-cap {
-  position: absolute;
-  left: 0.75rem;
-  padding: 0.2rem 0.45rem;
-  background: color-mix(in srgb, var(--color-ink-deep) 82%, transparent);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: flex-start;
   color: var(--color-paper-faint);
 }
-.jl-cap-bot {
-  bottom: 0.7rem;
-  color: var(--color-paper-soft);
+.jl-route li:last-child {
+  flex: none;
+}
+.jl-node {
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--color-brass);
+  background: var(--color-ink);
+}
+.jl-route li[data-s="reached"] .jl-node,
+.jl-route li[data-s="now"] .jl-node {
+  background: var(--color-brass);
+}
+.jl-route li[data-s="now"] {
+  color: var(--color-paper);
+}
+.jl-route li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 9px;
+  right: 0;
+  height: 1px;
+  background: var(--color-hair-inv);
+}
+.jl-route li[data-seg="on"]::after {
+  background: var(--color-brass);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .jl-route li::after {
+    transition: background-color 0.6s ease;
+  }
+}
+
+.jl-pane {
+  display: none;
 }
 .jl-detail {
   display: grid;
   gap: 1.25rem 1.5rem;
-  padding: 1.25rem 1.25rem 1.4rem;
-  min-height: 15.5rem;
   align-items: center;
 }
 @media (min-width: 560px) {
   .jl-detail {
-    grid-template-columns: minmax(0, 1fr) 11.5rem;
+    grid-template-columns: minmax(0, 1fr) 9rem;
   }
 }
-/* Under a line, the row has already said the year and the title. */
 .jl-inline {
-  padding-top: 0.25rem;
+  padding: 0.25rem 0 1.25rem 0;
   border-bottom: 1px solid var(--color-hair-inv);
-  min-height: 0;
 }
 .jl-inline .jl-year {
   display: none;
@@ -1531,29 +1102,66 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   font-size: 1.15rem;
 }
 .jl-inline .stop-art {
-  max-width: 8.5rem;
+  max-width: 7.5rem;
+}
+.jl-top {
+  padding: 1.25rem 0 1.25rem;
+}
+@media (min-width: 1024px) {
+  .jl-cols {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: auto 1fr;
+  }
+  .jl-list {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .jl-top {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 1.25rem 0 1.25rem 2.5rem;
+    border-bottom: 1px solid var(--color-hair-inv);
+  }
+  .jl-pane {
+    display: block;
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    padding: 0 0 0 2.5rem;
+  }
+  .jl-pane .jl-detail {
+    min-height: 15rem;
+    padding: 1.75rem 0;
+    align-items: start;
+  }
+  .jl-inline {
+    display: none !important;
+  }
 }
 .jl-year {
   font-family: var(--font-display);
   font-weight: 300;
-  font-variation-settings: "wdth" 80;
-  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(2.6rem, 5vw, 3.6rem);
   line-height: 1;
+  letter-spacing: -0.03em;
   color: var(--color-brass);
   font-variant-numeric: tabular-nums;
 }
 .jl-title {
-  margin-top: 0.6rem;
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
-  line-height: 1.1;
+  margin-top: 0.7rem;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  line-height: 1.15;
 }
 .jl-role {
   margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
   line-height: 1.4;
   color: var(--color-paper-soft);
 }
 .jl-meta {
-  margin-top: 0.6rem;
+  margin-top: 0.7rem;
   color: var(--color-paper-faint);
 }
 .jl-link {
@@ -1567,13 +1175,13 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 .stop-art {
   display: block;
   width: 100%;
-  max-width: 11.5rem;
+  max-width: 9rem;
   height: auto;
   overflow: visible;
   color: var(--color-brass);
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -1603,76 +1211,13 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   font-size: 30px;
   letter-spacing: 0;
 }
+noscript .jl-inline {
+  display: block !important;
+}
 
-/* ---- the register: a tractor-feed printout on the case ---- */
-.regsec {
-  background: var(--color-chalk);
-}
-.feed {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr) 1.75rem;
-  background: var(--color-paper);
-  color: var(--color-ink);
-  box-shadow: 0 1px 0 rgb(0 0 0 / 0.08), 0 18px 40px -18px rgb(14 42 34 / 0.45);
-}
-@media (min-width: 640px) {
-  .feed {
-    grid-template-columns: 3.5rem minmax(0, 1fr) 3.5rem;
-  }
-}
-.feed-perf {
-  background-color: color-mix(in srgb, var(--color-paper) 90%, var(--color-ink));
-  background-image: radial-gradient(
-    circle at 50% 50%,
-    var(--color-chalk) 0 5px,
-    color-mix(in srgb, var(--color-ink) 28%, var(--color-chalk)) 5px 6px,
-    transparent 6px
-  );
-  background-size: 100% 36px;
-  background-position: 0 6px;
-  border-inline: 1px dashed var(--color-hair);
-}
-@media (min-width: 640px) {
-  .feed-perf {
-    background-image: radial-gradient(
-      circle at 50% 50%,
-      var(--color-chalk) 0 8px,
-      color-mix(in srgb, var(--color-ink) 28%, var(--color-chalk)) 8px 9px,
-      transparent 9px
-    );
-  }
-}
-.feed-page {
-  padding: 1.6rem 1rem 2rem;
-  min-width: 0;
-}
-@media (min-width: 640px) {
-  .feed-page {
-    padding: 2rem 1.75rem 2.4rem;
-  }
-}
-.feed-head {
-  padding-bottom: 0.8rem;
-  border-bottom: 2px solid var(--color-ink);
-}
-.feed .reg-list li:nth-child(odd) {
-  background: var(--color-bar);
-}
-.feed .reg-row {
-  padding: 0.8rem 0.7rem;
-  border-top: 0;
-}
-@media (max-width: 639px) {
-  /* Narrow: the dotted leader gives its room to the name. */
-  .feed .reg-lead {
-    display: none;
-  }
-  .feed .reg-box + span {
-    flex: 1;
-  }
-}
-.feed .reg-list {
-  border-bottom: 2px solid var(--color-ink);
-  border-top: 1px solid var(--color-hair);
+/* ---- the register: a page from a manual, on paper ---- */
+.reg-list {
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--color-hair);
 }

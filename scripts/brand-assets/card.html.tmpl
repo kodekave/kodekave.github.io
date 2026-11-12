@@ -8,26 +8,17 @@
   html, body { width: 1200px; height: 630px; overflow: hidden; background: #0e2a22; }
   .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
           background: #0e2a22; color: #eeeadf; }
-  .seal { position: absolute; right: 64px; bottom: 58px; width: 124px; height: 124px;
-          display: grid; place-items: center; }
-  .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; color: #bc9660; opacity: 0.85; }
-  .seal i { position: relative; display: grid; place-items: center; width: 62px; height: 62px;
-            border-radius: 50%; background: #0e2a22; font: 800 24px/1 "AR", sans-serif; font-stretch: 80%; color: #eeeadf;
-            letter-spacing: 0.02em; font-style: normal; }
   .plate { position: absolute; top: -34px; right: -34px; width: 560px; height: 704px;
            object-fit: cover; object-position: 46% 20%; mix-blend-mode: screen;
            filter: brightness(0.93) sepia(0.06);
            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%); }
   .shade { position: absolute; inset: 0;
            background: linear-gradient(to right, #0e2a22 0%, #0e2a22 40%, rgba(14,42,34,0) 66%); }
-  .frame { position: absolute; inset: 22px; border: 1px solid rgba(188,150,96,0.55); }
   .text { position: absolute; inset: 0; padding: 74px 72px 70px; width: 780px;
           display: flex; flex-direction: column; }
-  .label { display: inline-flex; align-items: center; gap: 14px; align-self: flex-start; padding: 10px 16px; border: 1px solid rgba(238,234,223,0.22); background: rgba(7,20,15,0.6);
-           font: 400 16px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
-  .label::before { content: ""; width: 9px; height: 16px; background: #e0b36a; }
-  h1 { font: 800 98px/0.9 "AR", sans-serif; font-stretch: 80%; text-transform: uppercase; letter-spacing: -0.012em; margin-top: 30px; }
-  .tag { font: 500 32px/1.25 "AR", sans-serif; font-stretch: 88%; letter-spacing: -0.012em; margin-top: 34px; max-width: 540px; text-wrap: balance;
+  .label { display: inline-flex; align-items: center; gap: 14px; font: 400 16px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
+  h1 { font: 300 100px/0.98 "AR", sans-serif; font-stretch: 100%; letter-spacing: -0.035em; margin-top: 30px; }
+  .tag { font: 400 31px/1.25 "AR", sans-serif; font-stretch: 100%; letter-spacing: -0.015em; margin-top: 34px; max-width: 540px; text-wrap: balance;
          color: color-mix(in srgb, #eeeadf 80%, #0e2a22); }
   .foot { margin-top: auto; }
   .rule { width: 64px; height: 2px; background: #bc9660; margin-bottom: 22px; }
@@ -39,14 +30,6 @@
 <div class="card">
   <img class="plate" src="{{PLATE}}" alt="">
   <div class="shade"></div>
-  <div class="frame"></div>
-  <div class="seal">
-    <svg viewBox="-50 -50 100 100" fill="none" aria-hidden="true">
-      <defs><path id="g" stroke="currentColor" stroke-width="0.6"/></defs>
-      <g id="copies"></g>
-    </svg>
-    <i>KK</i>
-  </div>
   <div class="text">
     <div class="label">Founder's office &middot; GTM &middot; Cross-border ops</div>
     <h1>Komal<br>Kedarnath G</h1>
@@ -58,22 +41,3 @@
     </div>
   </div>
 </div>
-<script>
-  (function () {
-    var R = 8, r = 3, d = 3.1, steps = 540, k = (R - r) / r, sc = 46 / (R - r + d), p = "";
-    for (var i = 0; i <= steps; i++) {
-      var t = (i / steps) * Math.PI * 6;
-      var x = ((R - r) * Math.cos(t) + d * Math.cos(k * t)) * sc;
-      var y = ((R - r) * Math.sin(t) - d * Math.sin(k * t)) * sc;
-      p += (i ? "L" : "M") + x.toFixed(2) + " " + y.toFixed(2);
-    }
-    document.getElementById("g").setAttribute("d", p + "Z");
-    var g = document.getElementById("copies"), n = 30;
-    for (var j = 0; j < n; j++) {
-      var u = document.createElementNS("http://www.w3.org/2000/svg", "use");
-      u.setAttribute("href", "#g");
-      u.setAttribute("transform", "rotate(" + (360 / n / 5) * j + ")");
-      g.appendChild(u);
-    }
-  })();
-</script>

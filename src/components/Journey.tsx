@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { MAP_GRID } from "@/lib/map-grid";
 import StopArt, { type Motif } from "./StopArt";
 
 export type Stop = {
@@ -15,7 +14,6 @@ export type Stop = {
   title: string;
   role?: string;
   meta?: string;
-  current?: boolean;
   href?: string;
   hrefLabel?: string;
   motif: Motif;
@@ -23,13 +21,7 @@ export type Stop = {
   place: string;
 };
 
-export type Pin = {
-  code: string;
-  label: string;
-  years: string;
-  lat: number;
-  lon: number;
-};
+export type Pin = { code: string; label: string };
 
 const STEP_MS = 340;
 
@@ -47,12 +39,11 @@ function useWide() {
 }
 
 /**
-
  * The journey as a program listing.
  *
- * Every stop is one line of the listing: year, opcode, title. The line that is
- * selected drives one detail: a flat map showing where the program has jumped
- * so far, and the stop's year, title, role, dates, link and drawing. On first
+ * Every stop is one line: year, opcode, title. The selected line drives one
+ * detail, the stop's year, title, role, dates, link and drawing, and one thin
+ * route line that shows which of the four places has been reached. On first
  * view the listing runs once, a line every third of a second, and stops on the
  * last stop. After that any line can be chosen by hover, focus, click or the
  * arrow keys. Nothing is pinned and nothing hijacks the scroll.
@@ -79,7 +70,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
     timers.current.push(window.setTimeout(fn, ms));
   };
 
-  /** Go to a line. Reaching the last stop ends the run. */
   const goto = (i: number) => {
     setPc(i);
     if (i >= N - 1) setRunning(false);
@@ -149,15 +139,16 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
 
   const at = Math.max(0, Math.min(pc, N - 1));
   const shown = stops[at];
+
   return (
-    <div ref={rootRef} className="jl corners">
+    <div ref={rootRef} className="jl">
       <noscript>
         <style>{`.jl-inline,.jl-inline[hidden]{display:block!important}.jl-pane{display:none!important}`}</style>
       </noscript>
+
       <div className="jl-cols">
-        {/* The map: where the program has jumped so far. */}
         <div className="jl-top">
-          <JourneyMap stops={stops} pins={pins} at={at} started={pc >= 0} />
+          <Route stops={stops} pins={pins} at={at} />
         </div>
 
         <ol className="jl-list" aria-label="The journey, as a program listing" onKeyDown={onKey}>
@@ -173,7 +164,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
                   id={`jl-row-${i}`}
                   className="jl-row"
                   data-active={active}
-                  data-done={pc > i}
                   aria-expanded={wide ? undefined : active}
                   aria-controls={wide ? "jl-pane" : `jl-detail-${i}`}
                   aria-current={wide && active ? "true" : undefined}
@@ -185,18 +175,15 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
                     if (!running && pc !== i) select(i);
                   }}
                 >
-                  <i className="jl-mk" aria-hidden="true" />
-                  <span>
-                    <span className="jl-l1">
-                      <span>
-                        {s.addr}
-                        <span className="jl-op">{s.op}</span>
-                        {s.arg}
-                      </span>
-                      <span className="jl-yr">{s.year}</span>
+                  <span className="jl-l1">
+                    <span>
+                      {s.addr}
+                      <span className="jl-op">{s.op}</span>
+                      {s.arg}
                     </span>
-                    <span className="jl-l2 block">{s.title}</span>
+                    <span className="jl-yr">{s.year}</span>
                   </span>
+                  <span className="jl-l2 block">{s.title}</span>
                 </button>
                 <div
                   id={`jl-detail-${i}`}
@@ -217,7 +204,6 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
           </div>
         </div>
       </div>
-
     </div>
   );
 }
@@ -227,12 +213,7 @@ function Detail({ s }: { s: Stop }) {
     <>
       <div>
         <p className="jl-year" aria-hidden="true">{s.year}</p>
-        <h3 className="font-display jl-title">
-          {s.title}
-          {s.current && (
-            <span className="stamp stamp-brass label ml-3 align-middle">Current</span>
-          )}
-        </h3>
+        <h3 className="font-display jl-title">{s.title}</h3>
         {s.role && <p className="jl-role">{s.role}</p>}
         {s.meta && <p className="label jl-meta">{s.meta}</p>}
         {s.href && (
@@ -246,249 +227,37 @@ function Detail({ s }: { s: Stop }) {
   );
 }
 
-/* --------------------------------------------------------------- the map */
-
-const { cols: COLS, rows: ROWS, step: STEP, latTop: LAT_TOP, lonLeft: LON_LEFT } = MAP_GRID;
-const LAT_SHOWN_TOP = 76;
-const LAT_SHOWN_BOTTOM = -42;
-const ROW_FROM = Math.round((LAT_TOP - LAT_SHOWN_TOP) / STEP);
-const ROW_TO = Math.min(ROWS, Math.round((LAT_TOP - LAT_SHOWN_BOTTOM) / STEP));
-const SHOWN_ROWS = ROW_TO - ROW_FROM;
-
-function decode(): Uint8Array {
-  const bin = atob(MAP_GRID.bits);
-  const out = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-  return out;
-}
-
 /**
- * A flat dot-matrix world map showing the route so far. Places already
- * reached are solid, the next ones hollow. Arcs join the places in the order
- * they were worked, and the arc into the current place is drawn in as the
- * program steps. The land is drawn once to an offscreen canvas; a frame is
- * only drawn when something changes. With reduced motion the arc is simply
- * there.
+ * The four places as one hairline: reached places are solid, the next ones
+ * hollow, and the line between them turns brass once it has been crossed.
  */
-function JourneyMap({
-  stops,
-  pins,
-  at,
-  started,
-}: {
-  stops: Stop[];
-  pins: Pin[];
-  at: number;
-  started: boolean;
-}) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const drawRef = useRef<(i: number, t: number) => void>(() => {});
-  const atRef = useRef(at);
-  const rafRef = useRef(0);
-
-  // Build the canvas: size it to its box, paint the land, expose `draw`.
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (!wrap || !canvas || !ctx) return;
-
-    const css = getComputedStyle(wrap);
-    const read = (name: string, fallback: string) =>
-      css.getPropertyValue(name).trim() || fallback;
-    const BRASS = read("--color-brass", "#bc9660");
-    const HOT = read("--color-brass-hot", "#e0b36a");
-    const PAPER = read("--color-paper", "#eeeadf");
-    const mono = getComputedStyle(canvas).fontFamily || "monospace";
-    const bits = decode();
-    const places = stops.map((s) => s.place);
-    const pinOf = Object.fromEntries(pins.map((p) => [p.code, p]));
-    // The jumps, in order: [from, to, index of the stop that made it].
-    const jumps: [string, string, number][] = [];
-    places.forEach((p, i) => {
-      if (i > 0 && p !== places[i - 1]) jumps.push([places[i - 1], p, i]);
-    });
-    const firstStop = (code: string) => places.indexOf(code);
-
-    let W = 0;
-    let H = 0;
-    let cell = 3;
-    let land: HTMLCanvasElement | null = null;
-    const px = (lat: number, lon: number): [number, number] => [
-      ((lon - LON_LEFT) / STEP) * cell,
-      ((LAT_TOP - lat) / STEP - ROW_FROM) * cell,
-    ];
-
-    function buildLand(dpr: number) {
-      land = document.createElement("canvas");
-      land.width = Math.round(W * dpr);
-      land.height = Math.round(H * dpr);
-      const c = land.getContext("2d")!;
-      c.scale(dpr, dpr);
-      c.strokeStyle = "rgba(238,234,223,0.08)";
-      c.lineWidth = 1;
-      for (let lat = 60; lat >= -30; lat -= 15) {
-        const y = Math.round(((LAT_TOP - lat) / STEP - ROW_FROM) * cell) + 0.5;
-        c.beginPath();
-        c.moveTo(0, y);
-        c.lineTo(W, y);
-        c.stroke();
-      }
-      for (let lon = -180; lon < 180; lon += 30) {
-        const x = Math.round(((lon - LON_LEFT) / STEP) * cell) + 0.5;
-        c.beginPath();
-        c.moveTo(x, 0);
-        c.lineTo(x, H);
-        c.stroke();
-      }
-      c.fillStyle = "#6f8a7c";
-      const size = cell * 0.74;
-      const pd = (cell - size) / 2;
-      for (let r = ROW_FROM; r < ROW_TO; r++) {
-        for (let q = 0; q < COLS; q++) {
-          const i = r * COLS + q;
-          if ((bits[i >> 3] >> (i & 7)) & 1) {
-            c.fillRect(q * cell + pd, (r - ROW_FROM) * cell + pd, size, size);
-          }
-        }
-      }
-    }
-
-    const arcPt = (a: string, b: string, t: number): [number, number] => {
-      const [xa, ya] = px(pinOf[a].lat, pinOf[a].lon);
-      const [xb, yb] = px(pinOf[b].lat, pinOf[b].lon);
-      const lift = Math.min(0.5 * H, Math.abs(xb - xa) * 0.22 + 10);
-      return [xa + (xb - xa) * t, ya + (yb - ya) * t - Math.sin(Math.PI * t) * lift];
-    };
-    const trace = (a: string, b: string, upTo: number) => {
-      ctx!.beginPath();
-      const n = Math.max(2, Math.round(60 * upTo));
-      for (let s = 0; s <= n; s++) {
-        const [x, y] = arcPt(a, b, (s / n) * upTo);
-        if (s === 0) ctx!.moveTo(x, y);
-        else ctx!.lineTo(x, y);
-      }
-    };
-
-    /** Draw the route as it stands at stop `i`, the arc into it `t` of the way. */
-    function draw(i: number, t: number) {
-      if (!land || W === 0) return;
-      const c = ctx!;
-      const dpr = canvas!.width / W;
-      c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      c.clearRect(0, 0, W, H);
-      c.drawImage(land, 0, 0, W, H);
-
-      for (const [a, b, idx] of jumps) {
-        if (idx < i || (idx === i && t >= 1)) {
-          // Already flown.
-          const isNow = idx === i;
-          c.setLineDash(isNow ? [] : [5, 6]);
-          c.lineWidth = isNow ? 2.5 : 1.3;
-          c.strokeStyle = isNow ? HOT : "rgba(188,150,96,0.6)";
-          trace(a, b, 1);
-          c.stroke();
-        } else if (idx === i) {
-          c.setLineDash([]);
-          c.lineWidth = 2.5;
-          c.strokeStyle = HOT;
-          trace(a, b, Math.max(0.02, t));
-          c.stroke();
-        } else {
-          c.setLineDash([2, 7]);
-          c.lineWidth = 1.2;
-          c.strokeStyle = "rgba(238,234,223,0.28)";
-          trace(a, b, 1);
-          c.stroke();
-        }
-      }
-      c.setLineDash([]);
-
-      const here = places[i];
-      for (const p of pins) {
-        const [x, y] = px(p.lat, p.lon);
-        const reached = firstStop(p.code) <= i;
-        const now = p.code === here;
-        c.fillStyle = now ? HOT : BRASS;
-        if (reached) c.fillRect(x - 4.5, y - 4.5, 9, 9);
-        c.strokeStyle = reached ? PAPER : "rgba(238,234,223,0.5)";
-        c.lineWidth = 1;
-        c.strokeRect(Math.round(x) - 7.5, Math.round(y) - 7.5, 15, 15);
-        c.font = `500 11px ${mono}`;
-        c.textAlign = "left";
-        c.fillStyle = now ? HOT : reached ? "#d6d1c3" : "rgba(238,234,223,0.55)";
-        c.fillText(p.code, x + 12, y + 4);
-        if (now) {
-          c.strokeStyle = HOT;
-          c.lineWidth = 1.6;
-          for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-            c.beginPath();
-            c.moveTo(x + sx * 12, y + sy * 8);
-            c.lineTo(x + sx * 12, y + sy * 12);
-            c.lineTo(x + sx * 8, y + sy * 12);
-            c.stroke();
-          }
-        }
-      }
-    }
-    drawRef.current = draw;
-
-    function resize() {
-      const w = Math.round(wrap!.getBoundingClientRect().width);
-      if (w < 10) return;
-      W = w;
-      cell = W / COLS;
-      H = Math.round(SHOWN_ROWS * cell);
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas!.width = Math.round(W * dpr);
-      canvas!.height = Math.round(H * dpr);
-      canvas!.style.height = `${H}px`;
-      buildLand(dpr);
-      draw(atRef.current, 1);
-    }
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(wrap);
-    return () => {
-      ro.disconnect();
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [stops, pins]);
-
-  // When the stop changes, draw the new arc in over about 450 ms.
-  useEffect(() => {
-    atRef.current = at;
-    cancelAnimationFrame(rafRef.current);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      drawRef.current(at, 1);
-      return;
-    }
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - t0) / 450);
-      drawRef.current(at, t);
-      if (t < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [at]);
-
-  const here = pins.find((p) => p.code === stops[at]?.place);
+function Route({ stops, pins, at }: { stops: Stop[]; pins: Pin[]; at: number }) {
+  const places = stops.map((s) => s.place);
+  const first = (code: string) => places.indexOf(code);
+  const here = pins.find((p) => p.code === places[at]);
   return (
     <div
-      ref={wrapRef}
-      className="jl-mapbox"
+      className="jl-route"
       role="img"
-      aria-label={`A flat dot-matrix world map of the route so far, now at ${here?.label ?? "the start"}.`}
+      aria-label={`The route so far, now at ${here?.label ?? "the start"}.`}
     >
-      <canvas ref={canvasRef} />
-      {started && here && (
-        <span className="jl-cap jl-cap-bot label" aria-hidden="true">
-          {here.code} · {here.label} · {here.years}
-        </span>
-      )}
+      <ol aria-hidden="true">
+        {pins.map((p, i) => {
+          const reached = first(p.code) <= at;
+          const next = pins[i + 1];
+          return (
+            <li
+              key={p.code}
+              data-s={p.code === places[at] ? "now" : reached ? "reached" : "next"}
+              data-seg={next && first(next.code) <= at ? "on" : "off"}
+            >
+              <span className="jl-node" />
+              <span className="label sm:hidden">{p.code}</span>
+              <span className="label hidden sm:block">{p.label}</span>
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

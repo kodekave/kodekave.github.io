@@ -81,7 +81,7 @@ export default function AboutPage() {
 
       {/* The narrative. Ruled sections rather than cards — this is one
           continuous account, not a set of separate objects. */}
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-3xl px-6 py-24 md:py-28">
           {journey.map((section, i) => (
             <Reveal key={section.heading} delay={i * 70}>
@@ -100,7 +100,7 @@ export default function AboutPage() {
 
       {/* The record: roles and recognition. Each block is a ruled
           entry in one document rather than a panel of its own. */}
-      <section className="grain border-t border-hair bg-mist">
+      <section className="border-t border-hair bg-mist">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <Reveal>
             <div className="border-t border-hair pt-8">

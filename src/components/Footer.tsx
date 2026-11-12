@@ -31,7 +31,7 @@ const elsewhere = [
  */
 export default function Footer() {
   return (
-    <footer className="on-ink grain overflow-hidden">
+    <footer className="on-ink overflow-hidden">
       <div id="newsletter" className="scroll-mt-20">
         <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <Reveal className="relative">

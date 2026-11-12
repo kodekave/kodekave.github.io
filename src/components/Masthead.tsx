@@ -32,7 +32,7 @@ export default function Masthead({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="on-ink grain relative overflow-hidden">
+    <section className="on-ink relative overflow-hidden">
       {plate && (
         <>
           <Plate

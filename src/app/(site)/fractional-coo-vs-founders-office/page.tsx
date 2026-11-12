@@ -134,7 +134,7 @@ export default function ComparisonPage() {
         }
       />
 
-      <section className="on-paper grain">
+      <section className="on-paper">
         <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
 
       <Reveal delay={70}>
@@ -250,7 +250,7 @@ export default function ComparisonPage() {
 
       <FaqSection faqs={faqs} id="comparison-faq" />
 
-      <section className="on-paper grain border-t border-hair">
+      <section className="on-paper border-t border-hair">
         <div className="mx-auto max-w-2xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">

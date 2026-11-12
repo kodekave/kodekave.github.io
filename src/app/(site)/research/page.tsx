@@ -65,7 +65,7 @@ export default function ResearchPage() {
       {/* --------------------------------------------------- 01 · the paper */}
       <section
         id="openfoam-on-android"
-        className="on-paper grain relative scroll-mt-16 overflow-hidden"
+        className="on-paper relative scroll-mt-16 overflow-hidden"
       >
         <div className="mx-auto grid max-w-6xl items-center gap-x-20 gap-y-16 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
           <Reveal>
@@ -139,7 +139,7 @@ export default function ResearchPage() {
 
       {/* ---------------------------------------------- 02 · around the paper */}
       {related.length > 0 && (
-        <section className="grain border-t border-hair bg-mist">
+        <section className="border-t border-hair bg-mist">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
               <SectionLabel n="02" className="text-ink-faint">

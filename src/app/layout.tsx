@@ -78,14 +78,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Decides, before first paint, whether this visit gets the boot sequence: the
- * homepage only, no hash in the URL, once per session, never with reduced
- * motion and never for automation (crawlers, audits, tests). It only sets an attribute; the stylesheet does the rest (see
- * BootPost). Wrapped so a blocked storage API cannot break the page.
- */
-const POST_SCRIPT = `try{var d=document.documentElement;if(location.pathname==="/"&&!location.hash&&!navigator.webdriver&&!sessionStorage.getItem("post")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){d.setAttribute("data-post","1");sessionStorage.setItem("post","1")}}catch(e){}`;
-
 export default function RootLayout({
   children,
 }: {
@@ -94,12 +86,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: POST_SCRIPT }} />
-      </head>
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*
           One @graph containing the Person and WebSite nodes, cross-referenced
