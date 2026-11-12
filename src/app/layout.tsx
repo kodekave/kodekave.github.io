@@ -55,7 +55,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${profile.name} — ${profile.role}`,
+    default: `${profile.role} — ${profile.name}`,
     template: `%s — ${profile.shortName} Kedarnath`,
   },
   description: profile.schemaDescription,

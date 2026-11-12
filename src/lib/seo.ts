@@ -124,7 +124,7 @@ export function personSchema() {
     })),
     hasOccupation: {
       "@type": "Occupation",
-      name: "Founder's Office Operator",
+      name: profile.role,
       occupationLocation: [
         { "@type": "Country", name: "India" },
         { "@type": "Country", name: "Maldives" },

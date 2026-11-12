@@ -64,5 +64,5 @@ export const OG_IMAGE = {
   url: "/images/og-card.jpg",
   width: 1200,
   height: 630,
-  alt: "Komal Kedarnath G — Founder's Office Operator & GTM Strategist",
+  alt: "Komal Kedarnath G — Helping Visionaries Build Ideas For The World",
 };
