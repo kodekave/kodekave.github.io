@@ -7,7 +7,8 @@ export const profile = {
    * spelling to the same person rather than treating them as separate people.
    */
   alternateNames: ["Komal Kedarnath", "kodekave"],
-  role: "Founder's Office Operator & GTM Strategist",
+  /** Her own line, in her words. It is the page title and the structured-data job title. */
+  role: "Helping Visionaries Build Ideas For The World",
   /** Her own line. It leads the homepage. */
   tagline: "Helping founders build from idea to execution.",
   subTagline:

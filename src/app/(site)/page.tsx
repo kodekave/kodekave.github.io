@@ -19,7 +19,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   path: "/",
-  title: "Founder's Office Operator & GTM Strategist — Komal Kedarnath",
+  title: `${profile.role} — ${profile.name}`,
   description:
     "Komal Kedarnath helps founders build from idea to execution: four ventures across India, the Maldives, the US and the UK in more than six years.",
 });
