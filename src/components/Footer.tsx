@@ -33,7 +33,7 @@ export default function Footer() {
   return (
     <footer className="on-ink overflow-hidden">
       <div id="newsletter" className="scroll-mt-20">
-        <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+        <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-24">
           <Reveal className="relative">
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-[1fr_auto] md:items-end">
               <div>
@@ -52,7 +52,7 @@ export default function Footer() {
           </Reveal>
         </div>
 
-        <div className="relative border-t-2 border-hair-inv">
+        <div className="relative border-t border-hair-inv">
           <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between md:px-10">
             <div className="flex flex-col gap-3">
               <Link href="/" className="wordmark text-sm leading-none tracking-[0.04em]">

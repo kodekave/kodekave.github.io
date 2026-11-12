@@ -65,7 +65,7 @@ export default function HomePage() {
           alt={`${profile.name} — engraved portrait`}
           priority
           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 54vw, 44vw"
-          className="plate-fade plate-hero settle-plate absolute right-0 top-0 h-[54%] w-auto max-w-none opacity-90 sm:-right-[3%] sm:h-full sm:w-[54%] sm:object-cover sm:object-[46%_20%] sm:opacity-100 lg:w-[44%]"
+          className="plate-fade plate-hero absolute right-0 top-0 h-[54%] w-auto max-w-none opacity-90 sm:-right-[3%] sm:h-full sm:w-[54%] sm:object-cover sm:object-[46%_20%] sm:opacity-100 lg:w-[44%]"
         />
         <span
           aria-hidden="true"
@@ -76,9 +76,9 @@ export default function HomePage() {
           className="absolute inset-0 hidden bg-gradient-to-r from-ink from-20% via-ink/10 to-transparent to-45% sm:block"
         />
 
-        <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col px-6 pb-14 pt-12 md:px-10 md:pb-16 md:pt-14">
+        <div className="settle relative mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl flex-col px-6 pb-14 pt-12 md:px-10 md:pb-16 md:pt-14">
           {/* The status line: a live clock and where the work is based. */}
-          <p className="statusbar label settle settle-1">
+          <p className="statusbar label">
             <span className="flex items-center gap-2.5 text-paper-soft">
               <span aria-hidden="true" className="now-mark text-brass" />
               Online
@@ -90,17 +90,17 @@ export default function HomePage() {
           </p>
 
           <div className="mt-auto pt-24">
-            <h1 className="wordmark settle settle-2 text-[clamp(2.8rem,7.6vw,6.5rem)]">
+            <h1 className="wordmark text-[clamp(2.8rem,7.6vw,6.5rem)]">
               {firstName}
               <br />
               <span className="sm:whitespace-nowrap">{restOfName.join(" ")}</span>
             </h1>
 
-            <p className="settle settle-3 tagline mt-7 max-w-xl text-balance text-[clamp(1.5rem,2.8vw,2.1rem)] leading-[1.22] text-paper-soft">
+            <p className="tagline mt-7 max-w-xl text-balance text-[clamp(1.5rem,2.8vw,2.1rem)] leading-[1.22] text-paper-soft">
               {profile.tagline}
             </p>
 
-            <div className="settle settle-4 mt-11">
+            <div className="mt-11">
               <a
                 href={`mailto:${profile.email}`}
                 className="btn btn-solid-paper"
@@ -143,7 +143,7 @@ export default function HomePage() {
 
       {/* ------------------------------------------------- 02 · the register */}
       <section id="writing" className="bg-paper scroll-mt-16">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-24">
           <SectionLabel n="02" className="text-ink-faint">
             Register
           </SectionLabel>
@@ -215,7 +215,7 @@ export default function HomePage() {
 
       {/* ---------------------------------------------------- 03 · the trace */}
       <section id="trace" className="on-ink rule-1 scroll-mt-16">
-        <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-24">
           <SectionLabel n="03" onInk className="text-paper-faint">
             Trace
           </SectionLabel>
@@ -228,7 +228,7 @@ export default function HomePage() {
 
       {/* ---------------------------------------------------- 04 · the signal */}
       <section id="contact" className="on-ink rule-1 scroll-mt-16">
-        <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
+        <div className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-28">
           <SectionLabel n="04" onInk className="text-paper-faint">
             Signal
           </SectionLabel>

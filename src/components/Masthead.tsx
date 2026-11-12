@@ -39,7 +39,7 @@ export default function Masthead({
             alt="Engraved portrait"
             priority
             sizes="(max-width: 640px) 80vw, 38vw"
-            className="plate-fade settle-plate absolute opacity-40 sm:opacity-100 -top-10 -right-[4%] h-[118%] w-[78%] max-w-none object-cover object-[46%_18%] sm:w-[46%] lg:w-[36%]"
+            className="plate-fade absolute opacity-40 sm:opacity-100 -top-10 -right-[4%] h-[118%] w-[78%] max-w-none object-cover object-[46%_18%] sm:w-[46%] lg:w-[36%]"
           />
           <span
             aria-hidden="true"
@@ -52,11 +52,11 @@ export default function Masthead({
         </>
       )}
 
-      <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-24 md:px-10 md:pb-28">
+      <div className="settle relative mx-auto max-w-6xl px-6 pb-20 pt-24 md:px-10 md:pb-28">
         {breadcrumb && (
           <nav
             aria-label="Breadcrumb"
-            className="settle settle-1 label mb-8 text-paper-faint"
+            className="label mb-8 text-paper-faint"
           >
             <ol className="flex flex-wrap items-center gap-2.5">
               {breadcrumb.map((crumb, i) => (
@@ -77,13 +77,13 @@ export default function Masthead({
         {/* On a page whose trail already ends in its own name, the label
             would just say it twice. */}
         {breadcrumb?.at(-1)?.name.toLowerCase() !== label.toLowerCase() && (
-          <p className="settle settle-1 label text-paper-faint">{label}</p>
+          <p className="label text-paper-faint">{label}</p>
         )}
-        <h1 className="settle settle-2 font-display mt-6 max-w-3xl text-[clamp(2rem,5.4vw,3.9rem)] leading-[1.05]">
+        <h1 className="font-display mt-6 max-w-3xl text-[clamp(2rem,5.4vw,3.9rem)] leading-[1.05]">
           {title}
         </h1>
         {lead && (
-          <p className="settle settle-3 mt-8 max-w-xl text-xl leading-[1.7] text-paper-soft">
+          <p className="mt-8 max-w-xl text-xl leading-[1.7] text-paper-soft">
             {lead}
           </p>
         )}
