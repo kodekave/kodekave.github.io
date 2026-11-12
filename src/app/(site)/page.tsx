@@ -29,7 +29,7 @@ export const metadata = buildMetadata({
 });
 
 /**
- * The homepage is one machine, and the page ends on HCF.
+ * The homepage is one machine.
  *
  * Four panels after the screen that powers on: the telemetry (the readings),
  * the register (what is on offer, as a printout), the trace (the journey as a

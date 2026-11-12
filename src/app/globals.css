@@ -1514,18 +1514,6 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   letter-spacing: -0.005em;
   color: var(--color-paper);
 }
-.jl-halt .jl-l2 {
-  display: none;
-}
-.jl-halt .jl-l1 {
-  justify-content: flex-start;
-  align-self: center;
-}
-.jl-halt {
-  min-height: 3.4rem;
-  align-items: center;
-}
-
 /* The pane (wide screens) and the inline detail (narrow screens). */
 .jl-pane {
   display: none;
@@ -1607,13 +1595,13 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
 .jl-lamps i[data-lit="true"] {
   background: var(--color-brass);
 }
-.jl-lamps .jl-halt-lamp {
+.jl-lamps .jl-done-lamp {
   margin-left: 0.6rem;
   width: 0.55rem;
   height: 0.55rem;
   border-radius: 50%;
 }
-.jl-lamps .jl-halt-lamp[data-lit="true"] {
+.jl-lamps .jl-done-lamp[data-lit="true"] {
   background: var(--color-brass-hot);
   box-shadow: 0 0 8px var(--color-brass);
 }
@@ -1714,65 +1702,6 @@ html[data-post] .name-glyph { animation-delay: calc(1.3s + var(--i, 0) * 34ms); 
   fill: var(--color-brass);
   font-size: 30px;
   letter-spacing: 0;
-}
-
-/* The halt screen: the picture collapses to a line and a point. */
-.jl-off {
-  display: none;
-  place-items: center;
-  min-height: 15.5rem;
-  padding: 2rem;
-  text-align: center;
-  color: var(--color-paper-faint);
-}
-.jl-dot {
-  width: 5px;
-  height: 5px;
-  margin: 0 auto 1.4rem;
-  background: var(--color-brass-hot);
-  box-shadow: 0 0 14px 4px var(--color-brass);
-}
-.jl-pane[data-power="off"] .jl-live {
-  display: none;
-}
-.jl-pane[data-power="off"] .jl-off {
-  display: grid;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .jl-pane[data-power="off"] .jl-off {
-    animation: crt-on 0.01s linear;
-  }
-  .jl-pane[data-power="off"] .jl-dot {
-    animation: crt-dot 0.7s ease-out 0.24s backwards;
-  }
-  .jl-pane[data-collapse="true"] .jl-live {
-    display: grid;
-    animation: crt-off 0.26s ease-in forwards;
-  }
-  .jl-pane[data-collapse="true"] .jl-off {
-    display: none;
-  }
-}
-@keyframes crt-off {
-  0% { transform: scale(1, 1); filter: brightness(1); }
-  60% { transform: scale(1, 0.012); filter: brightness(2.2); }
-  100% { transform: scale(0, 0.012); filter: brightness(2.2); opacity: 0; }
-}
-@keyframes crt-dot {
-  from { opacity: 1; transform: scale(3); }
-  to { opacity: 1; transform: scale(1); }
-}
-.jl-ready {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
-  border-top: 2px solid var(--color-hair-inv);
-  color: var(--color-paper-soft);
-}
-noscript .jl-inline,
-.jl-nojs .jl-inline {
-  display: block !important;
 }
 
 /* ---- the register: a tractor-feed printout on the case ---- */

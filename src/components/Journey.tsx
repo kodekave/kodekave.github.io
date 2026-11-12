@@ -57,13 +57,13 @@ function useWide() {
  * selected drives one detail: a flat map showing where the program has jumped
  * so far, the PC / CTRY / VENT registers, and the stop's year, title, role,
  * dates, link and drawing. On first view the program runs once, a line every
- * third of a second, and halts on HCF: the registers freeze, the detail
- * collapses to a point and the HALT lamp comes on. After that any line can be
- * chosen by hover, focus, click or the arrow keys, and STEP and RUN are real
- * controls. Nothing is pinned and nothing hijacks the scroll.
+ * third of a second, and stops on the last stop: the registers hold their
+ * final values and the D1 lamp comes on. After that any line can be chosen by
+ * hover, focus, click or the arrow keys, and STEP and RUN are real controls.
+ * Nothing is pinned and nothing hijacks the scroll.
  *
  * What the server sends is the finished state: the last stop selected, the
- * registers frozen. That is also what anyone with reduced motion sees, and
+ * registers at their final values. That is also what anyone with reduced motion sees, and
  * every stop's detail is in the HTML whether or not it is open.
  */
 export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] }) {
@@ -74,9 +74,8 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
   const wide = useWide();
 
   const [pc, setPc] = useState(N - 1);
-  const [halted, setHalted] = useState(true);
+  const [done, setDone] = useState(true);
   const [running, setRunning] = useState(false);
-  const [collapse, setCollapse] = useState(false);
 
   const stopTimers = () => {
     timers.current.forEach((t) => window.clearTimeout(t));
@@ -86,24 +85,21 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
     timers.current.push(window.setTimeout(fn, ms));
   };
 
-  /** Go to a line. Reaching HCF halts the machine and collapses the picture. */
+  /** Go to a line. Reaching the last stop ends the run. */
   const goto = (i: number) => {
     setPc(i);
-    if (i >= N) {
-      setHalted(true);
+    if (i >= N - 1) {
+      setDone(true);
       setRunning(false);
-      setCollapse(true);
-      later(() => setCollapse(false), 300);
     }
   };
 
   const run = () => {
     stopTimers();
-    setHalted(false);
+    setDone(false);
     setRunning(true);
-    setCollapse(false);
     setPc(0);
-    for (let i = 1; i <= N; i++) later(() => goto(i), i * STEP_MS);
+    for (let i = 1; i < N; i++) later(() => goto(i), i * STEP_MS);
   };
 
   const select = (i: number) => {
@@ -115,8 +111,8 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
   const step = () => {
     stopTimers();
     setRunning(false);
-    if (halted || pc >= N) {
-      setHalted(false);
+    if (done || pc >= N - 1) {
+      setDone(false);
       setPc(0);
     } else goto(pc + 1);
   };
@@ -134,7 +130,7 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
       ([e]) => {
         if (!e.isIntersecting || armed) return;
         armed = true;
-        setHalted(false);
+        setDone(false);
         setPc(-1);
         arm.disconnect();
       },
@@ -164,7 +160,7 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
     if (!keys.includes(e.key)) return;
     e.preventDefault();
     const cur = rowRefs.current.findIndex((b) => b === document.activeElement);
-    const last = N; // the HCF row
+    const last = N - 1;
     const next =
       e.key === "Home" ? 0 : e.key === "End" ? last
       : e.key === "ArrowDown" ? Math.min(last, cur + 1) : Math.max(0, cur - 1);
@@ -174,9 +170,9 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
   const at = Math.max(0, Math.min(pc, N - 1));
   const shown = stops[at];
   const final = stops[N - 1];
-  // The registers follow the program while it runs and hold when it halts.
-  const regs = halted
-    ? { pc: "0xFFFF", countries: final.countries, ventures: final.ventures, lit: N }
+  // The registers follow the program while it runs and hold when it ends.
+  const regs = done
+    ? { pc: final.addr, countries: final.countries, ventures: final.ventures, lit: N }
     : { pc: pc < 0 ? "0x0000" : shown.addr, countries: pc < 0 ? 0 : shown.countries, ventures: pc < 0 ? 0 : shown.ventures, lit: pc + 1 };
 
   return (
@@ -185,7 +181,7 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
         <style>{`.jl-inline,.jl-inline[hidden]{display:block!important}.jl-pane{display:none!important}`}</style>
       </noscript>
       <div className="jl-bar label">
-        <span>Program listing · {N} instructions + HCF</span>
+        <span>Program listing · {N} instructions</span>
         <span className="jl-ctl">
           <button type="button" className="jl-btn" onClick={step}>
             Step
@@ -214,7 +210,7 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
               {stops.map((s, i) => (
                 <i key={s.addr} data-lit={i < regs.lit} />
               ))}
-              <i className="jl-halt-lamp" data-lit={halted} />
+              <i className="jl-done-lamp" data-lit={done} />
               <span className="desig ml-1">D1</span>
             </span>
           </div>
@@ -268,61 +264,16 @@ export default function Journey({ stops, pins }: { stops: Stop[]; pins: Pin[] })
               </li>
             );
           })}
-          <li>
-            <button
-              type="button"
-              ref={(el) => {
-                rowRefs.current[N] = el;
-              }}
-              className="jl-row jl-halt"
-              data-active={pc >= N}
-              data-done={false}
-              aria-current={pc >= N ? "true" : undefined}
-              onClick={() => select(N)}
-              onFocus={() => {
-                if (pc < N) select(N);
-              }}
-              onMouseEnter={() => {
-                if (!running && pc < N) select(N);
-              }}
-            >
-              <i className="jl-mk" aria-hidden="true" />
-              <span className="jl-l1">
-                <span>
-                  0xFFFF
-                  <span className="jl-op">HCF</span>; halt and catch fire
-                </span>
-              </span>
-            </button>
-          </li>
         </ol>
 
         {/* The detail, on wide screens. Narrow screens open it under the line. */}
-        <div
-          id="jl-pane"
-          className="jl-pane"
-          data-power={pc >= N ? "off" : "on"}
-          data-collapse={collapse}
-        >
-          <div className="jl-live jl-detail">
+        <div id="jl-pane" className="jl-pane">
+          <div className="jl-detail">
             <Detail s={shown} />
-          </div>
-          <div className="jl-off" aria-hidden={pc < N}>
-            <div>
-              <div className="jl-dot" />
-              <p className="label">
-                <span className="normal-case">0xFFFF</span> · HCF
-              </p>
-              <p className="label mt-2">; halt and catch fire</p>
-            </div>
           </div>
         </div>
       </div>
 
-      <p className="jl-ready label" aria-hidden="true">
-        <span>Ready.</span>
-        <span className="caret" />
-      </p>
     </div>
   );
 }
