@@ -87,3 +87,11 @@ C plain index, F italic accent word, I numbered section labels over a rule (S co
 3. Keep or drop the LinkedIn icon in the nav; keep or drop the Register services list.
 4. Footer drawing (O): orbit, constellation or the hoodie equation?
 5. Light only, or also a dark mode later?
+
+## Facts gathered 2026-11-16 (from her logged-in LinkedIn, read in the built-in browser)
+
+- Headline now: "Founder's Office Operator | AI consulting & integration, investor readiness, data rooms, finance ops & GTM | 4 Ventures, 4 Countries | CERN Webfest winner". Location Bengaluru. Current employer shown: Travel Hands. Profile banner says "Open to work, Recruiters only" (a for-hire signal; her call).
+- Her recent post: she built an events-ranking tool as a side project and is "opening it up soon for 0→1 companies". A repost says Neuralzome Cybernetics is now Osmos Robotics. Check both with her before they appear on the site.
+- R (identity words): not yet chosen. Draft options to show her, from her own phrases: "Operator. GTM. Finance. Fundraising." or "Operator. Builder. Researcher. Explorer." She decides.
+- E (badge): she suggested her own line "Helping visionaries build ideas for the world" for the badge text. If the hero also carries that line, the badge should say something else (for example "4 ventures · 4 countries · 6+ years").
+- Register "What I bring" rows: Founder's office (Ongoing), Go-to-market execution (Project), Cross-border market entry (Project), Fundraise support (Project); full text in `engagements` in `src/lib/content.ts` and on /services. Still undecided whether they stay.
