@@ -11,8 +11,8 @@ library. To restyle them, edit the templates and run this again.
 
 Writes:
     public/images/og-card.jpg    1200 x 630, the link-preview card
-    src/app/favicon.ico          16, 32, 48 and 256 px, a wireframe K whose
-                                 line weight is drawn separately per size
+    src/app/favicon.ico          16, 32, 48 and 256 px, a 3D wireframe K drawn
+                                 separately for each size
 
 The card is rendered at twice its size and scaled down, so the hairline
 harmonograph and the sketch keep their detail. It uses the transparent sketch
@@ -115,13 +115,20 @@ def main() -> None:
         ROOT / "public/images/og-card.jpg", quality=90, optimize=True, progressive=True
     )
 
-    # The wireframe K is an outline, so its line weight has to follow the size:
-    # fine at 256 and 48 px, heavier at 32 and bolder again at 16.
-    weights = [("13px", [256, 48]), ("22px", [32]), ("30px", [16])]
+    # The favicon is a 3D wireframe K, drawn as a CAD viewport (see the
+    # template). Detail has to follow the size: the full view with grid, axes
+    # and vertex grips at 256 px; every edge at 48; no hidden lines at 32; and
+    # at 16 px only a bold front outline with a fainter back outline, because
+    # anything more turns to mush. THEME is "dark" (yellow lines on the ink) or
+    # "light" (ink lines on the yellow).
+    theme = "dark"
+    weights = [("6", 3, [256]), ("10", 2, [48]), ("17", 1, [32]), ("34", 0, [16])]
     frames: dict[int, Image.Image] = {}
-    for stroke, sizes in weights:
+    for stroke, detail, sizes in weights:
         art = render(
-            "favicon.html.tmpl", (512, 512), {"NEWSREADER": newsreader, "STROKE": stroke}
+            "favicon.html.tmpl",
+            (512, 512),
+            {"THEME": theme, "STROKE": stroke, "DETAIL": str(detail)},
         )
         for size in sizes:
             frames[size] = art.resize((size, size), Image.LANCZOS)
