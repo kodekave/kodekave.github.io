@@ -1,39 +1,56 @@
 <!doctype html>
 <meta charset="utf-8">
 <style>
-  @font-face { font-family: "AR"; src: url("{{ARCHIVO}}") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
-  @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
   @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
+  @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
   * { box-sizing: border-box; margin: 0; }
-  html, body { width: 1200px; height: 630px; overflow: hidden; background: #0e2a22; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #f6f5ef; }
+  /* Paper, with the site's plus grid at about 3%. */
   .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
-          background: #0e2a22; color: #eeeadf; }
-  .plate { position: absolute; top: -34px; right: -34px; width: 560px; height: 704px;
-           object-fit: cover; object-position: 46% 20%; mix-blend-mode: screen;
-           filter: brightness(0.93) sepia(0.06);
-           -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%); }
-  .shade { position: absolute; inset: 0;
-           background: linear-gradient(to right, #0e2a22 0%, #0e2a22 40%, rgba(14,42,34,0) 66%); }
-  .text { position: absolute; inset: 0; padding: 74px 72px 70px; width: 780px;
+          background-color: #f6f5ef; color: #1f2b27;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%231f2b27' stroke-opacity='.075' stroke-width='1'/%3E%3C/svg%3E"); }
+  /* The harmonograph, drawn below, faded before it reaches the text. */
+  .patt { position: absolute; inset: 0;
+          -webkit-mask-image: radial-gradient(ellipse 52% 80% at 76% 46%, #000 0%, rgba(0,0,0,.6) 46%, transparent 84%); }
+  canvas { position: absolute; left: 0; top: 0; width: 1200px; height: 630px; }
+  /* The sketch on its soft paper halo: no card, no edge. */
+  .pic { position: absolute; right: 64px; top: 34px; width: 450px; aspect-ratio: 900 / 1161; }
+  .halo { position: absolute; inset: -3% -6%; background: url("{{HALO}}") center / 100% 100% no-repeat; }
+  .pic img { position: relative; display: block; width: 100%; height: 100%; }
+  .badge { position: absolute; left: -70px; bottom: 20px; width: 150px; height: 150px; }
+  .badge text { fill: #1f2b27; font: 400 9.5px "PM", monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+  .text { position: absolute; left: 0; top: 0; padding: 66px 72px 62px; width: 740px; height: 630px;
           display: flex; flex-direction: column; }
-  .label { display: inline-flex; align-items: center; gap: 14px; font: 400 16px "PM", monospace; letter-spacing: 0.13em; white-space: nowrap; text-transform: uppercase; color: #bc9660; }
-  h1 { font: 300 100px/0.98 "AR", sans-serif; font-stretch: 100%; letter-spacing: -0.035em; margin-top: 30px; }
-  .tag { font: 400 31px/1.25 "AR", sans-serif; font-stretch: 100%; letter-spacing: -0.015em; margin-top: 34px; max-width: 540px; text-wrap: balance;
-         color: color-mix(in srgb, #eeeadf 80%, #0e2a22); }
+  .label { display: inline-flex; align-items: center; gap: 14px; font: 400 15px "PM", monospace;
+           letter-spacing: 0.12em; white-space: nowrap; text-transform: uppercase; color: #5e665f; }
+  .label::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #55633a;
+                   box-shadow: 0 0 0 4px rgba(247, 239, 150, .8); }
+  h1 { font: 300 76px/1.04 "NR", Georgia, serif; letter-spacing: -0.022em; margin-top: 36px; max-width: 640px; }
+  .who { display: flex; align-items: baseline; gap: 22px; margin-top: 34px; font: 400 25px "NR", Georgia, serif; letter-spacing: -0.01em; }
+  .who .id { color: #55633a; }
   .foot { margin-top: auto; }
-  .rule { width: 64px; height: 2px; background: #bc9660; margin-bottom: 22px; }
-  .proof { font: 400 19px "PM", monospace; letter-spacing: 0.1em; text-transform: uppercase;
-           color: color-mix(in srgb, #eeeadf 78%, #0e2a22); }
-  .proof b { font-weight: 400; color: #bc9660; padding: 0 10px; }
-  .url { font: 400 20px "PM", monospace; letter-spacing: 0.1em; color: #bc9660; margin-top: 12px; }
+  .rule { width: 64px; height: 2px; background: #f7ef96; margin-bottom: 20px; box-shadow: 0 0 0 1px rgba(31,43,39,.18); }
+  .proof { font: 400 18px "PM", monospace; letter-spacing: 0.1em; text-transform: uppercase; color: #3c4640; }
+  .proof b { font-weight: 400; color: #55633a; padding: 0 10px; }
+  .url { font: 400 19px "PM", monospace; letter-spacing: 0.1em; color: #5e665f; margin-top: 10px; }
 </style>
 <div class="card">
-  <img class="plate" src="{{PLATE}}" alt="">
-  <div class="shade"></div>
+  <div class="patt"><canvas id="h" width="2400" height="1260"></canvas></div>
+  <div class="pic">
+    <div class="halo"></div>
+    <img src="{{PORTRAIT}}" alt="">
+    <svg class="badge" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="58" fill="#f7ef96" stroke="#1f2b27" stroke-width="1"/>
+      <path id="r" d="M60 60 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0" fill="none"/>
+      <text><textPath href="#r" textLength="268" lengthAdjust="spacing">Bridging founders and operations &#8226;</textPath></text>
+      <circle cx="60" cy="60" r="7" fill="none" stroke="#1f2b27" stroke-width="1"/>
+      <circle cx="60" cy="60" r="2.2" fill="#1f2b27"/>
+    </svg>
+  </div>
   <div class="text">
     <div class="label">Founder's office &middot; GTM &middot; Cross-border ops</div>
-    <h1>Komal<br>Kedarnath G</h1>
-    <div class="tag">Helping founders build from idea to execution.</div>
+    <h1>Helping founders<br>build from idea<br>to execution.</h1>
+    <div class="who"><span>Komal Kedarnath G</span><span class="id">Startups-Operator. Maker. Explorer.</span></div>
     <div class="foot">
       <div class="rule"></div>
       <div class="proof">6+ years<b>&middot;</b>4 ventures<b>&middot;</b>4 countries</div>
@@ -41,3 +58,23 @@
     </div>
   </div>
 </div>
+<script>
+  // The same harmonograph as the home page (src/lib/patterns.ts, seed 0),
+  // drawn at twice size because the card is rendered at twice size.
+  (function () {
+    var c = document.getElementById("h"), ctx = c.getContext("2d"), K = 2;
+    var W = 1200 * K, H = 630 * K, f = [2.01, 3, 3, 2], p = [0, 1, 0.5, 0], d = [0.0042, 0.003, 0.003, 0.0042], k = 0.62;
+    var A = Math.min(W * 0.42, H * 0.5) * 0.77 * 1.15, cx = W * 0.76, cy = H * 0.46;
+    function at(t) {
+      return [
+        cx + A * (Math.sin(f[0] * t + p[0]) * Math.exp(-d[0] * t) + k * Math.sin(f[1] * t + p[1]) * Math.exp(-d[1] * t)),
+        cy + A * (Math.sin(f[2] * t + p[2]) * Math.exp(-d[2] * t) + k * Math.sin(f[3] * t + p[3]) * Math.exp(-d[3] * t))
+      ];
+    }
+    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.strokeStyle = "rgba(31,43,39,0.30)";
+    var q = at(0);
+    for (var t = 0.012; t <= 110; t += 0.012) {
+      var r = at(t); ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(r[0], r[1]); ctx.stroke(); q = r;
+    }
+  })();
+</script>
