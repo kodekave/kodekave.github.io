@@ -98,7 +98,7 @@ export default function FoundersOfficeGuidePage() {
           </>
         }
       >
-        <p className="settle settle-3 mt-6 max-w-xl leading-relaxed text-paper-faint">
+        <p className="settle settle-3 mt-6 max-w-xl leading-relaxed text-ink-faint">
           This guide is written from six years doing the job across{" "}
           <Link
             href="/work"
