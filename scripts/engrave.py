@@ -22,6 +22,13 @@ Output is a BILEVEL, WHITE-LINE-ON-BLACK plate. Two properties matter:
     PNG fallback, and no AVIF — `output: "export"` means whatever ships is
     whatever this script writes.
 
+The site now uses the POSITIVE of this, `sketch()` below: black ruling on
+white paper, drawn from darkness rather than brightness, so shadow and hair
+are dense and the lit face is left white. Simply inverting the plate above
+gives a photographic negative (white hair, dark face), which is why the
+portrait is redrawn instead. `portrait-*` is what the pages use; `plate-*`
+is kept for the brand-asset templates until they are redone.
+
 Usage:
     python3 scripts/engrave.py                 # regenerate the site's plates
     python3 scripts/engrave.py SRC --name foo  # one-off, into public/images/
@@ -122,6 +129,77 @@ def plate(src, width, crop=None, freq=165, gain=1.0, mode="both",
     return img.point(lambda v: 255 if v > cut else 0, mode="L").convert("1")
 
 
+# The portrait the pages use: a black sketch on white. The crop keeps the whole
+# width and the first three lines of the equation on the hoodie; the head and
+# body are softly masked so the rusty wall behind drops out, and the hoodie is
+# hatched more calmly so the chalk equation can be cut out of it.
+PORTRAIT = dict(
+    src="public/images/hero-2x.jpg",
+    name="portrait",
+    crop=(0.0, 0.0, 1.0, 0.86),
+    freq=150,
+    maxink=0.84,
+    hoodie=0.80,
+    wall=0.06,
+    vignette=1.3,
+    vig_start=0.42,
+    cx=0.45,
+    cy=0.43,
+    widths=(900, 1600),
+)
+
+
+def _smooth(x):
+    x = np.clip(x, 0, 1)
+    return x * x * (3 - 2 * x)
+
+
+def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
+           vignette=1.3, vig_start=0.42, cx=0.45, cy=0.43, hoodie=0.80,
+           wall=0.06, ss=2, cut=150):
+    """Render a black-ruling-on-white sketch as a PIL image (mode "1")."""
+    lum = tone(src, width, crop, ss)
+    h, w = lum.shape
+    ruling, cross = rulings(lum.shape, freq, ss)
+
+    # Ink follows darkness: shadow and hair are dense, the lit face is paper.
+    t = np.clip((1 - lum) * gain, 0, 1)
+    t = _smooth((t - 0.10) / 0.80) * maxink
+
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    X, Y = xx / w, yy / h
+    # The subject: a soft head and a soft body, so the wall drops out.
+    head = _smooth((1 - np.hypot((X - 0.46) / 0.24, (Y - 0.33) / 0.19)) / 0.22)
+    edge = 0.46 + 0.55 * (X - 0.42) ** 2
+    subject = np.maximum(head, _smooth((Y - edge) / 0.05))
+    t *= wall + (1 - wall) * subject
+    # Elliptical fade to paper, so the sketch dissolves into its card.
+    r = np.hypot((X - cx) / 0.50, (Y - cy) / 0.60)
+    t *= np.clip(1 - (r - vig_start) / max(1e-6, 1 - vig_start), 0, 1) ** vignette
+    # Calmer hatching on the hoodie so its equation can read.
+    region = _smooth((Y - 0.66) / 0.08) * _smooth((0.70 - np.abs(X - 0.36)) / 0.12)
+    t *= 1 - (1 - hoodie) * region
+
+    ink = ((ruling + 1) * 0.5 < t).astype(np.float32)
+    # A second ruling across the deepest shadows, for modelling.
+    deep = np.clip((t - 0.52) / 0.28, 0, 1)
+    ink = np.maximum(ink, (((cross + 1) * 0.5 < deep * 0.45) & (deep > 0)).astype(np.float32))
+
+    # The chalk equation: bright strokes on the dark hoodie, cut out of the ink.
+    blur = np.asarray(
+        Image.fromarray((lum * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(10 * ss))
+    ).astype(np.float32) / 255
+    chalk = ((lum - blur) > 0.07) & (lum > 0.30) & (region > 0.5)
+    grown = Image.fromarray((chalk * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3 * ss + 1))
+    ink[np.asarray(grown) > 0] = 0
+
+    img = Image.fromarray((ink * 255).astype(np.uint8), mode="L")
+    img = img.resize((img.width // ss, img.height // ss), Image.LANCZOS)
+    img = img.point(lambda v: 255 if v > cut else 0, mode="L")
+    # Black ink on white paper.
+    return Image.eval(img, lambda v: 255 - v).convert("1")
+
+
 def write(img, stem):
     """Write one plate as lossless WebP plus a palette PNG fallback."""
     webp, png = f"{OUT_DIR}/{stem}.webp", f"{OUT_DIR}/{stem}.png"
@@ -152,6 +230,13 @@ def main():
     for i, width in enumerate(widths, start=1):
         write(plate(src, width, **spec), f"{name}-{i}x")
 
+    # The positive sketch the pages use, made from the hero photograph only.
+    if not args.src:
+        p = dict(PORTRAIT)
+        pw, pname, psrc = p.pop("widths"), p.pop("name"), p.pop("src")
+        print(f"{psrc} -> {OUT_DIR}/{pname}-*.{{webp,png}}")
+        for i, width in enumerate(pw, start=1):
+            write(sketch(psrc, width, **p), f"{pname}-{i}x")
 
 if __name__ == "__main__":
     main()

@@ -4,10 +4,10 @@ import Plate from "./Plate";
 export const BADGE_TEXT = "Bridging founders and operations";
 
 /**
- * The portrait as a black sketch on a white, rounded card. The engraved plate
- * is white lines on black; `.plate` inverts and multiplies it so the same
- * ruling prints black on the card's white. The whole plate is shown, so the
- * equation on the hoodie stays in frame.
+ * The portrait as a black sketch on a white, rounded card. The sketch is a
+ * black ruling on white (see Plate and scripts/engrave.py), so it sits on the
+ * card as it is. The whole picture is shown, so the equation on the hoodie
+ * stays in frame.
  *
  * `badge` adds the round sticker over the card's lower-left corner.
  */

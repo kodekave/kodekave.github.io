@@ -190,24 +190,19 @@ body {
 /* ----------------------------------------------------------------- plates */
 
 /*
- * The engraved portrait is one white-on-black asset. On this site it always
- * prints the other way round: inverted and multiplied, so the same ruling
- * lands as black sketch lines on a white card. On a dark panel it is screened.
+ * The portrait is a black ruling on white paper, so it needs no blending: it
+ * simply sits on the white card. (The older white-on-black `plate-*` files are
+ * only for the brand-asset templates.)
  */
 .plate {
-  filter: invert(1) brightness(0.98);
   mix-blend-mode: multiply;
-}
-.on-ink .plate {
-  filter: brightness(0.93) sepia(0.06);
-  mix-blend-mode: screen;
 }
 
 /* The rounded white card the portrait is printed on, and its sticker. */
 .portrait {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 900 / 1157;
+  aspect-ratio: 900 / 1161;
   border: 1px solid var(--color-hair);
   border-radius: 20px;
   background: #fff;
