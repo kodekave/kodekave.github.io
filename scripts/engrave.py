@@ -160,7 +160,7 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
     """Render a black-ruling-on-white sketch as a PIL image (mode "1")."""
     lum = tone(src, width, crop, ss)
     h, w = lum.shape
-    ruling, cross = rulings(lum.shape, freq, ss)
+    ruling, _ = rulings(lum.shape, freq, ss)
 
     # Ink follows darkness: shadow and hair are dense, the lit face is paper.
     t = np.clip((1 - lum) * gain, 0, 1)
@@ -181,10 +181,9 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
     t *= 1 - (1 - hoodie) * region
 
     ink = ((ruling + 1) * 0.5 < t).astype(np.float32)
-    # A second ruling across the deepest shadows, for modelling.
-    deep = np.clip((t - 0.52) / 0.28, 0, 1)
-    ink = np.maximum(ink, (((cross + 1) * 0.5 < deep * 0.45) & (deep > 0)).astype(np.float32))
-
+    # No second, crossing ruling: where it met the first it made a checker
+    # that beat against the browser's scaling and showed as bands in the hair.
+    # Density alone carries the deepest shadows.
     # The chalk equation: bright strokes on the dark hoodie, cut out of the ink.
     blur = np.asarray(
         Image.fromarray((lum * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(10 * ss))
