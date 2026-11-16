@@ -1,69 +1,44 @@
 @import "tailwindcss";
 
 /*
- * The forest-and-brass engraving system.
+ * The founder palette: warm paper, one green-tinted ink, and a single yellow.
  *
- * Two fields — deep forest green and warm bone paper — alternating down the
- * page, with brass as the single accent. The greys between the fields are
- * expressed as one field at a percentage of the other rather than as picked
- * hex values, which is how printing works and keeps the neutrals from
- * drifting off the palette.
+ * Paper is the page, `mist` the soft panel the nav, the cards and the callout
+ * sit on, `chalk` the deepest of the three. Ink is the one dark: it sets every
+ * word and it is the dark panel where a page needs one. Yellow (`brass`, the
+ * name kept so older pages keep working) is a fill only, on the one button a
+ * view asks you to press, never a text colour; the deep olive (`brass-deep`)
+ * is the accent that is allowed to carry small text and the label dot.
  *
- * There is no pure white and no pure black anywhere. Paper stock never is
- * white, and on screen a near-white beside a very dark field halates: the
- * light bleeds visually into the dark and fine strokes in the display type
- * get eaten. So the light end is a ladder of warm off-whites, and the light
- * type on the dark fields is drawn from the same ladder.
- *
- * The portrait plates composite with `mix-blend-mode: screen`, which treats
- * the plate's black ground as a no-op, so the engraving's lines simply
- * lighten the green beneath them and its ground never shows as a rectangle.
- * See scripts/engrave.py.
- *
- * Brass is used sparingly and always for the same job: the action, the mark
- * and the ornament. It never carries reading text on the paper fields — there
- * the deeper `brass-deep` does, which holds 5:1 against the paper.
+ * Greys are one field at a percentage of the other, not picked hex values, so
+ * the neutrals cannot drift off the palette. Contrast, measured: ink-faint on
+ * paper 5.6:1 and on mist 5.1:1; brass-deep on paper 5.9:1.
  */
 :root {
-  /* The dark field. Named `ink` because every dark surface and every dark
-     piece of type on paper is this one colour. */
-  --color-ink: #0e2a22;
+  --color-ink: #1f2b27;
+  --color-paper: #f6f5ef;
+  --color-mist: #eceadf;
+  --color-chalk: #e1dfd2;
 
-  /*
-   * The bone ladder, faintly warm, each step a little further from the
-   * light. `paper` is the page, `mist` the secondary band, `chalk` the
-   * deepest of the three.
-   */
-  --color-paper: #eeeadf;
-  --color-mist: #e5e1d4;
-  --color-chalk: #d9d5c7;
+  --color-brass: #f7ef96;
+  --color-brass-deep: #55633a;
 
-  /* The accent. `brass` on the dark field (5.6:1), `brass-deep` on paper
-     (5.0:1). */
-  --color-brass: #bc9660;
-  --color-brass-deep: #7c5e2a;
+  --color-ink-soft: color-mix(in srgb, var(--color-ink) 84%, var(--color-paper));
+  --color-ink-faint: color-mix(in srgb, var(--color-ink) 72%, var(--color-paper));
+  --color-hair: color-mix(in srgb, var(--color-ink) 14%, var(--color-paper));
 
-  /* Ink on paper. */
-  --color-ink-soft: color-mix(in srgb, var(--color-ink) 80%, var(--color-paper));
-  /*
-   * 68% and not lighter, because this carries the 11px mono labels, which
-   * need 4.5:1 on both paper (5.0) and the mist band (4.6). The hierarchy against `ink-soft` is carried by size and
-   * letter-spacing rather than by tone.
-   */
-  --color-ink-faint: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
-  --color-hair: color-mix(in srgb, var(--color-ink) 18%, var(--color-paper));
-
-  /* Paper on ink. Kept as explicit mixes rather than alpha so text over the
-     grain overlay stays exactly this value. */
-  --color-paper-soft: color-mix(in srgb, var(--color-paper) 78%, var(--color-ink));
-  --color-paper-faint: color-mix(in srgb, var(--color-paper) 58%, var(--color-ink));
+  /* Paper on the dark panel. */
+  --color-paper-soft: color-mix(in srgb, var(--color-paper) 80%, var(--color-ink));
+  --color-paper-faint: color-mix(in srgb, var(--color-paper) 62%, var(--color-ink));
   --color-hair-inv: color-mix(in srgb, var(--color-paper) 20%, var(--color-ink));
+  --color-ink-deep: color-mix(in srgb, var(--color-ink) 74%, #000);
 
-  --font-display: var(--font-archivo), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-read: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-read-italic: var(--font-newsreader-italic), Georgia, "Times New Roman", serif;
+  --font-sans-stack: var(--font-dm-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono-stack: var(--font-plex-mono), ui-monospace, SFMono-Regular,
     Menlo, monospace;
-
 }
 
 @theme inline {
@@ -80,29 +55,33 @@
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
 
-
   --font-display: var(--font-display);
   --font-read: var(--font-read);
+  --font-sans: var(--font-sans-stack);
   --font-mono: var(--font-mono-stack);
 }
 
+/*
+ * The base layer under every page: a plus grid at about 3%. It is on the body
+ * itself, so any section left without a background of its own shows it.
+ */
 body {
-  background: var(--color-paper);
+  background-color: var(--color-paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%231f2b27' stroke-opacity='.075' stroke-width='1'/%3E%3C/svg%3E");
   color: var(--color-ink);
-  font-family: var(--font-read);
+  font-family: var(--font-sans-stack);
   font-size: 1.0625rem;
-  /* Serif body text wants more leading than a sans would. */
-  line-height: 1.72;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-brass);
+  color: var(--color-ink);
 }
 
-/* Smooth scrolling is motion too — anchor jumps should be instant for
-   anyone who asked for less of it. */
+/* Smooth scrolling is motion too: anchor jumps are instant for anyone who
+   asked for less of it. */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -110,72 +89,71 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid var(--color-ink);
   outline-offset: 3px;
+}
+.on-ink :focus-visible {
+  outline-color: var(--color-brass);
 }
 
 /* ------------------------------------------------------------------ type */
 
-/*
- * One display cut, no optical-size axis to get wrong. The previous face was
- * driven to its extreme display optical size, which is where a Didone's
- * hairlines are thinnest — they then had to survive a grain overlay and
- * light-on-black halation, and did not. This face carries a single, sturdier
- * set of thins at every size it is used.
- *
- * Headings are set a touch tighter than the metrics default, because this
- * face is generously spaced and large titles close up well.
- */
+/* The display serif: light, tightened a little, optical size left on auto. */
 .font-display {
   font-family: var(--font-display);
   font-weight: 300;
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.022em;
 }
-/* The same face at text sizes, where the tightening is unhelpful. */
+/* The same serif at title sizes, a notch heavier. */
 .font-display-text {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.01em;
 }
-/* The line under the nameplate: the same face, lighter and a little wider. */
 .tagline {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.015em;
+  font-weight: 300;
+  letter-spacing: -0.02em;
 }
-
-/* The name treatment: uppercase, tight leading, and opened up because caps
-   at this size need the air that lowercase does not. */
 .wordmark {
   font-family: var(--font-display);
   font-weight: 300;
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  letter-spacing: -0.03em;
+  line-height: 1;
   text-wrap: balance;
 }
 
-/* Mono small caps: nav, buttons, labels, captions, dates, tags. */
+/* Mono small caps: dates, labels and tags, and nothing else. */
 .label {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 400;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .label-lg {
   font-family: var(--font-mono);
   font-size: 0.78125rem;
   font-weight: 400;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+/* A label with its one small dot: olive, with a pale yellow ring. */
+.label-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85em;
+}
+.label-dot::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-brass-deep);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brass) 80%, transparent);
+}
 
-/* Figures that sit in columns — the operating-record stats — need to line
-   up on the digit. */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
@@ -186,24 +164,17 @@ body {
   background: var(--color-ink);
   color: var(--color-paper);
 }
+/* Transparent on purpose: the plus grid on the body shows through. */
 .on-paper {
-  background: var(--color-paper);
+  background: transparent;
   color: var(--color-ink);
 }
 
-/* ------------------------------------------------------- the opening beat */
-
-/*
- * The site's only motion that nobody asked for: the first act settles once,
- * on load, as a single sequence. Everything further down uses the scroll
- * Reveal instead, so there is one orchestrated moment rather than a page of
- * things sliding in. Both sit behind the reduced-motion query — with it set,
- * the act is simply already in place.
- */
+/* The opening beat: the first screen settles once, on load. */
 @keyframes settle {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -212,80 +183,121 @@ body {
 }
 @media (prefers-reduced-motion: no-preference) {
   .settle {
-    animation: settle 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation: settle 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
 }
 
 /* ----------------------------------------------------------------- plates */
 
 /*
- * The engraved portrait. One bilevel white-on-black asset, composited two
- * ways: screened onto black so its ground vanishes and the subject's dark
- * clothing merges into the field, or inverted and multiplied onto paper so
- * the same ruling prints as black ink.
- *
- * `isolation: isolate` on the containing surface would trap the blend, so
- * plates must sit inside `.grain` (which isolates) only as a sibling of the
- * content layer, never nested under an opacity or filter.
+ * The engraved portrait is one white-on-black asset. On this site it always
+ * prints the other way round: inverted and multiplied, so the same ruling
+ * lands as black sketch lines on a white card. On a dark panel it is screened.
  */
 .plate {
-  /*
-   * The plate's own whites are pure #fff and the screen blend knows nothing
-   * about the palette, so they are the one place pure white would survive.
-   * Brought down to sit with the off-white type, and warmed a shade to match
-   * the ladder.
-   */
+  filter: invert(1) brightness(0.98);
+  mix-blend-mode: multiply;
+}
+.on-ink .plate {
   filter: brightness(0.93) sepia(0.06);
   mix-blend-mode: screen;
 }
-.on-paper .plate,
-.plate-dark {
-  filter: invert(1) brightness(0.97);
-  mix-blend-mode: multiply;
+
+/* The rounded white card the portrait is printed on, and its sticker. */
+.portrait {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 900 / 1157;
+  border: 1px solid var(--color-hair);
+  border-radius: 20px;
+  background: #fff;
+}
+.portrait .plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.badge text {
+  fill: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
+/* ------------------------------------------------------------- the pattern */
+
 /*
- * Fade the plate's inboard edge. `object-cover` crops a bleeding plate, and
- * the crop can cut away the vignette that was doing the dissolving — which
- * leaves the engraving ending on a straight vertical line. This guarantees
- * the fade regardless of how the plate is cropped.
+ * One generated pattern per page, drawn once on a canvas (src/lib/patterns.ts)
+ * behind the page's opening. The frame is masked to nothing before it reaches
+ * the text; the canvas is a square placed towards the right. Nothing moves.
  */
-.plate-fade {
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 30%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 30%);
+.patt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    ellipse 60% 80% at 74% 42%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 46%,
+    transparent 84%
+  );
+  mask-image: radial-gradient(
+    ellipse 60% 80% at 74% 42%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 46%,
+    transparent 84%
+  );
 }
-/*
- * The homepage portrait runs the full height of the hero, so the equation on
- * the hoodie (the bottom quarter of the plate, left of centre) stays in frame,
- * and its fade is shorter so the left of that equation is not swallowed.
- */
-.plate-hero {
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 14%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 14%);
+.patt-canvas {
+  position: absolute;
+  left: 74%;
+  top: 42%;
+  width: min(118vh, 1040px);
+  height: min(118vh, 1040px);
+  translate: -50% -50%;
+}
+@media (max-width: 767px) {
+  .patt {
+    opacity: 0.55;
+  }
+  .patt-canvas {
+    left: 50%;
+    top: 26%;
+    width: 150vw;
+    height: 150vw;
+  }
 }
 
 /* --------------------------------------------------------------- controls */
 
-/* Buttons are set in mono small caps and carry a rule rather than a fill,
-   so they read as a stamped control rather than a UI chip. */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
+  gap: 0.65em;
   border: 1px solid currentColor;
-  padding: 0.85em 1.35em;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  border-radius: 6px;
+  padding: 0.8em 1.3em;
+  font-family: var(--font-sans-stack);
+  font-size: 0.9375rem;
+  font-weight: 450;
+  line-height: 1.2;
+  letter-spacing: 0;
+  transition: background-color 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease;
+}
+.btn:active {
+  opacity: 0.85;
 }
 .btn-ink:hover {
   background: var(--color-ink);
+  border-color: var(--color-ink);
   color: var(--color-paper);
 }
 .btn-paper:hover {
   background: var(--color-paper);
+  border-color: var(--color-paper);
   color: var(--color-ink);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -293,6 +305,7 @@ body {
     transition: none;
   }
 }
+
 
 /* An underline that draws in from the left, used on text links. */
 .link-rule {
@@ -348,7 +361,6 @@ body {
   font-family: var(--font-display);
   color: var(--color-ink);
   font-weight: 400;
-  font-variation-settings: "wdth" 100;
   margin-top: 2.2em;
   margin-bottom: 0.5em;
   line-height: 1.12;
@@ -407,11 +419,16 @@ body {
   font-size: 0.8em;
   color: var(--color-ink-faint);
 }
+/* The true italic cut, which loads only on a page that uses it. */
+.prose-post em,
+.font-read.italic {
+  font-family: var(--font-read-italic);
+}
 .prose-post blockquote {
   margin: 1.8em 0;
   padding: 0.2em 0 0.2em 1.4em;
   border-left: 1px solid var(--color-ink);
-  font-family: var(--font-read);
+  font-family: var(--font-read-italic);
   font-style: italic;
   font-size: 1.35rem;
   line-height: 1.45;
@@ -482,23 +499,21 @@ body {
 
 /* ------------------------------------------------------- the polish layer */
 
-/* Titles close up and break evenly rather than leaving a stranded word. */
 h1,
 h2,
 h3 {
   text-wrap: balance;
 }
 
-/* Solid controls. The outlined `.btn-ink` / `.btn-paper` stay for secondary
-   actions; these carry the one primary action per field. */
+/* The one yellow button a view asks you to press, and the one ink one. */
 .btn-solid-paper {
   background: var(--color-brass);
   border-color: var(--color-brass);
   color: var(--color-ink);
 }
 .btn-solid-paper:hover {
-  background: transparent;
-  color: var(--color-brass);
+  background: color-mix(in srgb, var(--color-brass) 78%, var(--color-ink));
+  border-color: color-mix(in srgb, var(--color-brass) 78%, var(--color-ink));
 }
 .btn-solid-ink {
   background: var(--color-ink);
@@ -509,20 +524,21 @@ h3 {
   background: transparent;
   color: var(--color-ink);
 }
-.btn .btn-arrow {
+.btn .btn-arrow,
+.door .door-arrow {
   transition: transform 0.25s ease;
 }
-.btn:hover .btn-arrow {
+.btn:hover .btn-arrow,
+.door:hover .door-arrow {
   transform: translateX(4px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .btn .btn-arrow {
+  .btn .btn-arrow,
+  .door .door-arrow {
     transition: none;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-}
 
 /* ----------------------------------------------------------- ruled rows */
 
@@ -557,115 +573,6 @@ h3 {
   .row-arrow {
     transition: none;
   }
-}
-
-/* ------------------------------------- scroll-driven motion (enhancement) */
-
-/*
- * Everything below is progressive: where scroll-driven animation is not
- * supported, the page is simply at rest. Nothing here carries meaning.
- */
-
-
-
-
-/* The live line: a square mark that breathes, like a lit indicator. */
-.now-mark {
-  position: relative;
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  background: currentColor;
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Words come up to full strength in reading order as the paragraph
-       scrolls through the viewport. */
-    @keyframes word-in {
-      from {
-        opacity: 0.16;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-    .scroll-text {
-      view-timeline: --st block;
-    }
-    .scroll-text .sw {
-      animation: word-in linear both;
-      animation-timeline: --st;
-      animation-range: cover var(--a) cover var(--b);
-    }
-
-    /* The rosette turns with the scroll, and only while it is scrolling —
-       no running animation, no continuous repaint under the grain. */
-    @keyframes guilloche-turn {
-      from {
-        transform: rotate(-28deg);
-      }
-      to {
-        transform: rotate(28deg);
-      }
-    }
-    .guilloche-turn {
-      animation: guilloche-turn linear both;
-      animation-timeline: view();
-    }
-  }
-}
-
-/* =====================================================================
- * The instrument layer
- *
- * Retro computing, drawn the way a good instrument maker would draw it
- * today: the forest field is a phosphor screen, brass is the lamp, and
- * everything that moves does so slowly and for a reason. Nothing here
- * adds a colour; it all comes from the palette above.
- * ===================================================================== */
-
-:root {
-  /* A screen a little deeper than the page field, for the map. */
-  --color-ink-deep: color-mix(in srgb, var(--color-ink) 74%, #000);
-}
-.on-deep {
-  background: var(--color-ink-deep);
-  color: var(--color-paper);
-}
-
-/* ---- dot-matrix figures ---- */
-.dot-matrix {
-  display: block;
-  overflow: visible;
-  color: var(--color-brass);
-}
-.dot-matrix[data-armed][data-on="false"] .lamp {
-  opacity: 0;
-}
-.dot-matrix[data-armed][data-on="true"] .lamp {
-  animation: lamp-on 0.5s ease-out backwards;
-  animation-delay: calc(var(--c) * 24ms);
-}
-@keyframes lamp-on {
-  0% {
-    opacity: 0;
-  }
-  35% {
-    opacity: 1;
-    fill: var(--color-paper);
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.caret {
-  display: inline-block;
-  width: 0.5em;
-  height: 1em;
-  margin-left: 0.2em;
-  vertical-align: -0.14em;
-  background: var(--color-brass);
 }
 
 /* ---- the research phone: the paper's subject, drawn as an object ---- */
@@ -800,397 +707,110 @@ h3 {
   color: var(--color-brass-deep);
 }
 
-/* ---- the register: capabilities and writing as leader-dotted lines ---- */
-.reg-row {
-  display: flex;
-  align-items: baseline;
-  gap: 0.85rem;
-  padding: 0.95rem 0;
+/* ------------------------------------------------------------ the journey */
+
+/* One row per stop. Hairlines between rows and a soft tint under the pointer. */
+.jlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--color-hair);
+}
+.jrow {
   border-top: 1px solid var(--color-hair);
+  transition: background-color 0.25s ease;
 }
-.reg-lead {
-  flex: 1;
-  min-width: 1rem;
-  border-bottom: 1px dotted currentColor;
-  opacity: 0.35;
-  translate: 0 -0.3em;
-}
-.reg-box {
-  display: inline-block;
-  width: 0.62rem;
-  height: 0.62rem;
-  flex: none;
-  background: var(--color-brass-deep);
-  translate: 0 0.02em;
-}
-
-/* =====================================================================
- * The machine, kept quiet
- *
- * Ink and paper do the work; brass is the one accent. Hairlines and space
- * do the structure. There is no texture, no glow and nothing that loops.
- * The era shows in a handful of exact details: dot-matrix numerals, a status
- * line, opcodes in the journey, mono labels, and one block cursor.
- * ===================================================================== */
-
-.on-ink :focus-visible,
-header :focus-visible {
-  outline-color: var(--color-brass);
-}
-
-/* The block cursor beside the name: still. */
-.cursor-lamp {
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.85rem;
-  background: var(--color-brass);
-}
-
-/* Buttons are flat. The fill is the action. */
-.btn {
-  border-radius: 0;
-  box-shadow: none;
-}
-.btn:active {
-  opacity: 0.8;
-}
-
-.statusbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1.75rem;
-  color: var(--color-paper-faint);
-}
-.sec-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.6rem 1.5rem;
-}
-.rule-1 {
-  border-top: 1px solid var(--color-hair-inv);
-}
-
-/* ---- telemetry: one slim readout, hairlines only ---- */
-.tele-row {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  border-top: 1px solid var(--color-hair-inv);
-}
-.tele-ch {
-  container-type: inline-size;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 0.65rem;
-  padding: 0.9rem 1rem 0 0;
-}
-.tele-ch + .tele-ch {
-  padding-left: 1rem;
-  border-left: 1px solid var(--color-hair-inv);
-}
-.tele-top,
-.tele-src {
-  color: var(--color-paper-faint);
-  line-height: 1.3;
-}
-.tele-top {
-  min-height: 2.7em;
-  letter-spacing: 0.12em;
-}
-/* One height for every numeral, sized so the widest ("5,000+") fills its cell. */
-.tele-ch .dot-matrix {
-  height: min(32px, calc(100cqw / 4.4));
-  width: auto;
-  max-width: 100%;
-  color: var(--color-brass);
-}
-@media (max-width: 1023px) {
-  .tele-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .tele-ch:nth-child(4) {
-    border-left: 0;
-    padding-left: 0;
-  }
-  .tele-ch:nth-child(n + 4) {
-    border-top: 1px solid var(--color-hair-inv);
-    margin-top: 0.9rem;
+@media (hover: hover) {
+  .jrow:hover {
+    background: color-mix(in srgb, var(--color-mist) 80%, transparent);
   }
 }
-@media (max-width: 639px) {
-  .tele-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .tele-ch:nth-child(odd) {
-    border-left: 0;
-    padding-left: 0;
-  }
-  .tele-ch:nth-child(even) {
-    border-left: 1px solid var(--color-hair-inv);
-    padding-left: 1rem;
-  }
-  .tele-ch:nth-child(n + 3) {
-    border-top: 1px solid var(--color-hair-inv);
-    margin-top: 0.9rem;
+@media (prefers-reduced-motion: reduce) {
+  .jrow {
+    transition: none;
   }
 }
 
-/* ---- the journey: a listing on hairlines, one detail, one route line ---- */
-.jl {
-  border-top: 1px solid var(--color-hair-inv);
-}
-.jl-cols {
-  display: grid;
-}
-.jl-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.jl-row {
-  position: relative;
-  display: block;
-  width: 100%;
-  min-height: 3.8rem;
-  padding: 0.8rem 1rem 0.8rem 0;
-  border: 0;
-  border-bottom: 1px solid var(--color-hair-inv);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-.jl-l1 {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  color: var(--color-paper-faint);
-}
-.jl-op {
-  margin: 0 0.7em;
-}
-.jl-row[data-active="true"] .jl-op {
-  color: var(--color-brass);
-}
-.jl-yr {
-  font-variant-numeric: tabular-nums;
-}
-.jl-row[data-active="true"] .jl-yr {
-  color: var(--color-brass);
-}
-.jl-l2 {
-  margin-top: 0.25rem;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-variation-settings: "wdth" 100;
-  font-size: 1.15rem;
-  line-height: 1.2;
-  letter-spacing: -0.012em;
-  color: var(--color-paper-soft);
-}
-.jl-row[data-active="true"] .jl-l2,
-.jl-row:hover .jl-l2 {
-  color: var(--color-paper);
-}
+/* ------------------------------------------------------ cards and callout */
 
-/* The route, as one hairline with four places on it. */
-.jl-route ol {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.door {
+  border: 1px solid var(--color-hair);
+  background: color-mix(in srgb, var(--color-mist) 70%, transparent);
+  border-radius: 10px;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
 }
-.jl-route li {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  align-items: flex-start;
-  color: var(--color-paper-faint);
+.door:hover {
+  border-color: var(--color-ink-faint);
+  background: var(--color-mist);
 }
-.jl-route li:last-child {
-  flex: none;
-}
-.jl-node {
-  position: relative;
-  z-index: 1;
-  width: 9px;
-  height: 9px;
-  border: 1px solid var(--color-brass);
-  background: var(--color-ink);
-}
-.jl-route li[data-s="reached"] .jl-node,
-.jl-route li[data-s="now"] .jl-node {
-  background: var(--color-brass);
-}
-.jl-route li[data-s="now"] {
-  color: var(--color-paper);
-}
-.jl-route li:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  left: 9px;
-  right: 0;
-  height: 1px;
-  background: var(--color-hair-inv);
-}
-.jl-route li[data-seg="on"]::after {
-  background: var(--color-brass);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .jl-route li::after {
-    transition: background-color 0.6s ease;
+@media (prefers-reduced-motion: reduce) {
+  .door {
+    transition: none;
   }
 }
 
-.jl-pane {
-  display: none;
+/* A soft panel on a faint 14px grid: the contact moment. */
+.callout {
+  border: 1px solid var(--color-hair);
+  border-radius: 14px;
+  background-color: var(--color-mist);
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-ink) 6%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-ink) 6%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 14px 14px;
 }
-.jl-detail {
-  display: grid;
-  gap: 1.25rem 1.5rem;
-  align-items: center;
-}
-@media (min-width: 560px) {
-  .jl-detail {
-    grid-template-columns: minmax(0, 1fr) 9rem;
-  }
-}
-.jl-inline {
-  padding: 0.25rem 0 1.25rem 0;
-  border-bottom: 1px solid var(--color-hair-inv);
-}
-.jl-inline .jl-year {
-  display: none;
-}
-.jl-inline .jl-title {
-  margin-top: 0;
-  font-size: 1.15rem;
-}
-.jl-inline .stop-art {
-  max-width: 7.5rem;
-}
-.jl-top {
-  padding: 1.25rem 0 1.25rem;
-}
-@media (min-width: 1024px) {
-  .jl-cols {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    grid-template-rows: auto 1fr;
-  }
-  .jl-list {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-  }
-  .jl-top {
-    grid-column: 2;
-    grid-row: 1;
-    padding: 1.25rem 0 1.25rem 2.5rem;
-    border-bottom: 1px solid var(--color-hair-inv);
-  }
-  .jl-pane {
-    display: block;
-    grid-column: 2;
-    grid-row: 2;
-    min-width: 0;
-    padding: 0 0 0 2.5rem;
-  }
-  .jl-pane .jl-detail {
-    min-height: 15rem;
-    padding: 1.75rem 0;
-    align-items: start;
-  }
-  .jl-inline {
-    display: none !important;
-  }
-}
-.jl-year {
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-variation-settings: "wdth" 100;
-  font-size: clamp(2.6rem, 5vw, 3.6rem);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--color-brass);
-  font-variant-numeric: tabular-nums;
-}
-.jl-title {
-  margin-top: 0.7rem;
-  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
-  line-height: 1.15;
-}
-.jl-role {
-  margin-top: 0.5rem;
-  font-family: var(--font-display);
-  font-variation-settings: "wdth" 100;
-  line-height: 1.4;
-  color: var(--color-paper-soft);
-}
-.jl-meta {
-  margin-top: 0.7rem;
-  color: var(--color-paper-faint);
-}
-.jl-link {
-  display: inline-block;
-  margin-top: 0.9rem;
-  color: var(--color-paper-soft);
-}
-.jl-link:hover {
-  color: var(--color-paper);
-}
+
+/* The small line drawings, in ink on paper. */
 .stop-art {
   display: block;
   width: 100%;
   max-width: 9rem;
   height: auto;
   overflow: visible;
-  color: var(--color-brass);
+  color: var(--color-ink);
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.5;
+  stroke-width: 1.25;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .stop-art .g {
-  stroke: var(--color-paper-faint);
+  stroke: var(--color-ink-faint);
   stroke-width: 1;
-  opacity: 0.55;
+  opacity: 0.5;
 }
 .stop-art .s {
   fill: currentColor;
   stroke: none;
 }
 .stop-art .d {
-  fill: var(--color-paper-faint);
+  fill: var(--color-ink-faint);
   stroke: none;
   opacity: 0.6;
 }
 .stop-art text {
-  fill: var(--color-paper-faint);
+  fill: var(--color-ink-faint);
   stroke: none;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.12em;
 }
 .stop-art .big {
-  fill: var(--color-brass);
+  fill: var(--color-ink);
   font-size: 30px;
   letter-spacing: 0;
 }
-noscript .jl-inline {
-  display: block !important;
-}
 
-/* ---- the register: a page from a manual, on paper ---- */
+/* A ruled list: hairlines on each row, closed by one at the foot. */
 .reg-list {
+  margin: 0;
   padding: 0;
   list-style: none;
   border-bottom: 1px solid var(--color-hair);

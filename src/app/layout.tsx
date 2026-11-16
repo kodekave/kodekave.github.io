@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Newsreader, IBM_Plex_Mono } from "next/font/google";
+import { DM_Sans, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
@@ -11,37 +11,39 @@ import {
 } from "@/lib/seo";
 
 /**
- * Three faces, three jobs: a grotesque for the nameplate and headings, a text
- * serif for reading, and a monospace for every label, date and control.
+ * Three faces, three jobs: a light serif for the name, the statements and the
+ * titles; a quiet sans for body text and controls; and a monospace for the
+ * small labels and dates only.
  *
- * The headline face is Archivo with its width axis, drawn narrow and heavy: the
- * lettering of a case, a datasheet masthead or a front panel. It replaced
- * Instrument Serif, whose high-contrast editorial cut read as the 2020s rather
- * than the early 1980s the site is built to evoke.
- */
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  axes: ["wdth"],
-});
-
-/*
- * The reading face is not on the first screen (the hero is Archivo and Plex
- * Mono), so it is not preloaded: on a slow connection its two files, about
- * 270 KB, would queue ahead of the portrait that is the largest paint.
+ * Newsreader carries the first screen (the name and the statement are serif),
+ * so its upright cut is preloaded. The italic cut is only used inside blog
+ * posts and one line on the research page, so it is a separate face that loads
+ * on demand instead of queuing ahead of the portrait.
  */
 const newsreader = Newsreader({
   variable: "--font-newsreader",
+  subsets: ["latin"],
+  axes: ["opsz"],
+  style: ["normal"],
+});
+
+const newsreaderItalic = Newsreader({
+  variable: "--font-newsreader-italic",
   preload: false,
   subsets: ["latin"],
   axes: ["opsz"],
-  style: ["normal", "italic"],
+  style: ["italic"],
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
 });
 
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400"],
 });
 
 /**
@@ -86,7 +88,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${newsreader.variable} ${newsreaderItalic.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*

@@ -139,3 +139,33 @@ She liked these from the advanced gallery (`docs/redesign/reference/patterns-gal
 - **8 Julia set:** contour lines of the smooth escape count for c = -0.4 + 0.6i, levels 3 to 30, soft alpha.
 
 So her pattern shortlist is now: round one **A, E, H, I, J**; round two **1, 2, 4, 6, 8, 9**. Remaining open: which pattern goes on which page, and whether number 11 (her journey as geometry) is wanted. Heavy ones (2, 6) should be pre-rendered at build time; keep one hero pattern per page, faded from the text, no motion, text contrast at AA.
+
+## Build log, round 1: foundation and home (2026-11-17)
+
+Branch `design/founder-redesign`. First build pass, to iterate from.
+
+**Built**
+- Tokens (`globals.css`): paper `#f6f5ef`, mist `#eceadf` (panel), ink `#1f2b27`, yellow `#f7ef96` (fills only), deep olive `#55633a` (label dot, small accent text). Old token names are kept (`ink`, `paper`, `mist`, `chalk`, `brass`, `brass-deep`, `hair`) with new values, so inner pages and `/admin` inherit without edits. A plus grid at about 3% is the body background; `.on-paper` is transparent so it shows.
+- Fonts (`layout.tsx`): Newsreader (upright, opsz, preloaded) for display; Newsreader italic as a separate on-demand face (blog prose, one research line); DM Sans for body and controls; Plex Mono 400 for labels only. Archivo is gone.
+- Components: floating panel `Nav` plus the yellow "Get in touch" button (A); `Footer` is the centred newsletter capture (G) then name, pages and profiles; `Masthead` is light, with optional `plate` (portrait card) and `pattern`; `PortraitCard` is the black sketch on a white rounded card with the round sticker (E); `LocalTime` (B, IST, to the minute); `JourneyList` (J+K); `SectionLabel` is now "01 / Figures" (S); `Pattern` + `src/lib/patterns.ts` (canvas patterns). Deleted: `DotMatrix`, `UtcClock`, old `Journey`.
+- Home (`(site)/page.tsx`): opening (H label with live time, name, "Startups-Operator. Maker. Explorer.", the existing tagline, outlined arrow button, portrait with badge) over a harmonograph; four doors (T, with L drawings from `StopArt`); 01 Figures (U, "View source ↗" to `/work#slug`); 02 Journey (7 stops); 03 Register (What I bring as plain text with Project/Ongoing, plus Latest writing); 04 Contact (N callout, one yellow button, profile row V).
+
+**Deviation from the plan: patterns are canvas, not SVG.** The static SVG I first generated (71 KB) was counted by Chrome as the page's largest paint and pushed mobile Lighthouse to 76. A canvas is never a largest-paint candidate and downloads nothing, so `src/lib/patterns.ts` draws each pattern once after paint (seeded, no motion). `scripts/generate-patterns.mjs` was removed. Heavy patterns (Clifford, Penrose) can be drawn the same way, or pre-rendered at low resolution if drawing time matters.
+
+**Measured on the production build (local, no gzip):** Lighthouse mobile 78, desktop 97; accessibility, best practices and SEO 100; CLS 0; no console errors; no horizontal scroll at 390 or 1440. Floors were mobile 78 and desktop 98, so desktop is one point under. `/admin` sign-in renders correctly in the new palette.
+
+**Copy changes on the home page, for her approval (nothing else was reworded)**
+- Removed: the status strip ("Online", "UTC hh:mm:ss", "Base · India"); the heading "The journey, one instruction at a time." (80s wording; kept as a hidden "The journey" heading); the Signal buttons "Connect on LinkedIn" and "Email me" (LinkedIn is now in the profile row and the nav).
+- Section names: Telemetry, Register, Trace, Signal became Figures, Register (kept), Journey, Contact. The door and figure words are existing copy.
+- Added: "Local time, hh:mm, India" (live); "Startups-Operator. Maker. Explorer."; the badge words; "View source ↗"; ORCID in the footer profiles.
+- Doors reuse existing lines: "4 ventures, 4 countries.", "One published study, and the research programmes around it.", "Notes from the founder's office.", "Building something? Let's talk." Tags are from existing copy too ("4 ventures · 4 countries · 6+ years", "Paper · OpenFOAM · Zenodo", the newsletter's three topics, "Email · LinkedIn · India"); confirm them.
+
+## Site audit: where the design can still change (2026-11-17)
+
+- **Every inner page** now gets the light masthead, nav, footer and plus grid automatically. Next for them: a pattern each (`<Masthead pattern=...>`), once more patterns are ported to `patterns.ts` (page mapping in the patterns section above).
+- **/work:** the ruled numbered list works. Add L (venture cards with `StopArt` marks) and the journey list's tint; Neuralzome is the venture the repost says is now Osmos Robotics (ask before changing).
+- **/research:** the paper section is fine. `ResearchPhone` is a dark terminal object with a caret and `$` commands; it is an 80s-feeling detail she may want redrawn light or kept (ask).
+- **/about:** now shows the portrait card; the page's old title "A founder's-office operator across four countries." and body are untouched.
+- **/services:** its closing block is still a dark `on-ink` panel; convert to the callout. The Register on home no longer links here; the "How it works" link and the footer "Work with me" still do (decision pending).
+- **/blog, /blog/[slug], /bookshelf, the three guides:** inherit the type and colour; blog prose keeps the serif.
+- **Not yet done:** page-by-page patterns; footer line drawing (O); LinkedIn "Open to work" banner; hero sentence choice; brand assets (`card.html.tmpl`, `favicon.html.tmpl`, then `npm run build` and `python3 scripts/brand-assets/build.py`); meta description, About title and `schemaDescription` wording (ask first); dark mode.

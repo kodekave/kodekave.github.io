@@ -5,7 +5,7 @@ import { useState } from "react";
 import LinkedInMark from "@/components/LinkedInMark";
 import { profile } from "@/lib/content";
 
-/** Unchanged routes and labels — the redesign restyles, it doesn't re-lay
+/** Unchanged routes and labels: the redesign restyles, it does not re-lay
  *  out the information architecture. */
 const links = [
   { href: "/work", label: "Ventures" },
@@ -15,111 +15,126 @@ const links = [
 ];
 
 /**
- * Every page opens on an ink field — the homepage's first act and each
- * sub-page's masthead — so the bar can be one fixed surface rather than
- * something that has to sense and match whatever sits beneath it.
+ * A soft panel floating a little below the top edge: the name on the left, the
+ * four pages in the middle, the LinkedIn mark on the right. Beside it, the one
+ * yellow button the site asks you to press. The page scrolls under both.
  */
 export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-hair-inv bg-ink text-paper">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-10">
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className="wordmark flex items-center gap-2 text-base leading-none tracking-[0.04em] whitespace-nowrap"
-        >
-          Komal Kedarnath
-          {/* The prompt's cursor: a lamp left on beside the name. */}
-          <span aria-hidden="true" className="cursor-lamp" />
-        </Link>
+    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
+      <div className="relative mx-auto flex max-w-6xl items-center gap-3">
+        <div className="grid h-[52px] flex-1 grid-cols-[1fr_auto] items-center rounded-md border border-hair bg-mist/90 pl-5 pr-2 backdrop-blur-md lg:grid-cols-[1fr_auto_1fr]">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="font-display justify-self-start text-[1.3rem] leading-none whitespace-nowrap"
+          >
+            Komal Kedarnath
+          </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="label link-rule text-paper-soft hover:text-paper"
-            >
-              {link.label}
-            </Link>
-          ))}
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-1 lg:flex"
+          >
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded px-3.5 py-2 text-[0.9rem] text-ink-soft transition-colors hover:bg-paper/80 hover:text-ink"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           <a
             href={profile.linkedin}
             target="_blank"
             rel="me noopener noreferrer"
             aria-label="LinkedIn (opens in a new tab)"
-            className="nav-in -mr-2 flex h-9 w-9 items-center justify-center text-paper-soft hover:text-brass"
+            className="hidden h-9 w-9 items-center justify-center justify-self-end rounded text-ink-soft transition-colors hover:text-ink lg:flex"
           >
-            <LinkedInMark className="h-[18px] w-[18px]" />
+            <LinkedInMark className="h-[17px] w-[17px]" />
           </a>
-          {/* The one filled control in the bar: the action the site exists
-              to produce. The newsletter lives in the footer and the menu. */}
-          <Link href="/#contact" className="btn btn-solid-paper -my-1">
+
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center justify-self-end lg:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            aria-controls="nav-menu"
+            onClick={() => setOpen(!open)}
+          >
+            <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true">
+              <path
+                d={open ? "M4 4L18 18" : "M2 7H20"}
+                stroke="currentColor"
+                strokeWidth="1.25"
+              />
+              <path
+                d={open ? "M18 4L4 18" : "M2 15H20"}
+                stroke="currentColor"
+                strokeWidth="1.25"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* `.btn` sets its own display, which beats the `hidden` utility, so
+            the wrapper does the hiding. */}
+        <div className="hidden lg:block">
+          <Link href="/#contact" className="btn btn-solid-paper h-[52px]">
             Get in touch
           </Link>
-        </nav>
+        </div>
 
-        <button
-          type="button"
-          className="-mr-2.5 flex h-11 w-11 items-center justify-center lg:hidden"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          aria-controls="nav-menu"
-          onClick={() => setOpen(!open)}
-        >
-          {/* Two rules, closing to an X — the bar's own hairline vocabulary. */}
-          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-            <path
-              d={open ? "M4 4L18 18" : "M2 7H20"}
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-            <path
-              d={open ? "M18 4L4 18" : "M2 15H20"}
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {open && (
-        <nav
-          id="nav-menu"
-          aria-label="Primary"
-          className="border-t border-hair-inv lg:hidden"
-        >
-          {links.map((link) => (
+        {open && (
+          <nav
+            id="nav-menu"
+            aria-label="Primary"
+            className="absolute inset-x-0 top-[calc(100%+8px)] overflow-hidden rounded-md border border-hair bg-mist lg:hidden"
+          >
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="font-display-text block border-b border-hair px-5 py-4 text-[1.35rem]"
+              >
+                {link.label}
+              </Link>
+            ))}
             <Link
-              key={link.href}
-              href={link.href}
+              href="/#newsletter"
               onClick={() => setOpen(false)}
-              className="label block border-b border-hair-inv px-6 py-4 text-paper-soft"
+              className="block border-b border-hair px-5 py-4 text-ink-soft"
             >
-              {link.label}
+              Newsletter
             </Link>
-          ))}
-          <Link
-            href="/#newsletter"
-            onClick={() => setOpen(false)}
-            className="label block border-b border-hair-inv px-6 py-4 text-paper-soft"
-          >
-            Newsletter
-          </Link>
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="me noopener noreferrer"
-            className="label flex items-center gap-3 px-6 py-4 text-brass"
-          >
-            <LinkedInMark className="h-4 w-4" />
-            LinkedIn
-            <span className="sr-only">(opens in a new tab)</span>
-          </a>
-        </nav>
-      )}
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="me noopener noreferrer"
+              className="flex items-center gap-3 border-b border-hair px-5 py-4 text-ink-soft"
+            >
+              <LinkedInMark className="h-4 w-4" />
+              LinkedIn
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+            <div className="p-3">
+              <Link
+                href="/#contact"
+                onClick={() => setOpen(false)}
+                className="btn btn-solid-paper w-full justify-center"
+              >
+                Get in touch
+              </Link>
+            </div>
+          </nav>
+        )}
+      </div>
     </header>
   );
 }
