@@ -1,13 +1,13 @@
 /**
- * The portrait: a black ruling on white, drawn from the hero photograph by
- * scripts/engrave.py (`portrait-*`). Shadow and hair are dense line, the lit
- * face is left as paper, so it reads as a sketch and not a photographic
- * negative. It is printed on the white `.portrait` card.
+ * The portrait: a black ruling on a transparent ground, drawn from the hero
+ * photograph by scripts/engrave.py (`portrait-*`). Shadow and hair are dense
+ * line, the lit face is left as paper, so it reads as a sketch and not a
+ * photographic negative. It sits directly on the page, over `.portrait-halo`.
  *
  * `output: "export"` turns the Next image optimiser off, so the variants are
  * the files the script writes and this picks between them directly. WebP
- * carries the sketch at about a third of the PNG's bytes; the 1-bit PNG stays
- * as the fallback source.
+ * carries the sketch at about a third of the PNG's bytes; the grey-plus-alpha
+ * PNG stays as the fallback source.
  */
 export default function Plate({
   className = "",

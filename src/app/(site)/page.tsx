@@ -112,7 +112,7 @@ export default function HomePage() {
       <section id="hero" className="relative overflow-hidden">
         <Pattern kind="harmonograph" />
 
-        <div className="settle relative mx-auto grid max-w-6xl gap-14 px-6 pb-20 pt-12 md:px-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-center lg:gap-[4.5rem] lg:pb-28 lg:pt-16">
+        <div className="settle relative mx-auto grid max-w-6xl gap-14 px-6 pb-20 pt-12 md:px-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-center lg:gap-14 lg:pb-28 lg:pt-16">
           <div>
             <p className="label label-dot text-ink-faint">
               <span>
@@ -148,8 +148,8 @@ export default function HomePage() {
             alt={`${profile.name}, black sketch portrait`}
             badge
             priority
-            sizes="(max-width: 640px) 78vw, 304px"
-            className="w-full max-w-[19rem] justify-self-center lg:justify-self-end"
+            sizes="(max-width: 640px) 78vw, 336px"
+            className="w-full max-w-[22rem] justify-self-center lg:w-[27rem] lg:max-w-none lg:justify-self-end"
           />
         </div>
       </section>

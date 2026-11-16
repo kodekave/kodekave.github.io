@@ -4,10 +4,10 @@ import Plate from "./Plate";
 export const BADGE_TEXT = "Bridging founders and operations";
 
 /**
- * The portrait as a black sketch on a white, rounded card. The sketch is a
- * black ruling on white (see Plate and scripts/engrave.py), so it sits on the
- * card as it is. The whole picture is shown, so the equation on the hoodie
- * stays in frame.
+ * The portrait as a black sketch drawn straight onto the page: no card, no
+ * frame. It is a transparent layer of ruling (see Plate and scripts/engrave.py)
+ * over a soft halo of paper, and it fades out on its own. The whole picture is
+ * shown, so the equation on the hoodie stays in frame.
  *
  * `badge` adds the round sticker over the card's lower-left corner.
  */
@@ -27,6 +27,7 @@ export default function PortraitCard({
   return (
     <div className={`relative ${className}`}>
       <div className="portrait">
+        <span aria-hidden="true" className="portrait-halo" />
         <Plate alt={alt} priority={priority} sizes={sizes} />
       </div>
       {badge && <Badge />}

@@ -22,9 +22,10 @@ Output is a BILEVEL, WHITE-LINE-ON-BLACK plate. Two properties matter:
     PNG fallback, and no AVIF — `output: "export"` means whatever ships is
     whatever this script writes.
 
-The site now uses the POSITIVE of this, `sketch()` below: black ruling on
-white paper, drawn from darkness rather than brightness, so shadow and hair
-are dense and the lit face is left white. Simply inverting the plate above
+The site now uses the POSITIVE of this, `sketch()` below: black ruling,
+drawn from darkness rather than brightness, so shadow and hair are dense and
+the lit face is left as paper. It is a transparent layer (no white card) with
+a small soft halo of paper behind it (`portrait-halo.png`). Simply inverting the plate above
 gives a photographic negative (white hair, dark face), which is why the
 portrait is redrawn instead. `portrait-*` is what the pages use; `plate-*`
 is kept for the brand-asset templates until they are redone.
@@ -41,6 +42,11 @@ import numpy as np
 from PIL import Image, ImageOps, ImageFilter
 
 OUT_DIR = "public/images"
+
+# The sketch is drawn in a near-black (a black sketch, with only a trace of the
+# site's green), and the paper under it is the page colour.
+INK_RGB = (13, 17, 15)
+PAPER_RGB = (246, 245, 239)
 
 # The hero plate. The crop drops the busy distressed wall at the right and
 # the lower third of the hoodie; the vignette centre is the face rather than
@@ -157,7 +163,13 @@ def _smooth(x):
 def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
            vignette=1.3, vig_start=0.42, cx=0.45, cy=0.43, hoodie=0.80,
            wall=0.06, ss=2, cut=150):
-    """Render a black-ruling-on-white sketch as a PIL image (mode "1")."""
+    """Render the sketch as two RGBA layers: the ink, on a transparent ground,
+    and a small soft halo of paper that follows the outline.
+
+    There is no white rectangle: the ink is the only thing with an edge, and it
+    fades out on its own. The halo sits behind it so the page's pattern does
+    not run through the lit face (which is left as paper, not as ink).
+    """
     lum = tone(src, width, crop, ss)
     h, w = lum.shape
     ruling, _ = rulings(lum.shape, freq, ss)
@@ -173,9 +185,12 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
     edge = 0.46 + 0.55 * (X - 0.42) ** 2
     subject = np.maximum(head, _smooth((Y - edge) / 0.05))
     t *= wall + (1 - wall) * subject
-    # Elliptical fade to paper, so the sketch dissolves into its card.
+    # Elliptical fade, so the sketch dissolves into the page.
     r = np.hypot((X - cx) / 0.50, (Y - cy) / 0.60)
-    t *= np.clip(1 - (r - vig_start) / max(1e-6, 1 - vig_start), 0, 1) ** vignette
+    fade = np.clip(1 - (r - vig_start) / max(1e-6, 1 - vig_start), 0, 1) ** vignette
+    t *= fade
+    # Where the sketch has a presence at all: the halo is cut from this.
+    envelope = (wall + (1 - wall) * subject) * fade
     # Calmer hatching on the hoodie so its equation can read.
     region = _smooth((Y - 0.66) / 0.08) * _smooth((0.70 - np.abs(X - 0.36)) / 0.12)
     t *= 1 - (1 - hoodie) * region
@@ -192,11 +207,21 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
     grown = Image.fromarray((chalk * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3 * ss + 1))
     ink[np.asarray(grown) > 0] = 0
 
-    img = Image.fromarray((ink * 255).astype(np.uint8), mode="L")
-    img = img.resize((img.width // ss, img.height // ss), Image.LANCZOS)
-    img = img.point(lambda v: 255 if v > cut else 0, mode="L")
-    # Black ink on white paper.
-    return Image.eval(img, lambda v: 255 - v).convert("1")
+    alpha = Image.fromarray((ink * 255).astype(np.uint8), mode="L")
+    alpha = alpha.resize((alpha.width // ss, alpha.height // ss), Image.LANCZOS)
+    alpha = alpha.point(lambda v: 255 if v > cut else 0, mode="L")
+    ink_layer = Image.new("RGBA", alpha.size, INK_RGB + (0,))
+    ink_layer.putalpha(alpha)
+
+    # The halo: a feathered patch of paper, 1/10 the size (it is a soft blob,
+    # so CSS scales it up smoothly), only a little larger than the ink.
+    soft = Image.fromarray((np.clip(envelope * 2.4, 0, 1) * 255).astype(np.uint8), mode="L")
+    soft = soft.filter(ImageFilter.GaussianBlur(7 * ss))
+    small = (max(1, alpha.width // 10), max(1, alpha.height // 10))
+    soft = soft.resize(small, Image.LANCZOS)
+    halo = Image.new("RGBA", small, PAPER_RGB + (0,))
+    halo.putalpha(soft)
+    return ink_layer, halo
 
 
 def write(img, stem):
@@ -207,6 +232,16 @@ def write(img, stem):
     # per pixel, which is the smaller of the two.
     img.convert("L").save(webp, "WEBP", lossless=True, method=6)
     img.save(png, optimize=True, bits=1)
+    print(f"  {stem}  {img.width}x{img.height}")
+
+
+def write_rgba(img, stem):
+    """Write a transparent layer as lossless WebP plus a small PNG fallback."""
+    img.save(f"{OUT_DIR}/{stem}.webp", "WEBP", lossless=True, method=6)
+    # The fallback is grey plus alpha, which is far smaller than RGBA; the ink
+    # is one flat colour, so only its brightness is kept.
+    la = Image.merge("LA", (img.getchannel("R"), img.getchannel("A")))
+    la.save(f"{OUT_DIR}/{stem}.png", optimize=True)
     print(f"  {stem}  {img.width}x{img.height}")
 
 
@@ -235,7 +270,12 @@ def main():
         pw, pname, psrc = p.pop("widths"), p.pop("name"), p.pop("src")
         print(f"{psrc} -> {OUT_DIR}/{pname}-*.{{webp,png}}")
         for i, width in enumerate(pw, start=1):
-            write(sketch(psrc, width, **p), f"{pname}-{i}x")
+            ink_layer, halo = sketch(psrc, width, **p)
+            write_rgba(ink_layer, f"{pname}-{i}x")
+            if i == 1:
+                halo.save(f"{OUT_DIR}/{pname}-halo.png", optimize=True)
+                print(f"  {pname}-halo  {halo.width}x{halo.height}")
+
 
 if __name__ == "__main__":
     main()
