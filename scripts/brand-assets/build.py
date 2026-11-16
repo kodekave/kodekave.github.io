@@ -11,7 +11,8 @@ library. To restyle them, edit the templates and run this again.
 
 Writes:
     public/images/og-card.jpg    1200 x 630, the link-preview card
-    src/app/favicon.ico          16, 32, 48 and 256 px
+    src/app/favicon.ico          16, 32, 48 and 256 px, a wireframe K whose
+                                 line weight is drawn separately per size
 
 The card is rendered at twice its size and scaled down, so the hairline
 harmonograph and the sketch keep their detail. It uses the transparent sketch
@@ -60,14 +61,16 @@ def font_file(family: str, weight: str | None = None) -> Path:
 def render(
     template: str,
     size: tuple[int, int],
-    values: dict[str, Path],
+    values: dict[str, "Path | str"],
     scale: int = 1,
 ) -> Image.Image:
     """Render a template at `size` CSS pixels, `scale` times over, then scale
     the result back down to `size` so thin lines are properly anti-aliased."""
     html = (HERE / template).read_text()
-    for key, path in values.items():
-        html = html.replace("{{" + key + "}}", path.resolve().as_uri())
+    for key, value in values.items():
+        # A Path becomes a file:// URL (fonts, images); a string goes in as is.
+        text = value.resolve().as_uri() if isinstance(value, Path) else value
+        html = html.replace("{{" + key + "}}", text)
     with tempfile.TemporaryDirectory() as tmp:
         page = Path(tmp) / "page.html"
         shot = Path(tmp) / "shot.png"
@@ -112,11 +115,21 @@ def main() -> None:
         ROOT / "public/images/og-card.jpg", quality=90, optimize=True, progressive=True
     )
 
-    icon = render("favicon.html.tmpl", (512, 512), {"NEWSREADER": newsreader})
-    icon.save(
+    # The wireframe K is an outline, so its line weight has to follow the size:
+    # fine at 256 and 48 px, heavier at 32 and bolder again at 16.
+    weights = [("13px", [256, 48]), ("22px", [32]), ("30px", [16])]
+    frames: dict[int, Image.Image] = {}
+    for stroke, sizes in weights:
+        art = render(
+            "favicon.html.tmpl", (512, 512), {"NEWSREADER": newsreader, "STROKE": stroke}
+        )
+        for size in sizes:
+            frames[size] = art.resize((size, size), Image.LANCZOS)
+    frames[256].save(
         ROOT / "src/app/favicon.ico",
         format="ICO",
-        sizes=[(16, 16), (32, 32), (48, 48), (256, 256)],
+        sizes=[(n, n) for n in sorted(frames)],
+        append_images=[frames[n] for n in sorted(frames) if n != 256],
     )
     print("Wrote public/images/og-card.jpg and src/app/favicon.ico")
 

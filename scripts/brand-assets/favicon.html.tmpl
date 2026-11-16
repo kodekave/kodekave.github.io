@@ -4,9 +4,14 @@
   @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
   * { box-sizing: border-box; margin: 0; }
   html, body { width: 512px; height: 512px; overflow: hidden; background: transparent; }
-  /* The site's one yellow, as a tile, with the serif K in the ink. */
-  .f { position: relative; width: 512px; height: 512px; border-radius: 104px;
-       background: #f7ef96; display: grid; place-items: center; }
-  .k { font: 500 420px/1 "NR", Georgia, serif; color: #1f2b27; padding-top: 60px; letter-spacing: -0.02em; }
+  /* The site's one yellow, as a tile, with four registration crosses in the
+     corners (the plus grid's mark) and a wireframe K: the serif letter drawn
+     as an outline only. The stroke is a parameter, because a fine line that
+     is right at 256 px disappears at 16 px, so the small sizes are drawn bolder. */
+  .f { position: relative; width: 512px; height: 512px; border-radius: 104px; overflow: hidden;
+       background-color: #f7ef96; display: grid; place-items: center;
+       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cg stroke='%231f2b27' stroke-opacity='.45' stroke-width='3'%3E%3Cpath d='M56 40v32M40 56h32M456 40v32M440 56h32M56 440v32M40 456h32M456 440v32M440 456h32'/%3E%3C/g%3E%3C/svg%3E"); }
+  .k { font: 400 420px/1 "NR", Georgia, serif; color: transparent; -webkit-text-stroke: {{STROKE}} #1f2b27;
+       padding-top: 60px; letter-spacing: -0.02em; }
 </style>
 <div class="f"><div class="k">K</div></div>
