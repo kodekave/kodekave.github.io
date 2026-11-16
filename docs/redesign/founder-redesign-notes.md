@@ -102,3 +102,21 @@ C plain index, F italic accent word, I numbered section labels over a rule (S co
 - Badge text: "Bridging founders and operations".
 - Register "What I bring": keep the four rows, each with its "Project" or "Ongoing" label, and make them plain text with NO links to /services. Open: whether the "How it works" link and the footer "Work with me" link to /services stay (ask before removing).
 - Still open: which sentence leads the hero ("Helping founders build from idea to execution." or "Helping visionaries build ideas for the world"), nav LinkedIn icon, the footer drawing (O), and whether to mention the new events-ranking tool or the Osmos Robotics rename.
+
+## Background patterns: ACCEPTED 2026-11-16
+
+She accepted the pattern gallery. **Core picks: A (Schotter), E (Halftone sweep), H (Rule 90), I (Voronoi), J (Plus grid).** The other eight (B contours, C potential flow, D moiré, F Truchet arcs, G guilloche rosette, K orbit field, L punched tape, M ripples) are to be used across pages "as they seem fit". Visual references, with working code, are saved here so they survive the session:
+
+- `docs/redesign/reference/patterns-gallery.html`: the whole gallery. Open it in a browser. All 13 pattern functions (`P.A` to `P.M`) are in its script, drawn on a canvas with a seeded random function (`rng`), value noise (`noiseFn`, `fbm`) and a marching-squares helper (`iso`). Ink is `rgba(31,43,39, alpha)` on paper `#f6f5ef`.
+- `docs/redesign/reference/elements-menu.src.html`: the lettered elements menu (A to X). The `{{PLATE}}` placeholder stands for the portrait image.
+- `docs/redesign/reference/first-mock-unrendered.html`: the first homepage mock in the draft palette.
+
+**The feeling she wants:** vintage tech and neo-modernist, futuristic and very minimal, at once. Subtle: noticed on a second look, never flashing or standing out. Complex, interesting, generated differently on different pages.
+
+**How to build them (my plan, to confirm when we get there):**
+1. Port the pattern functions to a build script (`scripts/generate-patterns.mjs`) that writes static SVGs into `public/patterns/`, one per page, from a seed. Pure SVG, no JavaScript, nothing animated, so it costs almost nothing and needs no reduced-motion handling. Voronoi in the gallery is a pixel trick; in SVG use proper cell edges.
+2. Apply as a CSS background on the page wrapper, positioned to a corner and faded with a mask (`radial-gradient`, strongest around 88% across and 12% down, gone by 85%), so text areas stay clean. Default strength 70% of the gallery's drawing alpha, opacity about 0.85 of that. Keep every text colour at WCAG AA against the paper even where the pattern is strongest; check it.
+3. Layer: **J (plus grid) at about 3% everywhere** as the base, plus **one accent pattern per page**.
+4. Each page gets its own seed, so the same pattern looks different on different pages.
+
+**Proposed page mapping (mine, adjust freely):** Home A (Schotter) over J; Ventures I (Voronoi); About H (Rule 90); Writing E (Halftone sweep); Research C (potential flow, her CFD physics) or B (contours); Contact M (ripples); venture cards faint A; the round portrait badge could carry G (guilloche rosette); footer J. K (orbit field) and L (punched tape) are spare for the space-tech venture page and the Writing/blog index.

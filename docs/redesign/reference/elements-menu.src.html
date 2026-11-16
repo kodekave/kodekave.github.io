@@ -1,0 +1,220 @@
+<title>Design Elements Menu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..500;1,6..72,200..500&family=DM+Sans:opsz,wght@9..40,300..600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  /* A menu of elements, shown in the draft palette: warm paper, forest ink, one butter-yellow accent. */
+  :root { color-scheme: light; --paper:#f6f5ef; --panel:#eceadf; --ink:#1f2b27; --muted:#66695f; --line:#d9d9cf; --yellow:#f7ef96; --deep:#1f2b27;
+    --serif:"Newsreader",Georgia,serif; --sans:"DM Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:300 17px/1.6 var(--sans);
+    padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); }
+  main { max-width:1120px; margin:0 auto; padding-block:56px 96px; }
+  .lab { font:400 11px/1.3 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  h1 { font:300 clamp(36px,6vw,60px)/1.05 var(--serif); letter-spacing:-.022em; margin:14px 0 18px; max-width:15ch; text-wrap:balance; }
+  h2 { font:300 clamp(26px,3.4vw,36px)/1.1 var(--serif); letter-spacing:-.015em; margin:0; }
+  p { margin:0 0 12px; color:var(--muted); max-width:62ch; }
+  a { color:var(--ink); text-underline-offset:3px; }
+  .intro p { font-size:18px; }
+  .palette { display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 0; }
+  .sw { display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:6px; padding:8px 12px 8px 8px; font:400 11px var(--mono); letter-spacing:.06em; color:var(--muted); }
+  .sw i { width:22px; height:22px; border-radius:4px; border:1px solid rgba(0,0,0,.08); display:block; }
+  section { border-top:1px solid var(--ink); margin-top:64px; padding-top:20px; }
+  .sh { display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:28px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:30px 28px; }
+  .tile { min-width:0; }
+  .mock { background:#fff; border:1px solid var(--line); border-radius:8px; min-height:190px; padding:20px; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+  .mock.paper { background:var(--paper); } .mock.dark { background:var(--deep); color:#eeeadf; border-color:var(--deep); }
+  .cap { display:grid; grid-template-columns:34px 1fr; gap:4px 12px; margin-top:14px; }
+  .id { font:400 22px/1 var(--serif); color:var(--ink); border:1px solid var(--ink); border-radius:50%; width:34px; height:34px; display:grid; place-items:center; grid-row:1 / span 3; }
+  .nm { font:500 15px/1.3 var(--sans); }
+  .from { font:400 11px/1.4 var(--mono); letter-spacing:.06em; color:var(--muted); }
+  .why { font-size:14.5px; color:var(--muted); line-height:1.5; margin:4px 0 0; grid-column:2; }
+  .v { display:inline-block; font:500 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:4px 7px; border-radius:3px; margin-left:8px; vertical-align:2px; }
+  .v.take { background:var(--yellow); } .v.maybe { background:var(--panel); } .v.skip { border:1px solid var(--line); color:var(--muted); }
+
+  /* the mini mocks */
+  .nav { display:flex; align-items:center; justify-content:space-between; background:var(--panel); border-radius:6px; padding:0 12px; height:42px; font:400 12px var(--sans); }
+  .nav b { font:400 15px var(--serif); } .nav .l { display:flex; gap:16px; }
+  .pill { background:var(--yellow); border-radius:4px; padding:7px 12px; font:400 12px var(--sans); }
+  .idx { text-align:right; font:400 12px/1.7 var(--sans); } .idx a { display:block; color:#2a4fd0; }
+  .tline { display:flex; justify-content:space-between; gap:16px; font:400 12px/1.5 var(--sans); }
+  .tline span:first-child { white-space:nowrap; } .tline span:last-child { color:var(--muted); max-width:210px; text-align:left; }
+  .hero1 h3 { font:300 33px/1.08 var(--serif); letter-spacing:-.02em; margin:0 0 14px; max-width:15ch; }
+  .obtn { display:inline-flex; gap:10px; border:1px solid var(--ink); border-radius:4px; padding:9px 13px; font:400 10.5px var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+  .port { display:flex; gap:18px; align-items:center; }
+  .port .ph { position:relative; width:130px; flex:none; } .port img { width:100%; display:block; border-radius:12px; filter:invert(1) brightness(.97); mix-blend-mode:multiply; background:#fff; }
+  .port svg { position:absolute; right:-18px; bottom:-18px; width:62px; height:62px; }
+  .port h3 { font:400 24px/1.15 var(--sans); letter-spacing:-.025em; margin:0 0 8px; } .port p { font-size:12px; margin:0; }
+  .acc { font:300 32px/1.1 var(--serif); letter-spacing:-.02em; } .acc em { font-style:italic; background:linear-gradient(transparent 62%, var(--yellow) 62%); padding:0 2px; }
+  .cap2 { text-align:center; } .cap2 h4 { font:300 22px/1.2 var(--serif); margin:0 0 12px; }
+  .cap2 .f { display:flex; gap:8px; max-width:300px; margin:0 auto; } .cap2 .in { flex:1; border:1px solid var(--line); border-radius:4px; padding:9px 10px; font:300 12px var(--sans); color:#9a9a8d; text-align:left; background:#fff; }
+  .eye { font:400 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); } .eye i { display:inline-block; width:6px; height:6px; border-radius:50%; background:#2a4fd0; margin-right:8px; vertical-align:1px; }
+  .eye.y i { background:#c9b81a; }
+  .num { display:flex; align-items:baseline; gap:10px; border-top:1px solid var(--ink); padding-top:10px; font:400 11px var(--mono); letter-spacing:.12em; text-transform:uppercase; }
+  .m10 { font-size:13px; line-height:1.5; } .m10 div { display:grid; grid-template-columns:44px 1fr; gap:8px; padding:7px 0; border-top:1px solid var(--line); } .m10 b { font:400 10.5px var(--mono); color:var(--muted); letter-spacing:.06em; padding-top:2px; font-weight:400; }
+  .dirr { font-size:13px; } .dirr div { display:grid; grid-template-columns:40px 1fr 70px; gap:8px; padding:9px 0; border-top:1px solid var(--line); align-items:baseline; }
+  .dirr b { font:300 18px var(--serif); letter-spacing:-.01em; } .dirr i { font:400 9.5px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:right; font-style:normal; } .dirr u { font:400 10px var(--mono); color:var(--muted); text-decoration:none; }
+  .cards { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; } .card { border:1px solid #6b7068; border-radius:6px; background:var(--panel); padding:10px; }
+  .card svg { width:100%; height:62px; display:block; } .card b { display:block; font:300 16px var(--serif); margin-top:6px; } .card i { font:400 9px var(--mono); letter-spacing:.1em; color:var(--muted); font-style:normal; text-transform:uppercase; }
+  .call { background:var(--panel); border-radius:8px; padding:16px; background-image:linear-gradient(rgba(31,43,39,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(31,43,39,.07) 1px,transparent 1px); background-size:14px 14px; }
+  .call h4 { font:300 22px/1.15 var(--serif); margin:6px 0 8px; } .call p { font-size:12px; margin:0 0 12px; }
+  .take3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; } .take3 div { border-radius:6px; padding:12px 10px; min-height:104px; font:300 15px/1.2 var(--serif); display:flex; flex-direction:column; justify-content:flex-end; }
+  .take3 i { font:400 9px var(--mono); letter-spacing:.08em; text-transform:uppercase; font-style:normal; opacity:.7; margin-top:4px; }
+  .art svg { width:100%; height:150px; display:block; }
+  .note { font:italic 300 15px/1.4 var(--serif); color:var(--muted); }
+  .short { background:var(--panel); border-radius:10px; padding:28px; margin-top:28px; }
+  .short ol { margin:12px 0 0; padding-left:20px; max-width:70ch; color:var(--ink); } .short li { margin:8px 0; }
+  .src { font:400 12px/1.8 var(--mono); color:var(--muted); letter-spacing:.04em; }
+  /* prateekboga.com additions */
+  .tag4 { font:400 17px/1.3 var(--sans); color:#6f7f4a; letter-spacing:-.005em; } .tag4 b { font:300 28px/1.1 var(--serif); letter-spacing:-.02em; display:block; color:var(--ink); margin-bottom:10px; font-weight:300; }
+  .split { display:grid; grid-template-columns:90px 1fr; gap:18px; } .split h4 { font:300 24px/1.15 var(--serif); letter-spacing:-.015em; margin:0 0 8px; } .split p { font-size:12.5px; margin:0; line-height:1.55; }
+  .fr { display:grid; grid-template-columns:1fr 1fr; gap:8px; } .fr div { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:10px 11px 9px; min-height:108px; display:flex; flex-direction:column; position:relative; }
+  .fr i { font:400 8.5px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal; } .fr b { font:300 19px/1.1 var(--serif); margin:7px 0 4px; font-weight:300; } .fr p { font-size:10.5px; line-height:1.4; margin:0; } .fr u { margin-top:auto; font:400 8px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; } .fr s { position:absolute; right:9px; bottom:8px; text-decoration:none; font-size:12px; }
+  .figs { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; } .figs b { display:block; font:300 34px/1 var(--serif); letter-spacing:-.02em; font-weight:300; } .figs span { display:block; font-size:11px; color:var(--muted); margin-top:6px; } .figs u { display:block; font:400 8.5px var(--mono); letter-spacing:.04em; color:var(--muted); margin-top:4px; text-decoration:underline; }
+  .close { text-align:center; } .close h4 { font:300 29px/1.08 var(--serif); letter-spacing:-.02em; margin:0 0 14px; } .close .pill { display:inline-block; } .close .soc { display:flex; gap:14px; justify-content:center; margin-top:14px; font:400 10.5px var(--sans); color:var(--muted); }
+  .tile-el { width:62px; height:62px; background:var(--yellow); color:var(--ink); border-radius:2px; position:relative; display:grid; place-items:center; font:500 30px var(--sans); letter-spacing:-.03em; } .tile-el small { position:absolute; left:6px; top:5px; font:500 10px var(--sans); }
+  .foot2 { display:flex; justify-content:space-between; font:400 11px var(--sans); color:var(--muted); border-top:1px solid var(--line); padding-top:10px; }
+</style>
+
+<main>
+  <div class="intro">
+    <p class="lab">Elements from eleven sites · pick by letter</p>
+    <h1>What is worth borrowing</h1>
+    <p>I opened the sites and kept only what looks good and works. Each tile shows the element in the draft palette, so you are judging how it would look on your page, not on theirs. <span class="v take">Take</span> is my recommendation, <span class="v maybe">Maybe</span> is worth a look and <span class="v skip">Skip</span> is there so you know I saw it. Reply with letters, like &ldquo;A, D, H, J&rdquo;.</p>
+    <div class="palette">
+      <span class="sw"><i style="background:#f6f5ef"></i>paper #f6f5ef</span><span class="sw"><i style="background:#1f2b27"></i>ink #1f2b27</span><span class="sw"><i style="background:#66695f"></i>muted #66695f</span><span class="sw"><i style="background:#d9d9cf"></i>line #d9d9cf</span><span class="sw"><i style="background:#eceadf"></i>panel #eceadf</span><span class="sw"><i style="background:#f7ef96"></i>yellow #f7ef96</span>
+    </div>
+  </div>
+
+  <!-- ===================================================== header -->
+  <section>
+    <div class="sh"><h2>Header and navigation</h2><span class="lab">first 60 pixels</span></div>
+    <div class="grid">
+      <div class="tile"><div class="mock paper"><div class="nav"><b style="white-space:nowrap;font-size:14px">Komal Kedarnath</b><span class="l" style="gap:12px"><span>Ventures</span><span>About</span></span><span class="pill" style="white-space:nowrap;padding:6px 10px">Get in touch</span></div></div>
+        <div class="cap"><span class="id">A</span><span class="nm">Floating panel bar, one yellow button<span class="v take">Take</span></span><span class="from">South Park Commons · Seth Godin (the pill)</span><p class="why">A soft, slightly darker bar that floats above the page, with the only colour on screen being the button. Calm, and it tells the visitor the single thing to do.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="tline"><span><b style="font-weight:500">Komal Kedarnath G</b><br><span style="color:var(--muted)">Local time — 14:22, India</span></span><span>Founder’s-office operator who has built four ventures across four countries.</span></div></div>
+        <div class="cap"><span class="id">B</span><span class="nm">Name, live local time, one line<span class="v take">Take</span></span><span class="from">Claudio Guglieri</span><p class="why">A tiny personal detail that makes the site feel alive and says where you are without a sentence. It replaces your &ldquo;Online · UTC · Base India&rdquo; status strip in a form that suits a light page.</p></div></div>
+
+      <div class="tile"><div class="mock"><div class="idx"><b style="font-weight:500;color:var(--ink)">Komal Kedarnath</b><a>About</a><a>Ventures</a><a>Research</a><a>Writing</a><a>Contact</a></div></div>
+        <div class="cap"><span class="id">C</span><span class="nm">Plain index of single words<span class="v maybe">Maybe</span></span><span class="from">Patrick Collison · Derek Sivers</span><p class="why">The extreme version. Great as a footer or an &ldquo;index&rdquo; page, too bare to be the whole homepage for someone who wants to be found.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== hero -->
+  <section>
+    <div class="sh"><h2>The first screen</h2><span class="lab">hero</span></div>
+    <div class="grid">
+      <div class="tile"><div class="mock paper hero1"><h3>Helping founders build from idea to execution.</h3><div><span class="obtn">Start a conversation &nbsp;&rarr;</span></div></div>
+        <div class="cap"><span class="id">D</span><span class="nm">Light serif statement, outlined button<span class="v take">Take</span></span><span class="from">South Park Commons</span><p class="why">A single sentence in a large light serif, one hairline button with an arrow, and a lot of white space. This is the elegant-founder note: confidence through restraint.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="port"><div><h3>Product Designer with background in Scientific Research</h3><p>Hi, I’m Elly, a product designer bridging the gap between science and design.</p></div><div class="ph"><img src="{{PLATE}}" alt=""><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#f7ef96"/><defs><path id="c" d="M50 50 m-34 0 a34 34 0 1 1 68 0 a34 34 0 1 1 -68 0"/></defs><text font-size="10" font-family="IBM Plex Mono" letter-spacing="2"><textPath href="#c">FOUNDER · INDIA · FOUNDER ·</textPath></text><circle cx="50" cy="50" r="5" fill="#1f2b27"/></svg></div></div></div>
+        <div class="cap"><span class="id">E</span><span class="nm">Rounded portrait with a round sticker badge<span class="v maybe">Maybe</span></span><span class="from">Elly Hsieh</span><p class="why">Your engraved portrait prints as dark ink lines on paper, which is a signature of its own. The round sticker is a friendly detail, but it adds words and a bit of play; the badge text here is a sample, not proposed copy.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="acc">Build ideas for the <em>world</em>.</div></div>
+        <div class="cap"><span class="id">F</span><span class="nm">One italic, highlighted word<span class="v skip">Skip</span></span><span class="from">Marie Forleo</span><p class="why">Her italic accent word works for her warm, high-energy brand. On a quiet page it reads as a trick, and it would break your less-is-more rule.</p></div></div>
+
+      <div class="tile"><div class="mock paper cap2"><h4>Get the next issue.</h4><div class="f"><span class="in">Email address</span><span class="pill" style="padding:9px 12px">Subscribe</span></div></div>
+        <div class="cap"><span class="id">G</span><span class="nm">Single centred capture<span class="v take">Take</span></span><span class="from">James Clear · Seth Godin</span><p class="why">One headline, one field, one yellow button. It would replace the heavy newsletter block in your footer with something lighter.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== structure -->
+  <section>
+    <div class="sh"><h2>Labels and structure</h2><span class="lab">the quiet voice of the page</span></div>
+    <div class="grid">
+      <div class="tile"><div class="mock paper"><div><span class="eye"><i></i>Latest writing / Nov 9, 2026</span></div></div>
+        <div class="cap"><span class="id">H</span><span class="nm">Small mono label with a dot<span class="v take">Take</span></span><span class="from">Hacking Demand</span><p class="why">Tiny uppercase mono labels are the one technical note you already use. A single accent dot beside them gives them rhythm without a box or an icon.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="num"><span>01</span><span>Work / Case study</span></div><div class="num" style="margin-top:22px;opacity:.6"><span>02</span><span>Writing</span></div></div>
+        <div class="cap"><span class="id">I</span><span class="nm">Numbered section labels over a rule<span class="v maybe">Maybe</span></span><span class="from">Elly Hsieh</span><p class="why">Your [01]–[04] sections already work like this. Moving the number to the left of the label and the rule above it makes it cleaner.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="m10"><b style="display:block;margin-bottom:6px;font:500 13px var(--sans);color:var(--ink)">The journey in 10 seconds</b>
+        <div><b>2019</b><span>SSERD, space education</span></div><div><b>2021</b><span>CERN Webfest, and CFD on a phone</span></div><div><b>2022</b><span>Genex Space &amp; SpaceCat</span></div><div><b>2025</b><span>Neuralzome Cybernetics</span></div></div></div>
+        <div class="cap"><span class="id">J</span><span class="nm">&ldquo;Me in 10 seconds&rdquo; dated one-liners<span class="v take">Take</span></span><span class="from">Derek Sivers</span><p class="why">A year and one line per stop, nothing more. It is the shortest honest way to show a career, and it fits your seven stops exactly.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="dirr"><div><u>2025</u><b>Neuralzome Cybernetics</b><i>United States</i></div><div><u>2023</u><b>Uduvilla Investments</b><i>Maldives</i></div><div style="border-bottom:1px solid var(--line)"><u>2022</u><b>Genex &amp; SpaceCat</b><i>Maldives</i></div></div></div>
+        <div class="cap"><span class="id">K</span><span class="nm">Ruled directory with a place column<span class="v take">Take</span></span><span class="from">South Park Commons</span><p class="why">The same journey as a list: year, name in the serif, place in small caps, hairlines between. A richer alternative to J; I would choose one of the two.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== showing work -->
+  <section>
+    <div class="sh"><h2>Showing the work</h2><span class="lab">ventures and offers</span></div>
+    <div class="grid">
+      <div class="tile"><div class="mock paper"><div class="cards">
+        <div class="card"><svg viewBox="0 0 120 62" fill="none" stroke="#1f2b27" stroke-width="1.3"><ellipse cx="60" cy="31" rx="46" ry="19"/><ellipse cx="60" cy="31" rx="26" ry="10" opacity=".5"/><circle cx="60" cy="31" r="3" fill="#1f2b27"/></svg><b>Genex &amp; SpaceCat</b><i>Space-tech</i></div>
+        <div class="card"><svg viewBox="0 0 120 62" fill="none" stroke="#1f2b27" stroke-width="1.3"><path d="M10 46 L44 20 L70 34 L108 10"/><circle cx="44" cy="20" r="3" fill="#1f2b27"/><circle cx="70" cy="34" r="3" fill="#1f2b27"/></svg><b>Neuralzome</b><i>AI / Robotics</i></div></div></div>
+        <div class="cap"><span class="id">L</span><span class="nm">Bordered cards with a drawn mark<span class="v maybe">Maybe</span></span><span class="from">South Park Commons</span><p class="why">Their cards carry an illustrated logo. Yours would carry your existing line drawings (orbit, constellation, arm), which are already consistent. Worth it on the Ventures page, not the homepage.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="take3"><div style="background:#dfe5d6">Genex &amp; SpaceCat<i>2022</i></div><div style="background:#f5efb4">Uduvilla<i>2023</i></div><div style="background:#e8d9cb">Neuralzome<i>2025</i></div></div></div>
+        <div class="cap"><span class="id">M</span><span class="nm">Each venture gets its own soft tint<span class="v maybe">Maybe</span></span><span class="from">Claudio Guglieri (he floods the page; I would only tint)</span><p class="why">A calm colour per venture page gives each its own identity. It adds three more colours, so it bends the one-accent rule; best kept pale.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="call"><span class="eye y"><i></i>Work with me</span><h4>Building something?<br>Let’s talk.</h4><p>One conversation, no pitch deck needed.</p><span class="pill">Start a conversation</span></div></div>
+        <div class="cap"><span class="id">N</span><span class="nm">Tinted callout card on a faint grid<span class="v maybe">Maybe</span></span><span class="from">Hacking Demand</span><p class="why">A single soft card with the one yellow button. It would carry your offer or contact in the middle of a page. The sample words are placeholders.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== atmosphere -->
+  <section>
+    <div class="sh"><h2>Atmosphere and trust</h2><span class="lab">the details people remember</span></div>
+    <div class="grid">
+      <div class="tile"><div class="mock dark art"><svg viewBox="0 0 300 150" fill="none" stroke="#eeeadf" stroke-width="1.2"><path d="M20 110 Q150 -10 280 110" stroke-dasharray="3 5" stroke="#9fd8c4"/><ellipse cx="150" cy="95" rx="70" ry="26"/><ellipse cx="150" cy="95" rx="38" ry="12" opacity=".5"/><circle cx="150" cy="95" r="4" fill="#eeeadf"/><path d="M60 40 L90 22 L110 52 Z"/><rect x="208" y="30" width="34" height="26"/></svg></div>
+        <div class="cap"><span class="id">O</span><span class="nm">One line drawing as the atmosphere<span class="v maybe">Maybe</span></span><span class="from">Haruki Murakami</span><p class="why">His black page is carried by a single line illustration. Your orbit, constellation and the equation on your hoodie could play that role as one quiet drawing, perhaps in the footer.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><p class="note">(Everything here is written by me.)</p><div class="m10" style="margin-top:10px"><div><b>1993</b><span>sample line</span></div></div></div>
+        <div class="cap"><span class="id">P</span><span class="nm">A one-line promise of authorship<span class="v maybe">Maybe</span></span><span class="from">Derek Sivers</span><p class="why">A parenthetical under the name that says the writing is yours. It earns trust fast. It is new copy, so only if it is true and you want it.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="eye" style="background:#111;color:#eee;padding:8px 10px;border-radius:3px;display:inline-block;align-self:flex-start;letter-spacing:.06em;text-transform:none;font:400 11px var(--sans)"><span style="background:var(--yellow);color:#111;padding:2px 6px;border-radius:2px;margin-right:8px;font:500 9px var(--mono)">LIVE</span>New essay out this week. Read it.</div></div>
+        <div class="cap"><span class="id">Q</span><span class="nm">Announcement strip above the nav<span class="v skip">Skip</span></span><span class="from">Hacking Demand</span><p class="why">Useful for a company with launches. For one person it is noise, and it fights the calm.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== added: prateekboga.com -->
+  <section>
+    <div class="sh"><h2>Added: prateekboga.com</h2><span class="lab">the closest in spirit to you</span></div>
+    <p style="max-width:70ch">Prateek Boga is a scientist (infrared spectroscopy, astrochemistry), ultrarunner, author and artist. It is the only site on the list whose owner is a technical person turning himself into a brand, which is your situation. His page is dark green with cream text and one sage accent (#cad9a9), set in Manrope and DM Sans. I show each element in your light palette so you can judge it fairly.</p>
+    <div class="grid" style="margin-top:22px">
+      <div class="tile"><div class="mock paper tag4"><b>Prateek &ldquo;Shepherd&rdquo; Boga</b>Scientist. Ultrarunner. Author. Artist.</div>
+        <div class="cap"><span class="id">R</span><span class="nm">An identity in four words<span class="v take">Take</span></span><span class="from">prateekboga.com (hero)</span><p class="why">His name, then four one-word roles in the accent colour, then a single sentence of attitude. It says who he is in two seconds and nothing else on screen competes. Yours would be four words that are true for you; the words above are his, shown only to illustrate the shape.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="split"><span class="eye">01 / A little context</span><div><h4>More than one way to explore.</h4><p>A short paragraph on the work, the process and what comes next.</p></div></div></div>
+        <div class="cap"><span class="id">S</span><span class="nm">Editorial split: label left, text right<span class="v take">Take</span></span><span class="from">prateekboga.com</span><p class="why">A small numbered mono label sits in the left margin and the statement and paragraph sit to its right. Generous empty space, and the structure itself becomes the decoration. This is the layout I would use for every section.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="fr"><div><i>01 / Ventures</i><b>Ventures</b><p>Four companies, four countries.</p><u>Space · AI · Hospitality</u><s>&nearr;</s></div><div><i>02 / Research</i><b>Research</b><p>The CFD paper and the work around it.</p><u>Fluids · Open source</u><s>&nearr;</s></div><div><i>03 / Writing</i><b>Writing</b><p>Notes from the founder&rsquo;s office.</p><u>Ops · GTM · Cross-border</u><s>&nearr;</s></div><div><i>04 / Contact</i><b>Contact</b><p>Start a conversation.</p><u>Email · LinkedIn</u><s>&nearr;</s></div></div></div>
+        <div class="cap"><span class="id">T</span><span class="nm">Four doors as soft cards<span class="v take">Take</span></span><span class="from">prateekboga.com (&ldquo;Four frontiers&rdquo;)</span><p class="why">His homepage is a hub: four quiet cards, each with a number, a title, one line, a row of three small-caps tags and an arrow. Mine uses your own pages and a few words as placeholders. It replaces a long homepage with four doors, which is the less-is-more move.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="figs"><div><b>250%</b><span>Revenue growth</span><u>View source ↗</u></div><div><b>4+</b><span>Launches led</span><u>View source ↗</u></div><div><b>17</b><span>Team led</span><u>View source ↗</u></div></div></div>
+        <div class="cap"><span class="id">U</span><span class="nm">Big figures with a source link<span class="v take">Take</span></span><span class="from">prateekboga.com (&ldquo;The journey, in numbers&rdquo;)</span><p class="why">Three large numbers with a tiny label and &ldquo;View source ↗ · Updated&rdquo; beneath each. The source line is what makes them believable. It suits your readings, which already carry a venture name: the venture could link to its record.</p></div></div>
+
+      <div class="tile"><div class="mock paper close"><h4>Let&rsquo;s make something meaningful.</h4><span class="pill" style="padding:9px 16px">Contact me &nearr;</span><div class="soc"><span>LinkedIn</span><span>GitHub</span><span>ORCID</span><span>Zenodo</span></div></div>
+        <div class="cap"><span class="id">V</span><span class="nm">Centred close with one button and a row of profiles<span class="v take">Take</span></span><span class="from">prateekboga.com</span><p class="why">One statement, one button, then a quiet row of profile links (he includes Google Scholar and ORCID). You already have LinkedIn, GitHub, ORCID and your Zenodo paper, so this row would add credibility without adding clutter.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div style="display:flex;gap:16px;align-items:center"><div class="tile-el"><small>19</small>K</div><div><b style="font:500 14px var(--sans)">Komal Kedarnath</b><div class="foot2" style="border:0;padding:6px 0 0;display:block;line-height:1.5">A monogram in the shape of an element tile</div></div></div></div>
+        <div class="cap"><span class="id">W</span><span class="nm">A periodic-table tile as the monogram<span class="v maybe">Maybe</span></span><span class="from">prateekboga.com (the &ldquo;Pb 82&rdquo; mark)</span><p class="why">His logo is his initials set as an element tile, which is an instantly nerdy, memorable idea. It is his signature, so copying it exactly would look derivative; I show a K tile only to illustrate the idea. If you want a mark at all, it should be your own idea.</p></div></div>
+
+      <div class="tile"><div class="mock paper"><div class="foot2"><span>© 2026 Komal Kedarnath G</span><span>Ideas. Ventures. Words.</span><span>Back to top ↑</span></div></div>
+        <div class="cap"><span class="id">X</span><span class="nm">Footer with a three-word motto and Back to top<span class="v maybe">Maybe</span></span><span class="from">prateekboga.com (&ldquo;Science. Miles. Words. Art.&rdquo;)</span><p class="why">A copyright, a short motto in the centre and Back to top. The motto words are placeholders; only use one if you have a line you mean.</p></div></div>
+    </div>
+  </section>
+
+  <div class="short">
+    <p class="lab">My suggested shortlist</p>
+    <h2>A, B, D, G, H, J or K, and one drawing</h2>
+    <ol>
+      <li><b>A</b> the floating bar with the single yellow button.</li>
+      <li><b>B</b> your name and live local time, replacing the status strip.</li>
+      <li><b>D</b> the light-serif statement with an outlined button, as the hero.</li>
+      <li><b>J or K</b> for the journey: the short dated list, or the ruled directory.</li>
+      <li><b>H</b> the small mono labels with one dot.</li>
+      <li><b>G</b> the single capture for the newsletter.</li>
+      <li><b>O</b> one line drawing, if you want a memorable detail.</li>
+      <li><b>From Prateek Boga:</b> <b>S</b> the label-left editorial layout for every section, <b>T</b> four doors as the homepage hub, <b>U</b> big figures with source links, <b>V</b> the centred close with a row of profiles, and <b>R</b> a four-word identity line if you have four words that are true.</li>
+    </ol>
+    <p style="margin-top:14px">That keeps the page to one accent (yellow), two type voices (serif and sans) and the mono label, which is the less-is-more rule.</p>
+  </div>
+
+  <p class="src" style="margin-top:44px">Sources, all opened and screenshotted for this page: South Park Commons (/companies), Hacking Demand (the Claude Meetings post), jamesclear.com, sethgodin.com, marieforleo.com, ellyhsieh.com, guglieri.com, harukimurakami.com, patrickcollison.com, sive.rs and prateekboga.com. I left out ryanholiday.net: it looks dated, not elegant.</p>
+</main>
