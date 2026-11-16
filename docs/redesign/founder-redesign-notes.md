@@ -126,3 +126,16 @@ She accepted the pattern gallery. **Core picks: A (Schotter), E (Halftone sweep)
 She asked whether the patterns could be more complex; I made eleven advanced samples. Working code is in `docs/redesign/reference/patterns-gallery-round2.html` (functions `P[1]` to `P[11]`; it reuses `plus`, `rule90`, `voronoi` and `iso` from round one). Numbers, not letters, to avoid clashing with the A to M of round one: 1 Chladni figure, 2 Clifford attractor, 3 Reaction-diffusion (Gray-Scott coral), 4 Ridge lines, 5 Hilbert curve, 6 Penrose tiling, 7 Circle packing, 8 Julia set contours, 9 Harmonograph, 10 Layered (Rule 90 + Voronoi + plus grid), 11 The journey as geometry (rings for 2019 to 2026, a point per stop, spiral order, dotted lines within a country).
 
 Her choice from round two is NOT yet made. Guidance if she picks: one complex pattern per page as the hero, always faded from the text; pre-render heavy ones (3, 2, 6) to a compressed image at build time (about 40 to 120 KB); keep text contrast at AA; no motion. Number 11 is the only one drawn from her own data and is the most distinctive.
+
+## Round two picks: 1, 2, 4, 6, 8 and especially 9 (2026-11-16)
+
+She liked these from the advanced gallery (`docs/redesign/reference/patterns-gallery-round2.html`, functions `P[n]`):
+
+- **9 Harmonograph: her favourite, "especially".** A long decaying pendulum line: x = A(sin(2.01 t) e^(-0.0042 t) + 0.62 sin(3.0 t + 1) e^(-0.003 t)), y = A(sin(3.0 t + 0.5) e^(-0.003 t) + 0.62 sin(2.0 t) e^(-0.0042 t)), t from 0 to 110 in steps of 0.005, line width 0.5, alpha about 0.26, centred near 70% across. It is the strongest candidate for the home page hero pattern. Several variants (different frequency ratios and phases) can give each page its own harmonograph from a seed.
+- **1 Chladni figure:** nodal lines of mixed plate modes, marching squares at several levels with the zero line strongest.
+- **2 Clifford attractor:** 420,000 iterations of x' = sin(a y) + c cos(a x), y' = sin(b x) + d cos(b y) with a=-1.4, b=1.6, c=1.0, d=0.7, accumulated into a density map and drawn with soft alpha (the final softer setting, density factor 0.14, alpha cap 165).
+- **4 Ridge lines:** 34 stacked, occluding terrain slices with bumps concentrated in the middle band.
+- **6 Penrose tiling:** five-fold aperiodic tiling from Robinson-triangle subdivision, six generations, fading out towards the text.
+- **8 Julia set:** contour lines of the smooth escape count for c = -0.4 + 0.6i, levels 3 to 30, soft alpha.
+
+So her pattern shortlist is now: round one **A, E, H, I, J**; round two **1, 2, 4, 6, 8, 9**. Remaining open: which pattern goes on which page, and whether number 11 (her journey as geometry) is wanted. Heavy ones (2, 6) should be pre-rendered at build time; keep one hero pattern per page, faded from the text, no motion, text contrast at AA.
