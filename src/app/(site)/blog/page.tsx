@@ -51,6 +51,7 @@ export default function BlogIndexPage() {
       />
 
       <Masthead
+        pattern="halftone"
         label="Writing"
         title={<>Notes from the founder&rsquo;s office.</>}
         lead={
@@ -70,7 +71,7 @@ export default function BlogIndexPage() {
           </>
         }
       >
-        <p className="settle settle-3 mt-8 max-w-xl leading-relaxed text-paper-faint">
+        <p className="settle settle-3 mt-8 max-w-xl leading-relaxed text-ink-faint">
           Shorter essays are below. The longer reference guides are{" "}
           <a href="#guides" className="ref">
             further down

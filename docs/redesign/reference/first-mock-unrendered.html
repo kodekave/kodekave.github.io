@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..500;1,6..72,200..500&family=DM+Sans:opsz,wght@9..40,300..600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  :root { --paper:#f6f5ef; --panel:#eceadf; --ink:#1f2b27; --muted:#66695f; --line:#d9d9cf; --yellow:#f7ef96; --serif:"Newsreader",Georgia,serif; --sans:"DM Sans",Arial,sans-serif; --mono:"IBM Plex Mono",monospace; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1440px; background:var(--paper); color:var(--ink); font:300 17px/1.65 var(--sans); -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1152px; margin:0 auto; padding:0 40px; }
+  .lab { font:400 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  /* nav: a floating panel */
+  nav { display:flex; align-items:center; justify-content:space-between; margin:20px auto 0; max-width:1152px; padding:0 20px; height:52px; background:var(--panel); border-radius:6px; font:400 13.5px var(--sans); }
+  nav .brand { font:400 19px var(--serif); letter-spacing:-.005em; }
+  nav .links { display:flex; gap:34px; color:var(--ink); }
+  .btn-y { background:var(--yellow); color:var(--ink); font:400 13.5px var(--sans); padding:9px 18px; border-radius:4px; }
+  .btn-o { display:inline-flex; gap:12px; align-items:center; border:1px solid var(--ink); border-radius:4px; padding:12px 18px; font:400 12px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+  /* hero */
+  .hero { display:grid; grid-template-columns:1fr 340px; gap:60px; align-items:end; padding:120px 0 96px; }
+  .hero h1 { font:300 76px/1.04 var(--serif); letter-spacing:-.022em; max-width:760px; font-optical-sizing:auto; }
+  .hero p { margin-top:30px; max-width:430px; color:var(--muted); font-size:18px; }
+  .hero .btn-o { margin-top:36px; }
+  .portrait { position:relative; }
+  .portrait img { width:100%; display:block; filter:invert(1) brightness(.97); mix-blend-mode:multiply; }
+  .portrait span { display:block; margin-top:10px; }
+  /* sections */
+  section { border-top:1px solid var(--ink); padding:22px 0 100px; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:56px; }
+  h2 { font:300 44px/1.1 var(--serif); letter-spacing:-.015em; }
+  /* readings */
+  .fig { display:grid; grid-template-columns:repeat(6,1fr); border-top:1px solid var(--line); }
+  .fig div { padding:26px 18px 0 0; }
+  .fig b { display:block; font:300 58px/1 var(--serif); letter-spacing:-.02em; }
+  .fig p { margin-top:14px; font-size:13.5px; line-height:1.4; color:var(--muted); }
+  .fig i { display:block; margin-top:8px; font:400 10px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:#9a9a8d; font-style:normal; }
+  /* journey as a directory */
+  .dir { margin-top:0; }
+  .row { display:grid; grid-template-columns:90px 1fr 1fr 110px; gap:24px; align-items:baseline; padding:24px 0; border-top:1px solid var(--line); }
+  .row:last-child { border-bottom:1px solid var(--line); }
+  .row .y { font:400 12px var(--mono); color:var(--muted); letter-spacing:.06em; }
+  .row .t { font:300 28px/1.15 var(--serif); letter-spacing:-.01em; }
+  .row .r { font-size:15px; color:var(--muted); line-height:1.5; }
+  .row .p { font:400 11px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:right; }
+  .row.on { background:var(--panel); margin:0 -20px; padding-left:20px; padding-right:20px; }
+  /* register */
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:80px; }
+  .two h3 { font:300 30px/1.1 var(--serif); margin-bottom:26px; }
+  .li { display:flex; justify-content:space-between; gap:20px; padding:16px 0; border-top:1px solid var(--line); font-size:16.5px; line-height:1.45; }
+  .li:last-child { border-bottom:1px solid var(--line); } .li time { font:400 11px var(--mono); color:var(--muted); letter-spacing:.06em; white-space:nowrap; padding-top:4px; }
+  /* signal */
+  .sig h2 { font-size:76px; line-height:1.04; max-width:820px; letter-spacing:-.022em; }
+  .sig .acts { display:flex; gap:12px; margin-top:44px; align-items:center; }
+  footer { border-top:1px solid var(--line); padding:34px 0 60px; display:flex; justify-content:space-between; }
+</style>
+
+<div id="top">
+<nav><span class="brand">Komal Kedarnath</span><span class="links"><span>Ventures</span><span>Research</span><span>About</span><span>Writing</span></span><span class="btn-y">Get in touch</span></nav>
+<div class="wrap">
+  <div class="hero">
+    <div><h1>Helping founders build from idea to execution.</h1><p>Four ventures across India, the Maldives, the United States and the United Kingdom, in more than six years.</p><span class="btn-o">Start a conversation &nbsp;&rarr;</span></div>
+    <div class="portrait"><img src="file:///Users/kk/Downloads/kodekave.github.io/public/images/plate-2x.png" alt=""><span class="lab">Komal Kedarnath G</span></div>
+  </div>
+</div>
+</div>
+
+<div id="mid"><div class="wrap">
+<section><div class="head"><span class="lab">Readings</span><span class="lab">4 ventures · 4 countries · 6+ years</span></div>
+  <div class="fig">
+    <div><b>250%</b><p>Revenue growth</p><i>Uduvilla</i></div><div><b>4+</b><p>Launches led</p><i>Neuralzome</i></div><div><b>100%</b><p>Close accuracy</p><i>Neuralzome</i></div>
+    <div><b>17</b><p>Team led</p><i>Uduvilla</i></div><div><b>5,000+</b><p>People reached</p><i>Genex · SpaceCat</i></div><div><b>10+</b><p>Hours saved weekly</p><i>Uduvilla</i></div>
+  </div></section>
+<section><div class="head"><h2>The journey</h2><span class="lab">India → Maldives → United States → United Kingdom</span></div>
+  <div class="dir">
+    <div class="row"><span class="y">2019</span><span class="t">SSERD, space education</span><span class="r">Publications and content strategy for space-education research.</span><span class="p">India</span></div>
+    <div class="row"><span class="y">2020</span><span class="t">NASA Space Apps and an asteroid search</span><span class="r">Recognised at NASA’s Space Apps Challenge; analysed Pan-STARRS imagery.</span><span class="p">India</span></div>
+    <div class="row"><span class="y">2021</span><span class="t">CERN Webfest, and CFD on a phone</span><span class="r">Read the paper</span><span class="p">India</span></div>
+    <div class="row"><span class="y">2022</span><span class="t">Genex Space &amp; SpaceCat</span><span class="r">International Business and Ops (Founder’s Office)</span><span class="p">Maldives</span></div>
+    <div class="row"><span class="y">2023</span><span class="t">Uduvilla Investments</span><span class="r">International Business and Ops (Founder’s Office)</span><span class="p">Maldives</span></div>
+    <div class="row on"><span class="y">2025</span><span class="t">Neuralzome Cybernetics</span><span class="r">Head of International Operations (Founder’s Office)</span><span class="p">United States</span></div>
+    <div class="row"><span class="y">2026</span><span class="t">Travel Hands UK</span><span class="r">Founder’s Office Associate</span><span class="p">United Kingdom</span></div>
+  </div></section>
+</div></div>
+
+<div id="low"><div class="wrap">
+<section><div class="head"><span class="lab">Register</span></div>
+  <div class="two">
+    <div><h3>What I bring</h3><div><div class="li"><span>Founder’s office</span></div><div class="li"><span>Go-to-market execution</span></div><div class="li"><span>Cross-border market entry</span></div><div class="li"><span>Fundraise support</span></div></div></div>
+    <div><h3>Latest writing</h3><div><div class="li"><span>Reverse flipping: what it teaches founders about domicile</span><time>2026-11-09</time></div><div class="li"><span>Do you need a GTM engineer yet? A founder’s-office view</span><time>2026-11-09</time></div><div class="li"><span>Before you hand operations to an AI agent, fix the ledger</span><time>2026-11-09</time></div><div class="li"><span>What a founder’s office actually is (and isn’t)</span><time>2026-08-20</time></div></div></div>
+  </div></section>
+<section class="sig"><div class="head"><span class="lab">Contact</span></div>
+  <h2>Building something? Let’s talk.</h2><div class="acts"><span class="btn-y" style="padding:14px 22px">Connect on LinkedIn</span><span class="btn-o">Email me &nbsp;&rarr;</span></div></section>
+<footer><span class="lab">© 2026 Komal Kedarnath G</span><span class="lab">LinkedIn &nbsp; GitHub &nbsp; RSS</span></footer>
+</div></div>

@@ -68,6 +68,7 @@ export default function BookshelfPage() {
       />
 
       <Masthead
+        pattern="ridges"
         label="Bookshelf"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Bookshelf" }]}
         title={<>What&rsquo;s on the shelf.</>}

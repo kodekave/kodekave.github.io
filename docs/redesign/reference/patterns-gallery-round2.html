@@ -1,0 +1,196 @@
+<title>Advanced Pattern Samples</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..500;1,6..72,200..500&family=DM+Sans:opsz,wght@9..40,300..600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  :root { color-scheme: light; --paper:#f6f5ef; --panel:#eceadf; --ink:#1f2b27; --muted:#66695f; --line:#d9d9cf; --yellow:#f7ef96;
+    --serif:"Newsreader",Georgia,serif; --sans:"DM Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:300 17px/1.6 var(--sans);
+    padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); }
+  main { max-width:1180px; margin:0 auto; padding-block:56px 96px; }
+  .lab { font:400 11px/1.3 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  h1 { font:300 clamp(36px,6vw,60px)/1.05 var(--serif); letter-spacing:-.022em; margin:14px 0 18px; max-width:16ch; text-wrap:balance; }
+  h2 { font:300 clamp(26px,3.4vw,34px)/1.1 var(--serif); letter-spacing:-.015em; margin:0 0 10px; }
+  p { margin:0 0 12px; color:var(--muted); max-width:64ch; }
+  .intro p { font-size:18px; }
+  .ctl { position:sticky; top:0; z-index:5; background:color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); margin:28px -16px 30px; padding:12px 16px; display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; }
+  .ctl label { font:400 12px var(--mono); letter-spacing:.06em; color:var(--muted); display:flex; align-items:center; gap:10px; }
+  .ctl input[type=range] { width:150px; accent-color:var(--ink); } .ctl input[type=checkbox] { accent-color:var(--ink); width:16px; height:16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,350px),1fr)); gap:34px 26px; }
+  .tile { min-width:0; }
+  .panel { position:relative; height:250px; background:var(--paper); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .panel canvas { position:absolute; inset:0; width:100%; height:100%; transition:opacity .2s; }
+  .panel .txt { position:absolute; left:22px; bottom:22px; right:40%; z-index:2; }
+  .panel .txt b { display:block; font:300 25px/1.12 var(--serif); letter-spacing:-.02em; color:var(--ink); font-weight:300; } .panel .txt i { display:block; margin-top:10px; font:400 10px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+  .hide-txt .panel .txt { display:none; }
+  .fade .panel canvas { -webkit-mask-image:radial-gradient(ellipse 85% 95% at 88% 12%, #000 0%, rgba(0,0,0,.55) 45%, transparent 85%); mask-image:radial-gradient(ellipse 85% 95% at 88% 12%, #000 0%, rgba(0,0,0,.55) 45%, transparent 85%); }
+  .cap { display:grid; grid-template-columns:34px 1fr; gap:3px 12px; margin-top:14px; }
+  .id { font:400 19px/1 var(--serif); border:1px solid var(--ink); border-radius:50%; width:34px; height:34px; display:grid; place-items:center; grid-row:1 / span 3; }
+  .nm { font:500 15px/1.3 var(--sans); } .from { font:400 11px/1.4 var(--mono); letter-spacing:.06em; color:var(--muted); }
+  .why { font-size:14.5px; color:var(--muted); line-height:1.5; margin:4px 0 0; grid-column:2; }
+  .cost { font:400 10px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); grid-column:2; margin-top:2px; }
+  .busy { position:absolute; right:12px; top:10px; font:400 10px var(--mono); letter-spacing:.1em; color:var(--muted); z-index:3; }
+  section { border-top:1px solid var(--ink); margin-top:70px; padding-top:22px; }
+  .rec { background:var(--panel); border-radius:10px; padding:26px 28px; margin-top:20px; } .rec li { margin:8px 0; color:var(--ink); } .rec ul { margin:10px 0 0; padding-left:20px; max-width:74ch; }
+</style>
+
+<main>
+  <div class="intro">
+    <p class="lab">Round two · advanced patterns · pick by number</p>
+    <h1>More complex, still quiet</h1>
+    <p>Eleven richer patterns, from physics, number theory and growth. They are denser and more intricate than round one, and they are meant to be read as texture, not as pictures. Same controls as before. Some take a second to compute in your browser; on the real site they would be made once at build time and saved as a small image, so visitors pay nothing.</p>
+  </div>
+
+  <div class="ctl">
+    <label>Strength <input type="range" id="str" min="20" max="100" value="70"><span id="strv">70%</span></label>
+    <label><input type="checkbox" id="fade" checked> Fade toward text</label>
+    <label><input type="checkbox" id="base"> Base grid underneath</label>
+    <label><input type="checkbox" id="txt" checked> Show sample text</label>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <section>
+    <h2>Using this much complexity responsibly</h2>
+    <div class="rec"><ul>
+      <li><b>One hero per page:</b> a complex pattern as the single accent, plus the plain grid as the base. Never two complex ones in view at once.</li>
+      <li><b>Always faded from the text:</b> the more detail, the stronger the fade, so contrast stays at AA.</li>
+      <li><b>Pre-rendered:</b> heavy patterns become one compressed image (about 40&ndash;120 KB) made at build time. Nothing is calculated for the visitor and nothing moves.</li>
+      <li><b>Yours:</b> number 11 is drawn from your own journey. That is the one nobody else can have.</li>
+    </ul></div>
+  </section>
+</main>
+
+<script>
+(function(){
+const INK="31,43,39",PARC="#f6f5ef";
+function rng(seed){let s=seed>>>0;return()=>(s=(s*1664525+1013904223)>>>0)/4294967296}
+function noiseFn(seed){const r=rng(seed),G=256,p=Array.from({length:G*G},()=>r());
+  const g=(a,b)=>p[(b&255)*G+(a&255)];
+  return (x,y)=>{const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf);
+    return (g(xi,yi)*(1-u)+g(xi+1,yi)*u)*(1-v)+(g(xi,yi+1)*(1-u)+g(xi+1,yi+1)*u)*v}}
+function iso(ctx,W,H,field,levels,cell,alphaFn){
+  const nx=Math.ceil(W/cell)+2,ny=Math.ceil(H/cell)+2,v=new Float32Array(nx*ny);
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)v[j*nx+i]=field(i*cell,j*cell);
+  levels.forEach((L,li)=>{ctx.beginPath();ctx.strokeStyle=`rgba(${INK},${alphaFn?alphaFn(li):.5})`;
+    for(let j=0;j<ny-1;j++)for(let i=0;i<nx-1;i++){
+      const a=v[j*nx+i],b=v[j*nx+i+1],c=v[(j+1)*nx+i+1],d=v[(j+1)*nx+i];
+      const idx=(a>L?8:0)+(b>L?4:0)+(c>L?2:0)+(d>L?1:0); if(idx===0||idx===15)continue;
+      const x=i*cell,y=j*cell,t=(p,q)=>(L-p)/(q-p);
+      const top=[x+cell*t(a,b),y],right=[x+cell,y+cell*t(b,c)],bottom=[x+cell*t(d,c),y+cell],left=[x,y+cell*t(a,d)];
+      const seg=(p,q)=>{ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1])};
+      switch(idx){case 1:case 14:seg(left,bottom);break;case 2:case 13:seg(bottom,right);break;case 3:case 12:seg(left,right);break;
+        case 4:case 11:seg(top,right);break;case 5:seg(left,top);seg(bottom,right);break;case 6:case 9:seg(top,bottom);break;
+        case 7:case 8:seg(left,top);break;case 10:seg(top,right);seg(left,bottom);break}
+    } ctx.stroke()});
+}
+/* round-one patterns reused for the layered sample and the base grid */
+function plus(ctx,W,H){const s=22;ctx.lineWidth=.8;for(let y=s;y<H;y+=s)for(let x=s;x<W;x+=s){const big=(x/s)%5===0&&(y/s)%5===0,a=big?.6:.32,h=big?5:3;
+   ctx.strokeStyle=`rgba(${INK},${a})`;ctx.beginPath();ctx.moveTo(x-h,y);ctx.lineTo(x+h,y);ctx.moveTo(x,y-h);ctx.lineTo(x,y+h);ctx.stroke()}}
+function rule90(ctx,W,H){const s=4,cols=Math.ceil(W/s),rows=Math.ceil(H/s);let row=new Uint8Array(cols);[.3,.72,.93].forEach(f=>row[Math.floor(cols*f)]=1);
+  for(let j=0;j<rows;j++){for(let i=0;i<cols;i++)if(row[i]){ctx.fillStyle=`rgba(${INK},${.55*(1-Math.abs(i/cols-.5)*.6)})`;ctx.fillRect(i*s,j*s,s-1,s-1)}
+   const nx=new Uint8Array(cols);for(let i=1;i<cols-1;i++)nx[i]=row[i-1]^row[i+1];row=nx}}
+function voronoi(ctx,W,H){const r=rng(21),pts=Array.from({length:44},()=>[r()*W,r()*H]),step=2;ctx.fillStyle=`rgba(${INK},.5)`;
+  const near=(x,y)=>{let b=0,bd=1e9;for(let k=0;k<pts.length;k++){const dx=x-pts[k][0],dy=y-pts[k][1],d=dx*dx+dy*dy;if(d<bd){bd=d;b=k}}return b};
+  const w=Math.ceil(W/step)+1,ids=new Int16Array(w*(Math.ceil(H/step)+1));
+  for(let j=0;j*step<H;j++)for(let i=0;i<w;i++)ids[j*w+i]=near(i*step,j*step);
+  for(let j=0;j*step<H-step;j++)for(let i=0;i<w-1;i++){if(ids[j*w+i]!==ids[j*w+i+1]||ids[j*w+i]!==ids[(j+1)*w+i])ctx.fillRect(i*step,j*step,1.1,1.1)}}
+
+const P={
+ /* 1 Chladni: nodal lines of a vibrating plate */
+ 1(ctx,W,H){const S=H*1.05,modes=[[3,5,1],[4,7,.8],[2,9,.6],[6,11,.35]];
+  const f=(x,y)=>{const u=x/S*Math.PI,v=y/S*Math.PI;let s=0;for(const [n,m,w] of modes)s+=w*(Math.cos(n*u)*Math.cos(m*v)-Math.cos(m*u)*Math.cos(n*v));return s};
+  ctx.lineWidth=.8;iso(ctx,W,H,f,[-1.6,-1.2,-.8,-.4,-.14,0,.14,.4,.8,1.2,1.6],3,k=>k===5?.85:(k===4||k===6)?.45:.22)},
+ /* 2 Clifford attractor: a million faint points */
+ 2(ctx,W,H){const a=-1.4,b=1.6,c=1.0,d=.7,dens=new Float32Array(W*H);let x=.1,y=.1;const sc=Math.min(W,H)/5.2;
+  for(let i=0;i<420000;i++){const nx=Math.sin(a*y)+c*Math.cos(a*x),ny=Math.sin(b*x)+d*Math.cos(b*y);x=nx;y=ny;
+   if(i<20)continue;const px=Math.floor(W*.66+x*sc),py=Math.floor(H*.5+y*sc);if(px>=0&&px<W&&py>=0&&py<H)dens[py*W+px]++}
+  const img=ctx.createImageData(W,H),dat=img.data;for(let i=0;i<W*H;i++){const al=1-Math.exp(-dens[i]*.14);dat[i*4]=31;dat[i*4+1]=43;dat[i*4+2]=39;dat[i*4+3]=Math.round(al*165)}
+  ctx.putImageData(img,0,0)},
+ /* 3 Reaction-diffusion (Gray-Scott coral) */
+ 3(ctx,W,H){const cs=2.4,gw=Math.round(W/cs),gh=Math.round(H/cs),n=gw*gh,r=rng(4);let A=new Float32Array(n).fill(1),B=new Float32Array(n),A2=new Float32Array(n),B2=new Float32Array(n);
+  for(let k=0;k<26;k++){const cx=Math.floor(r()*gw),cy=Math.floor(r()*gh);for(let j=-3;j<=3;j++)for(let i=-3;i<=3;i++){const x=(cx+i+gw)%gw,y=(cy+j+gh)%gh;A[y*gw+x]=.4;B[y*gw+x]=.6}}
+  const f=.0545,k=.062;
+  for(let s=0;s<2100;s++){for(let y=0;y<gh;y++){const ym=((y-1+gh)%gh)*gw,y0=y*gw,yp=((y+1)%gh)*gw;
+    for(let x=0;x<gw;x++){const xm=(x-1+gw)%gw,xp=(x+1)%gw,i=y0+x;const a=A[i],b=B[i];
+     const la=-a+.2*(A[y0+xm]+A[y0+xp]+A[ym+x]+A[yp+x])+.05*(A[ym+xm]+A[ym+xp]+A[yp+xm]+A[yp+xp]);
+     const lb=-b+.2*(B[y0+xm]+B[y0+xp]+B[ym+x]+B[yp+x])+.05*(B[ym+xm]+B[ym+xp]+B[yp+xm]+B[yp+xp]);
+     const ab=a*b*b;A2[i]=a+la-ab+f*(1-a);B2[i]=b+.5*lb+ab-(k+f)*b}}
+   let t=A;A=A2;A2=t;t=B;B=B2;B2=t}
+  ctx.lineWidth=.8;iso(ctx,W,H,(px,py)=>{const x=Math.min(gw-1,Math.floor(px/cs)),y=Math.min(gh-1,Math.floor(py/cs));return B[y*gw+x]},[.18,.26],cs,k=>k?.55:.3)},
+ /* 4 Ridge lines (stacked, occluding) */
+ 4(ctx,W,H){const n=noiseFn(8),rows=34,r=rng(13),bumps=Array.from({length:9},()=>[W*(.3+r()*.5),6+r()*14,18+r()*42]);ctx.lineWidth=.9;
+  for(let q=0;q<rows;q++){const y0=34+q*((H-44)/rows);ctx.beginPath();const pts=[];
+   for(let x=0;x<=W;x+=3){let h=0;for(const [bx,w,a] of bumps){const d=(x-bx)/(w*2.2);h+=a*Math.exp(-d*d)}h*=.55+n(x*.02+q*.35,q*.7)*.9;h*=Math.sin(Math.PI*Math.min(1,x/W))**.6;pts.push([x,y0-h*.6])}
+   ctx.moveTo(0,H+5);pts.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.lineTo(W,H+5);ctx.closePath();ctx.fillStyle=PARC;ctx.fill();
+   ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=`rgba(${INK},.62)`;ctx.stroke()}},
+ /* 5 Hilbert curve (one line fills the page) */
+ 5(ctx,W,H){const N=64,s=Math.max(W,H)*1.05/N;const d2xy=(n,d)=>{let t=d,x=0,y=0;for(let s2=1;s2<n;s2*=2){const rx=1&(t/2),ry=1&(t^rx);if(ry===0){if(rx===1){x=s2-1-x;y=s2-1-y}const tmp=x;x=y;y=tmp}x+=s2*rx;y+=s2*ry;t=Math.floor(t/4)}return [x,y]};
+  ctx.lineWidth=.8;ctx.strokeStyle=`rgba(${INK},.55)`;ctx.beginPath();for(let d=0;d<N*N;d++){const [x,y]=d2xy(N,d);d?ctx.lineTo(x*s+s/2+W*.05,y*s+s/2):ctx.moveTo(x*s+s/2+W*.05,y*s+s/2)}ctx.stroke()},
+ /* 6 Penrose tiling (never repeats) */
+ 6(ctx,W,H){const phi=(1+Math.sqrt(5))/2,cx=W*.8,cy=H*.3,R=Math.hypot(W,H)*1.1;let tri=[];
+  for(let i=0;i<10;i++){let B=[Math.cos((2*i-1)*Math.PI/10),Math.sin((2*i-1)*Math.PI/10)],C=[Math.cos((2*i+1)*Math.PI/10),Math.sin((2*i+1)*Math.PI/10)];if(i%2===0){const t=B;B=C;C=t}tri.push([0,[0,0],B,C])}
+  const lerp=(p,q,t)=>[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t];
+  for(let g=0;g<6;g++){const out=[];for(const [c,A,B,C] of tri){if(c===0){const Pp=lerp(A,B,1/phi);out.push([0,C,Pp,B],[1,Pp,C,A])}else{const Q=lerp(B,A,1/phi),Rr=lerp(B,C,1/phi);out.push([1,Rr,C,A],[1,Q,Rr,B],[0,Rr,Q,A])}}tri=out}
+  ctx.lineWidth=.6;ctx.strokeStyle=`rgba(${INK},.5)`;ctx.beginPath();
+  for(const [c,A,B,C] of tri){const m=p=>[cx+p[0]*R,cy+p[1]*R];const a=m(A),b=m(B),cc=m(C);if(a[0]<-20&&b[0]<-20&&cc[0]<-20)continue;ctx.moveTo(cc[0],cc[1]);ctx.lineTo(a[0],a[1]);ctx.lineTo(b[0],b[1])}ctx.stroke()},
+ /* 7 Circle packing */
+ 7(ctx,W,H){const r=rng(17),cs=[];let rad=26;ctx.lineWidth=.7;
+  while(rad>2.6){for(let t=0;t<110;t++){const x=r()*W,y=r()*H;let ok=true;for(let k=0;k<cs.length;k++){const c=cs[k],dx=x-c[0],dy=y-c[1],m=rad+c[2]+2;if(dx*dx+dy*dy<m*m){ok=false;break}}if(ok)cs.push([x,y,rad])}rad*=.955}
+  cs.forEach(([x,y,R])=>{ctx.strokeStyle=`rgba(${INK},.5)`;ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.stroke();if(R>9){ctx.fillStyle=`rgba(${INK},.45)`;ctx.beginPath();ctx.arc(x,y,1.2,0,7);ctx.fill()}})},
+ /* 8 Julia set contours */
+ 8(ctx,W,H){const cr=-.4,ci=.6,asp=W/H,mx=60;const f=(px,py)=>{let x=(px/W-.5)*3.2*asp*.62+.1,y=(py/H-.5)*2.5*.62,i=0;while(i<mx&&x*x+y*y<16){const t=x*x-y*y+cr;y=2*x*y+ci;x=t;i++}
+   if(i===mx)return mx;const nu=i+1-Math.log(Math.log(Math.sqrt(x*x+y*y)))/Math.LN2;return nu};
+  const lv=[];for(let l=3;l<30;l+=1.5)lv.push(l);ctx.lineWidth=.7;iso(ctx,W,H,f,lv,3,k=>.18+.14*(k%3===0))},
+ /* 9 Harmonograph */
+ 9(ctx,W,H){ctx.lineWidth=.5;ctx.strokeStyle=`rgba(${INK},.26)`;ctx.beginPath();const A=Math.min(W*.42,H*.5);
+  for(let t=0;t<110;t+=.005){const e1=Math.exp(-.0042*t),e2=Math.exp(-.003*t),x=W*.7+A*(Math.sin(2.01*t)*e1+.62*Math.sin(3.0*t+1)*e2),y=H*.48+A*(Math.sin(3.0*t+.5)*e2+.62*Math.sin(2.0*t)*e1);t?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()},
+ /* 10 Layered: Rule 90 + Voronoi + plus grid */
+ 10(ctx,W,H){ctx.save();ctx.globalAlpha=.4;plus(ctx,W,H);ctx.restore();ctx.save();ctx.globalAlpha=.7;voronoi(ctx,W,H);ctx.restore();ctx.save();ctx.globalAlpha=.8;rule90(ctx,W,H);ctx.restore()},
+ /* 11 Your journey as geometry */
+ 11(ctx,W,H){const st=[[2019,"IN"],[2020,"IN"],[2021,"IN"],[2022,"MV"],[2023,"MV"],[2025,"US"],[2026,"UK"]],cx=W*.74,cy=H*.46,g=2.3999632;
+  ctx.lineWidth=.6;for(let k=1;k<=12;k++){ctx.strokeStyle=`rgba(${INK},${.12+.04*(k%5===0)})`;ctx.beginPath();ctx.arc(cx,cy,k*15,0,7);ctx.stroke()}
+  for(let k=0;k<24;k++){const a=k/24*Math.PI*2;ctx.strokeStyle=`rgba(${INK},.1)`;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*190,cy+Math.sin(a)*190);ctx.stroke()}
+  const pts=st.map(([y,p],i)=>{const rad=(y-2018)*22,a=i*g+.6;return [cx+Math.cos(a)*rad,cy+Math.sin(a)*rad,rad,a,p]});
+  ctx.strokeStyle=`rgba(${INK},.6)`;ctx.lineWidth=.9;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();
+  pts.forEach((p,i)=>{ctx.fillStyle=`rgba(${INK},.8)`;ctx.beginPath();ctx.arc(p[0],p[1],i===6?4.5:2.6,0,7);ctx.fill();ctx.strokeStyle=`rgba(${INK},.4)`;ctx.beginPath();ctx.arc(p[0],p[1],i===6?9:6,0,7);ctx.stroke()});
+  [[ "IN",[0,1,2]],["MV",[3,4]]].forEach(([n,ix])=>{ctx.strokeStyle=`rgba(${INK},.3)`;ctx.setLineDash([2,3]);ctx.beginPath();ix.forEach((q,j)=>j?ctx.lineTo(pts[q][0],pts[q][1]):ctx.moveTo(pts[q][0],pts[q][1]));ctx.stroke();ctx.setLineDash([])})}
+};
+const META=[
+ [1,"Chladni figure","Ernst Chladni, 1787 · the physics of vibrating plates","The lines where a plate stays still while the sand gathers. Mixed modes make a woven grid of curves. Scientific, hypnotic, utterly period.","computed live · light"],
+ [2,"Clifford attractor","Chaos theory","Four numbers and a formula, iterated 420,000 times. The faint cloud that appears is a strange attractor, like smoke caught in a field.","computed live · medium"],
+ [3,"Reaction–diffusion","Alan Turing, 1952 · coral and animal markings","Two chemicals spreading and reacting grow this coral texture from a few seeds. It looks grown, not drawn.","computed live · heavy; one image on the site"],
+ [4,"Ridge lines","Pulsar plots, 1970 · an iconic album cover","Thirty-four slices of a terrain, each hiding the one behind. It adds depth in pure line.","computed live · light"],
+ [5,"Hilbert curve","David Hilbert, 1891","A single unbroken line that visits every cell of a grid. One thread, a whole page.","computed live · light"],
+ [6,"Penrose tiling","Roger Penrose, 1974","A tiling with five-fold symmetry that never repeats, built from two rhombus shapes. The one most associated with quasicrystals.","computed live · medium"],
+ [7,"Circle packing","Apollonian gaskets","Circles of every size nested into each other without touching. Organic order from simple placement.","computed live · light"],
+ [8,"Julia set","Gaston Julia, 1918","The border of a famous fractal, drawn as contour lines. Infinite detail that still reads as texture.","computed live · medium"],
+ [9,"Harmonograph","Victorian drawing machines","The swinging pendulum drawings of the 1800s: two decaying waves per axis, traced as one long line.","computed live · light"],
+ [10,"Layered: three patterns","Rule 90 + Voronoi + plus grid","Three different systems stacked at different scales. Notice how the layers interfere: this is the biggest jump in richness.","computed live · medium"],
+ [11,"Your journey as geometry","Drawn from your own seven stops","Rings for the years 2019 to 2026, a point for each stop, spiralling outward and joined in order. Dotted lines join the stops in the same country. It is the only pattern that is about you.","computed live · light"]
+];
+const grid=document.getElementById("grid");
+META.forEach(([id,nm,from,why,cost])=>{const t=document.createElement("div");t.className="tile";
+ t.innerHTML=`<div class="panel"><canvas data-p="${id}"></canvas><span class="busy" data-b="${id}">drawing…</span><div class="txt"><b>Helping visionaries build ideas for the world.</b><i>Komal Kedarnath G</i></div></div><div class="cap"><span class="id">${id}</span><span class="nm">${nm}</span><span class="from">${from}</span><p class="why">${why}</p><span class="cost">${cost}</span></div>`;grid.appendChild(t)});
+const cache={};
+function apply(){const s=+document.getElementById("str").value/100;document.getElementById("strv").textContent=Math.round(s*100)+"%";
+ document.querySelectorAll("canvas[data-p]").forEach(c=>c.style.opacity=s*.85);
+ document.getElementById("grid").className="grid"+(document.getElementById("fade").checked?" fade":"")+(document.getElementById("txt").checked?"":" hide-txt")}
+function paint(c){const k=c.dataset.p,off=cache[k];if(!off)return;const base=document.getElementById("base").checked,ctx=c.getContext("2d"),dpr=c.width/off.cssW;
+ ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.setTransform(dpr,0,0,dpr,0,0);
+ if(base&&+k!==10){ctx.save();ctx.globalAlpha=.5;plus(ctx,off.cssW,off.cssH);ctx.restore()}
+ ctx.drawImage(off.cv,0,0,off.cssW,off.cssH)}
+function build(c,done){const r=c.parentElement.getBoundingClientRect(),W=Math.round(r.width),H=Math.round(r.height),dpr=Math.min(window.devicePixelRatio||1,2);
+ c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);const k=c.dataset.p;
+ const cv=document.createElement("canvas");cv.width=W;cv.height=H;const ctx=cv.getContext("2d");
+ try{P[k](ctx,W,H)}catch(e){console.log("pattern",k,e)}
+ cache[k]={cv,cssW:W,cssH:H};paint(c);const b=document.querySelector(`[data-b="${k}"]`);if(b)b.remove();done&&done()}
+function buildAll(){const cs=[...document.querySelectorAll("canvas[data-p]")];let i=0;const next=()=>{if(i<cs.length){build(cs[i++],()=>setTimeout(next,0))}};setTimeout(next,30)}
+document.getElementById("str").addEventListener("input",apply);["fade","txt"].forEach(i=>document.getElementById(i).addEventListener("change",apply));
+document.getElementById("base").addEventListener("change",()=>document.querySelectorAll("canvas[data-p]").forEach(paint));
+let tmr;window.addEventListener("resize",()=>{clearTimeout(tmr);tmr=setTimeout(()=>{for(const k in cache)delete cache[k];buildAll()},250)});
+apply();buildAll();
+})();
+</script>

@@ -1,5 +1,7 @@
 /**
- * The section label: a figure and a name, in the one quiet label style.
+ * The section label: a numeral and a name, in the one quiet mono style, set in
+ * the left margin of an editorial split ("01 / Figures"). The numeral is the
+ * deep olive, which holds contrast on paper.
  */
 export default function SectionLabel({
   n,
@@ -10,15 +12,15 @@ export default function SectionLabel({
   n: string;
   children: React.ReactNode;
   className?: string;
-  /** True on the dark field, where the numeral is brass; on paper it is the
-      deeper brass that holds contrast. */
+  /** True on a dark panel, where the numeral is the yellow. */
   onInk?: boolean;
 }) {
   return (
-    <p className={`label flex items-baseline gap-3 ${className}`}>
+    <p className={`label flex items-baseline gap-2.5 ${className}`}>
       <span className={`tabular ${onInk ? "text-brass" : "text-brass-deep"}`}>
-        [{n}]
+        {n}
       </span>
+      <span aria-hidden="true">/</span>
       <span>{children}</span>
     </p>
   );

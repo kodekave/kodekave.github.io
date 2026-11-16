@@ -94,13 +94,13 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      {/* The post opens on ink, like every other page on the site. */}
-      <header className="on-ink relative overflow-hidden">
+      {/* The post opens light, like every other page on the site. */}
+      <header className="relative overflow-hidden">
         <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-20">
           {/* Visible breadcrumb, matching the BreadcrumbList above. */}
           <nav
             aria-label="Breadcrumb"
-            className="settle settle-1 label text-paper-faint"
+            className="settle settle-1 label text-ink-faint"
           >
             <ol className="flex flex-wrap items-center gap-2.5">
               <li>
@@ -121,16 +121,16 @@ export default async function BlogPostPage({
             {post.title}
           </h1>
 
-          <div className="settle settle-3 label mt-9 flex flex-wrap items-center gap-x-4 gap-y-2 text-paper-faint">
+          <div className="settle settle-3 label mt-9 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-faint">
             <time dateTime={post.published_at}>
               {new Date(post.published_at ?? post.created_at).toLocaleDateString(
                 "en-US",
                 { month: "long", day: "numeric", year: "numeric" }
               )}
             </time>
-            <span aria-hidden="true" className="h-3 w-px bg-hair-inv" />
+            <span aria-hidden="true" className="h-3 w-px bg-hair" />
             <span>{post.reading_minutes} min read</span>
-            <span aria-hidden="true" className="h-3 w-px bg-hair-inv" />
+            <span aria-hidden="true" className="h-3 w-px bg-hair" />
             {/* Named author on the page, not just in schema — a basic E-E-A-T signal. */}
             <Link href="/about" className="link-rule">
               {profile.name}
