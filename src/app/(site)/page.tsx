@@ -91,9 +91,6 @@ const profiles = [
 
 export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
-  // "Komal" / "Kedarnath G": set as two lines without hardcoding the split.
-  const [firstName, ...restOfName] = profile.name.split(" ");
-
   // The journey, one stop per stage. A stage that is a venture carries its role
   // from the venture record, so that is written once.
   const placeLabel = Object.fromEntries(route.map((r) => [r.code, r.label]));
@@ -115,7 +112,7 @@ export default function HomePage() {
       <section id="hero" className="relative overflow-hidden">
         <Pattern kind="harmonograph" />
 
-        <div className="settle relative mx-auto grid max-w-6xl gap-14 px-6 pb-20 pt-12 md:px-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-10 lg:pb-28 lg:pt-16">
+        <div className="settle relative mx-auto grid max-w-6xl gap-14 px-6 pb-20 pt-12 md:px-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-center lg:gap-[4.5rem] lg:pb-28 lg:pt-16">
           <div>
             <p className="label label-dot text-ink-faint">
               <span>
@@ -123,20 +120,20 @@ export default function HomePage() {
               </span>
             </p>
 
-            <h1 className="wordmark mt-9 text-[clamp(3.1rem,7.6vw,6.6rem)]">
-              {firstName}
-              <br />
-              <span className="sm:whitespace-nowrap">
-                {restOfName.join(" ")}
-              </span>
+            {/* The statement leads. The name is the first thing a screen
+                reader hears, and is set again, quietly, just below. */}
+            <h1 className="font-display mt-9 max-w-[11.6em] text-[clamp(3rem,6.2vw,5.5rem)] leading-[1.03]">
+              <span className="sr-only">{profile.name}: </span>
+              {profile.tagline}
             </h1>
 
-            <p className="font-display-text mt-7 text-[clamp(1.15rem,2vw,1.45rem)] text-brass-deep">
-              Startups-Operator. Maker. Explorer.
-            </p>
-
-            <p className="tagline mt-10 max-w-xl text-balance text-[clamp(1.65rem,3.1vw,2.45rem)] leading-[1.15]">
-              {profile.tagline}
+            <p className="mt-11 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+              <span className="font-display-text text-[1.2rem]">
+                {profile.name}
+              </span>
+              <span className="font-display-text text-[1.2rem] text-brass-deep">
+                Startups-Operator. Maker. Explorer.
+              </span>
             </p>
 
             <div className="mt-10">
@@ -148,11 +145,11 @@ export default function HomePage() {
           </div>
 
           <PortraitCard
-            alt={`${profile.name}, engraved portrait`}
+            alt={`${profile.name}, black sketch portrait`}
             badge
             priority
-            sizes="(max-width: 640px) 78vw, 30vw"
-            className="w-full max-w-[21rem] justify-self-center lg:max-w-[24rem] lg:justify-self-end"
+            sizes="(max-width: 640px) 78vw, 304px"
+            className="w-full max-w-[19rem] justify-self-center lg:justify-self-end"
           />
         </div>
       </section>
