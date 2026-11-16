@@ -36,7 +36,7 @@ export default function Masthead({
 }) {
   return (
     <section className="relative overflow-hidden">
-      {pattern && <Pattern kind={pattern} />}
+      {pattern && <Pattern kind={pattern} tight />}
 
       <div
         className={`settle relative mx-auto max-w-6xl px-6 pb-16 pt-14 md:px-10 md:pb-24 md:pt-20 ${

@@ -68,6 +68,7 @@ export default function WorkPage() {
       />
 
       <Masthead
+        pattern="voronoi"
         label="Work"
         title={<>4 ventures, 4 countries.</>}
         lead={

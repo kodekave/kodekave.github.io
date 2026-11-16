@@ -79,6 +79,7 @@ export default function CrossBorderOperationsPage() {
       />
 
       <Masthead
+        pattern="julia"
         label="Guide"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Guide" }]}
         title={

@@ -91,6 +91,7 @@ export default function ServicesPage() {
       />
 
       <Masthead
+        pattern="schotter"
         label="Work with me"
         title={<>A founder&rsquo;s office, without hiring one.</>}
         /*

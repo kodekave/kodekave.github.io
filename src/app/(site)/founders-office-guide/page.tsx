@@ -81,6 +81,7 @@ export default function FoundersOfficeGuidePage() {
       />
 
       <Masthead
+        pattern="penrose"
         label="Guide"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Guide" }]}
         title={

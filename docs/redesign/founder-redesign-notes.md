@@ -183,3 +183,23 @@ Mocks and screenshots are in `docs/redesign/shots/` (`hero-option-a-statement.pn
 ## Portrait without a card (2026-11-17)
 
 Her words: "it looks like a rectangular white space on which the sketch is. It should be seamless. There should not be a cutout that is out of place." The sketch is now a transparent layer with no card, border or white fill. `sketch()` in `scripts/engrave.py` returns two RGBA layers: the ink (near-black `#0d110f`, a flat colour with a bilevel alpha, `portrait-{1x,2x}.webp/png`, about 19 KB and 51 KB) and a small feathered halo of paper (`portrait-halo.png`, 90 x 116, 3.7 KB) cut from the head-and-body outline, so the harmonograph and the plus grid do not run through the lit face while nothing has a hard edge. No ink touches the image border. In the page: `.portrait` (aspect box) holds `.portrait-halo` (CSS background, scaled up smoothly) and the `<img class="plate">`; no blend modes. The hero image box is 27rem and overlaps the empty fade on its left, so the figure reads larger; the sticker overlaps the lower-left of the hoodie. Screenshots: `docs/redesign/shots/home-round3-seamless-1440.png` and `-390.png`. About uses the same component without the sticker.
+
+## Patterns per page (2026-11-17)
+
+All eleven of her picks are in use. `src/lib/patterns.ts` draws them on a canvas, from the gallery code, each filling its page's opening and taking a seed; `components/Pattern.tsx` draws once when the browser is idle after the page has painted and again only on resize; `Masthead` takes `pattern="..."` and passes `tight` (a tighter fade, `.patt-tight`, so long headings and leads stay clear). The home hero keeps the wider fade she approved.
+
+| Page | Pattern | Why |
+|---|---|---|
+| Home | 9 Harmonograph (her favourite) | |
+| /work | I Voronoi | cells, four countries |
+| /research | 1 Chladni | vibrating plates, her CFD paper |
+| /about | H Rule 90 | structure from a simple rule |
+| /blog | E Halftone sweep | print |
+| /services | A Schotter | order dissolving, operations |
+| /bookshelf | 4 Ridge lines | stacked, like shelves |
+| /cross-border-operations | 8 Julia set | the border of a fractal |
+| /founders-office-guide | 6 Penrose | a tiling that never repeats |
+| /fractional-coo-vs-founders-office | 2 Clifford | an attractor, the comparison |
+| every page, behind everything | J Plus grid at about 3% | the base layer in `globals.css` |
+
+Opacity: the harmonograph is drawn faint (alpha .26) and shown at full; the others are drawn at gallery strength and shown at 60% (`PATTERN_OPACITY`). Blog posts (`/blog/[slug]`) have no masthead and so no pattern. Measured on the build: no long tasks over 50 ms on any page, no console errors, Lighthouse unchanged (home mobile 78, desktop 97; About mobile 78, desktop 100; all other categories 100). Not used from her shortlist: nothing; not built: pattern 11 (the journey as geometry), which she has not asked for. Screenshots: `docs/redesign/shots/patterns-per-page-1.png` and `-2.png`.

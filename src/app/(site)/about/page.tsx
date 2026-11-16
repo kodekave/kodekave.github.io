@@ -63,6 +63,7 @@ export default function AboutPage() {
       />
 
       <Masthead
+        pattern="rule90"
         label="About"
         plate
         title={

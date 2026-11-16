@@ -117,6 +117,7 @@ export default function ComparisonPage() {
       />
 
       <Masthead
+        pattern="clifford"
         label="Comparison"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Comparison" }]}
         title={

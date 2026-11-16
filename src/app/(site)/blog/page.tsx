@@ -51,6 +51,7 @@ export default function BlogIndexPage() {
       />
 
       <Masthead
+        pattern="halftone"
         label="Writing"
         title={<>Notes from the founder&rsquo;s office.</>}
         lead={

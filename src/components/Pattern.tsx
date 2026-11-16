@@ -1,60 +1,88 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { drawPattern, type PatternKind } from "@/lib/patterns";
+import {
+  drawPattern,
+  PATTERN_OPACITY,
+  type PatternKind,
+} from "@/lib/patterns";
 
 /**
- * One generated background pattern, behind a page's opening. The outer span
- * is the faded frame (`.patt` in globals.css masks it to nothing before it
- * reaches the text); the canvas inside is a square that is drawn once, after
- * the page has painted, and never again unless the screen is resized.
+ * One generated background pattern, behind a page's opening. The frame fills
+ * its section and is masked (`.patt` in globals.css) so the pattern is strong
+ * towards the right and gone before it reaches the text. The canvas inside is
+ * drawn once, when the browser is idle after the page has painted, and drawn
+ * again only if the frame changes size. Nothing moves.
  */
 export default function Pattern({
   kind,
   seed = 0,
+  tight = false,
 }: {
   kind: PatternKind;
   seed?: number;
+  /** A tighter fade for page openings, which have long headings and leads. */
+  tight?: boolean;
 }) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const frame = useRef<HTMLSpanElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
+    const el = frame.current;
+    const cv = canvas.current;
+    if (!el || !cv) return;
 
-    let raf = 0;
+    let wait = 0;
     let idle = 0;
+    let drawn = "";
+
     const draw = () => {
-      const css = canvas.getBoundingClientRect().width;
-      if (!css) return;
+      const { width, height } = el.getBoundingClientRect();
+      const W = Math.round(width);
+      const H = Math.round(height);
+      if (!W || !H || drawn === `${W}x${H}`) return;
+      drawn = `${W}x${H}`;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const px = Math.round(css * dpr);
-      if (canvas.width !== px) {
-        canvas.width = px;
-        canvas.height = px;
-      }
-      drawPattern(canvas, kind, seed);
-    };
-    const later = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        window.clearTimeout(idle);
-        idle = window.setTimeout(draw, 60);
-      });
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      const ctx = cv.getContext("2d");
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawPattern(ctx, kind, W, H, seed);
     };
 
-    later();
-    window.addEventListener("resize", later);
+    const schedule = () => {
+      window.clearTimeout(wait);
+      wait = window.setTimeout(() => {
+        if ("requestIdleCallback" in window) {
+          idle = window.requestIdleCallback(draw, { timeout: 800 });
+        } else {
+          draw();
+        }
+      }, 80);
+    };
+
+    schedule();
+    const ro = new ResizeObserver(schedule);
+    ro.observe(el);
     return () => {
-      window.removeEventListener("resize", later);
-      cancelAnimationFrame(raf);
-      window.clearTimeout(idle);
+      ro.disconnect();
+      window.clearTimeout(wait);
+      if ("cancelIdleCallback" in window) window.cancelIdleCallback(idle);
     };
   }, [kind, seed]);
 
   return (
-    <span aria-hidden="true" className="patt">
-      <canvas ref={ref} className="patt-canvas" />
+    <span
+      ref={frame}
+      aria-hidden="true"
+      className={`patt${tight ? " patt-tight" : ""}`}
+    >
+      <canvas
+        ref={canvas}
+        className="patt-canvas"
+        style={{ opacity: PATTERN_OPACITY[kind] }}
+      />
     </span>
   );
 }

@@ -223,8 +223,9 @@ body {
 
 /*
  * One generated pattern per page, drawn once on a canvas (src/lib/patterns.ts)
- * behind the page's opening. The frame is masked to nothing before it reaches
- * the text; the canvas is a square placed towards the right. Nothing moves.
+ * behind the page's opening. The frame fills its section and is masked to
+ * nothing before it reaches the text, so the pattern is strongest towards the
+ * right. Nothing moves.
  */
 .patt {
   position: absolute;
@@ -243,23 +244,30 @@ body {
     transparent 84%
   );
 }
+/* The tighter fade page openings use: gone well before the lead's right edge. */
+.patt-tight {
+  -webkit-mask-image: radial-gradient(
+    ellipse 46% 90% at 80% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 46%,
+    transparent 84%
+  );
+  mask-image: radial-gradient(
+    ellipse 46% 90% at 80% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 46%,
+    transparent 84%
+  );
+}
 .patt-canvas {
   position: absolute;
-  left: 74%;
-  top: 42%;
-  width: min(118vh, 1040px);
-  height: min(118vh, 1040px);
-  translate: -50% -50%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 @media (max-width: 767px) {
   .patt {
     opacity: 0.55;
-  }
-  .patt-canvas {
-    left: 50%;
-    top: 26%;
-    width: 150vw;
-    height: 150vw;
   }
 }
 
