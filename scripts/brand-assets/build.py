@@ -3,7 +3,7 @@
 
 The two images are drawn as small HTML pages (the *.html.tmpl files beside
 this script) and rendered by headless Chrome, so they use the same fonts and
-the same engraved plate as the site rather than a re-creation in an image
+the same sketch portrait as the site rather than a re-creation in an image
 library. To restyle them, edit the templates and run this again.
 
     npm run build                                  # the fonts come from out/
@@ -11,7 +11,13 @@ library. To restyle them, edit the templates and run this again.
 
 Writes:
     public/images/og-card.jpg    1200 x 630, the link-preview card
-    src/app/favicon.ico          16, 32, 48 and 256 px
+    src/app/favicon.ico          16, 32, 48 and 256 px, a 3D wireframe K drawn
+                                 separately for each size
+
+The card is rendered at twice its size and scaled down, so the hairline
+harmonograph and the sketch keep their detail. It uses the transparent sketch
+(`public/images/portrait-2x.webp`) over its paper halo, drawn by
+scripts/engrave.py, and the harmonograph formula from src/lib/patterns.ts.
 
 Needs Pillow (python3 -m pip install pillow) and Google Chrome. Set CHROME to
 use a different binary. Chrome is run with a throwaway profile so it never
@@ -34,7 +40,7 @@ CHROME = os.environ.get(
 
 
 def font_file(family: str, weight: str | None = None) -> Path:
-    """The latin subset of a face, as next/font shipped it into out/."""
+    """The latin subset of an upright face, as next/font shipped it into out/."""
     css = "".join(
         Path(p).read_text() for p in glob.glob(str(ROOT / "out/_next/static/chunks/*.css"))
     )
@@ -52,10 +58,19 @@ def font_file(family: str, weight: str | None = None) -> Path:
     raise SystemExit(f"No latin {family} face found in out/ — run `npm run build` first.")
 
 
-def render(template: str, size: tuple[int, int], values: dict[str, Path]) -> Image.Image:
+def render(
+    template: str,
+    size: tuple[int, int],
+    values: dict[str, "Path | str"],
+    scale: int = 1,
+) -> Image.Image:
+    """Render a template at `size` CSS pixels, `scale` times over, then scale
+    the result back down to `size` so thin lines are properly anti-aliased."""
     html = (HERE / template).read_text()
-    for key, path in values.items():
-        html = html.replace("{{" + key + "}}", path.resolve().as_uri())
+    for key, value in values.items():
+        # A Path becomes a file:// URL (fonts, images); a string goes in as is.
+        text = value.resolve().as_uri() if isinstance(value, Path) else value
+        html = html.replace("{{" + key + "}}", text)
     with tempfile.TemporaryDirectory() as tmp:
         page = Path(tmp) / "page.html"
         shot = Path(tmp) / "shot.png"
@@ -66,41 +81,62 @@ def render(template: str, size: tuple[int, int], values: dict[str, Path]) -> Ima
                 "--headless=new",
                 "--disable-gpu",
                 "--hide-scrollbars",
-                "--force-device-scale-factor=1",
+                f"--force-device-scale-factor={scale}",
                 f"--user-data-dir={tmp}/profile",
                 f"--window-size={size[0]},{size[1]}",
                 "--default-background-color=00000000",
-                "--virtual-time-budget=4000",
+                "--virtual-time-budget=6000",
                 f"--screenshot={shot}",
                 page.as_uri(),
             ],
             check=True,
             capture_output=True,
         )
-        return Image.open(shot).convert("RGBA").crop((0, 0, *size))
+        img = Image.open(shot).convert("RGBA").crop((0, 0, size[0] * scale, size[1] * scale))
+        if scale > 1:
+            img = img.resize(size, Image.LANCZOS)
+        return img
 
 
 def main() -> None:
-    archivo = font_file("Archivo")
+    newsreader = font_file("Newsreader")
     card = render(
         "card.html.tmpl",
         (1200, 630),
         {
-            "ARCHIVO": archivo,
+            "NEWSREADER": newsreader,
             "PLEX": font_file("IBM Plex Mono", "400"),
-            "NEWSREADER": font_file("Newsreader"),
-            "PLATE": ROOT / "public/images/plate-2x.png",
+            "PORTRAIT": ROOT / "public/images/portrait-2x.webp",
+            "HALO": ROOT / "public/images/portrait-halo.png",
         },
+        scale=2,
     )
     card.convert("RGB").save(
         ROOT / "public/images/og-card.jpg", quality=90, optimize=True, progressive=True
     )
 
-    icon = render("favicon.html.tmpl", (512, 512), {"ARCHIVO": archivo})
-    icon.save(
+    # The favicon is a 3D wireframe K, drawn as a CAD viewport (see the
+    # template). Detail has to follow the size: the full view with grid, axes
+    # and vertex grips at 256 px; every edge at 48; no hidden lines at 32; and
+    # at 16 px only a bold front outline with a fainter back outline, because
+    # anything more turns to mush. THEME is "dark" (yellow lines on the ink) or
+    # "light" (ink lines on the yellow).
+    theme = "dark"
+    weights = [("6", 3, [256]), ("10", 2, [48]), ("17", 1, [32]), ("34", 0, [16])]
+    frames: dict[int, Image.Image] = {}
+    for stroke, detail, sizes in weights:
+        art = render(
+            "favicon.html.tmpl",
+            (512, 512),
+            {"THEME": theme, "STROKE": stroke, "DETAIL": str(detail)},
+        )
+        for size in sizes:
+            frames[size] = art.resize((size, size), Image.LANCZOS)
+    frames[256].save(
         ROOT / "src/app/favicon.ico",
         format="ICO",
-        sizes=[(16, 16), (32, 32), (48, 48), (256, 256)],
+        sizes=[(n, n) for n in sorted(frames)],
+        append_images=[frames[n] for n in sorted(frames) if n != 256],
     )
     print("Wrote public/images/og-card.jpg and src/app/favicon.ico")
 

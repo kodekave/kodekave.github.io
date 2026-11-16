@@ -61,7 +61,9 @@ export function absoluteUrl(path = "/"): string {
  * portrait headshot gets centre-cropped to a sliver in that slot.
  */
 export const OG_IMAGE = {
-  url: "/images/og-card.jpg",
+  // The `?v=` is a cache-buster: LinkedIn, Slack and Facebook keep a share
+  // image by its URL for days, so bump it whenever the card is regenerated.
+  url: "/images/og-card.jpg?v=2",
   width: 1200,
   height: 630,
   alt: "Komal Kedarnath G — Helping Visionaries Build Ideas For The World",

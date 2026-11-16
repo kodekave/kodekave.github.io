@@ -185,8 +185,11 @@ Crop framing and the navy/khaki duotone are still controlled by the
 
 `public/images/og-card.jpg` is the 1200x630 card used for every page's
 `og:image` and Twitter card. It is a generated composite, not a photo — if
-the tagline or name changes, regenerate it. A portrait headshot must not be
-used here; `summary_large_image` centre-crops it to a sliver.
+the tagline or name changes, regenerate it: run `npm run build`, then
+`python3 scripts/brand-assets/build.py` (it also redraws `src/app/favicon.ico`),
+and bump the `?v=` on `OG_IMAGE.url` in `src/lib/site.ts` so link previews
+fetch the new card. A portrait headshot must not be used here;
+`summary_large_image` centre-crops it to a sliver.
 
 ## Wiring up real forms later
 
