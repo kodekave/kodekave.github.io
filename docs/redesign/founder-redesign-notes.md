@@ -36,7 +36,7 @@ Redesign kodekave.github.io from scratch with a less-is-more approach and the el
 
 **D. Light serif statement with one outlined arrow button** as the hero. Current copy: "Helping founders build from idea to execution." (her line from the first redesign), button "Start a conversation" with an arrow. Her new page title is "Helping Visionaries Build Ideas For The World": ask which sentence leads the hero. Do not change copy without approval.
 
-**E. Rounded portrait with a round sticker badge, but black sketch on white.** The engraved plate (`public/images/plate-2x.png`, white lines on black) must print as black lines on a pure white rounded rectangle: invert, multiply on `#fff`. A small circular sticker overlaps the corner. The badge text is NOT decided (the menu showed a sample "FOUNDER · INDIA"); ask her. The hoodie equation must stay visible (it was an earlier request).
+**E. Rounded portrait with a round sticker badge, but black sketch on white.** The engraved plate (`public/images/plate-2x.png`, white lines on black) must print as black lines on a pure white rounded rectangle: invert, multiply on `#fff`. A small circular sticker overlaps the corner. Badge text DECIDED: "Bridging founders and operations" (her words: "or something like that", so keep it that unless she changes it). About 32 characters, set once around the ring with a small centre mark. The hoodie equation must stay visible (it was an earlier request).
 
 **G. Single centred capture** for the newsletter: one serif headline ("Get the next issue." exists today), one field, one yellow Subscribe button. It replaces the heavy footer block. Keep the existing `NewsletterForm` behaviour (Substack, one-click confirm) and its reassurance line.
 
@@ -50,7 +50,7 @@ Redesign kodekave.github.io from scratch with a less-is-more approach and the el
 
 **O. One line drawing as atmosphere.** A single quiet line illustration (orbit, constellation or the hoodie equation), probably in the footer or beside the close. She asked "if possible": the orbit and constellation exist as SVG; vectorising the hoodie equation is extra work. Decide with her when we reach it.
 
-**R. Four-word identity line.** "Probably from LinkedIn first, I'll fine tune later." LinkedIn blocks automated fetching (HTTP 999), so ask her to paste her headline, or use a logged-in browser. Do not invent the words. Shape: name, then four one-word roles in a muted accent, then one sentence.
+**R. Identity line: DECIDED, three words.** "Startups-Operator. Maker. Explorer." (her words and her hyphen). She wants it founder-oriented, pointing at the founder's journey or the shared part of it, because her current work is mostly for hire but she is heading to founding. Shape: name, then the three roles in a muted accent, then one sentence (the sentence is the hero question below).
 
 **S. Editorial split layout.** For every section: a small numbered mono label in the left margin (for example "01 / Context") and the statement and text to its right. Generous empty space.
 
@@ -95,3 +95,10 @@ C plain index, F italic accent word, I numbered section labels over a rule (S co
 - R (identity words): not yet chosen. Draft options to show her, from her own phrases: "Operator. GTM. Finance. Fundraising." or "Operator. Builder. Researcher. Explorer." She decides.
 - E (badge): she suggested her own line "Helping visionaries build ideas for the world" for the badge text. If the hero also carries that line, the badge should say something else (for example "4 ventures · 4 countries · 6+ years").
 - Register "What I bring" rows: Founder's office (Ongoing), Go-to-market execution (Project), Cross-border market entry (Project), Fundraise support (Project); full text in `engagements` in `src/lib/content.ts` and on /services. Still undecided whether they stay.
+
+## Decisions from her, 2026-11-16 (supersede anything above that conflicts)
+
+- Identity line: "Startups-Operator. Maker. Explorer." Three words, founder-oriented, pointing at the founder's journey.
+- Badge text: "Bridging founders and operations".
+- Register "What I bring": keep the four rows, each with its "Project" or "Ongoing" label, and make them plain text with NO links to /services. Open: whether the "How it works" link and the footer "Work with me" link to /services stay (ask before removing).
+- Still open: which sentence leads the hero ("Helping founders build from idea to execution." or "Helping visionaries build ideas for the world"), nav LinkedIn icon, the footer drawing (O), and whether to mention the new events-ranking tool or the Osmos Robotics rename.
