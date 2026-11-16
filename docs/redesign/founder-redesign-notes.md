@@ -120,3 +120,9 @@ She accepted the pattern gallery. **Core picks: A (Schotter), E (Halftone sweep)
 4. Each page gets its own seed, so the same pattern looks different on different pages.
 
 **Proposed page mapping (mine, adjust freely):** Home A (Schotter) over J; Ventures I (Voronoi); About H (Rule 90); Writing E (Halftone sweep); Research C (potential flow, her CFD physics) or B (contours); Contact M (ripples); venture cards faint A; the round portrait badge could carry G (guilloche rosette); footer J. K (orbit field) and L (punched tape) are spare for the space-tech venture page and the Writing/blog index.
+
+## Background patterns, round two (advanced) 2026-11-16
+
+She asked whether the patterns could be more complex; I made eleven advanced samples. Working code is in `docs/redesign/reference/patterns-gallery-round2.html` (functions `P[1]` to `P[11]`; it reuses `plus`, `rule90`, `voronoi` and `iso` from round one). Numbers, not letters, to avoid clashing with the A to M of round one: 1 Chladni figure, 2 Clifford attractor, 3 Reaction-diffusion (Gray-Scott coral), 4 Ridge lines, 5 Hilbert curve, 6 Penrose tiling, 7 Circle packing, 8 Julia set contours, 9 Harmonograph, 10 Layered (Rule 90 + Voronoi + plus grid), 11 The journey as geometry (rings for 2019 to 2026, a point per stop, spiral order, dotted lines within a country).
+
+Her choice from round two is NOT yet made. Guidance if she picks: one complex pattern per page as the hero, always faded from the text; pre-render heavy ones (3, 2, 6) to a compressed image at build time (about 40 to 120 KB); keep text contrast at AA; no motion. Number 11 is the only one drawn from her own data and is the most distinctive.
