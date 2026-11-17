@@ -140,7 +140,7 @@ export default function ResearchPage() {
 
       {/* ---------------------------------------------- 02 · around the paper */}
       {related.length > 0 && (
-        <section className="border-t border-hair bg-mist">
+        <section className="border-t border-hair band">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
               <SectionLabel n="02" className="text-ink-faint">

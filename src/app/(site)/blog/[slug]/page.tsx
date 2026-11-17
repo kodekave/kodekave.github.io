@@ -164,7 +164,7 @@ export default async function BlogPostPage({
       {post.faqs.length > 0 && (
         <section
           aria-labelledby="faq-heading"
-          className="border-t border-hair bg-mist"
+          className="border-t border-hair band"
         >
           <div className="mx-auto max-w-2xl px-6 py-16">
             <Reveal>
@@ -228,7 +228,7 @@ export default async function BlogPostPage({
 
       {/* The post's own subscribe prompt. The footer's newsletter still
           closes the page below it. */}
-      <section className="border-t border-hair bg-mist">
+      <section className="border-t border-hair band">
         <div className="mx-auto max-w-2xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">

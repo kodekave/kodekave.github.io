@@ -169,6 +169,11 @@ body {
   background: transparent;
   color: var(--color-ink);
 }
+/* The soft grey panel between sections, see-through, so the plus grid and the
+   pattern trail run behind it instead of stopping at its edge. */
+.band {
+  background: color-mix(in srgb, var(--color-mist) 55%, transparent);
+}
 
 /* The opening beat: the first screen settles once, on load. */
 @keyframes settle {
@@ -258,6 +263,71 @@ body {
     rgba(0, 0, 0, 0.6) 46%,
     transparent 84%
   );
+}
+/*
+ * The trail: the page's pattern again, in the margin, as you scroll
+ * (components/PatternTrail.tsx). It fills the page's main element, which is its
+ * own stacking context, and sits at the back of it: in front of the paper,
+ * behind everything on the page. Each plate is the pattern at a fixed size,
+ * masked so it is strongest at the page edge. A left-hand plate is mirrored,
+ * so the same drawing always leans towards the edge it sits on.
+ */
+.trail {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.trail-plate {
+  position: absolute;
+  width: clamp(340px, 42vw, 720px);
+  aspect-ratio: 1 / 1.1;
+  --plate-opacity: 1;
+}
+.trail-plate-right {
+  right: -3%;
+}
+.trail-plate-left {
+  left: -3%;
+  transform: scaleX(-1);
+}
+/* `.patt.patt-plate` so it outranks the phone rule that halves a `.patt`. */
+.patt.patt-plate {
+  opacity: 0;
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 64% at 74% 46%,
+    #000 0%,
+    rgba(0, 0, 0, 0.7) 50%,
+    transparent 92%
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 64% at 74% 46%,
+    #000 0%,
+    rgba(0, 0, 0, 0.7) 50%,
+    transparent 92%
+  );
+}
+.patt.patt-plate[data-drawn="true"] {
+  opacity: var(--plate-opacity);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .patt.patt-plate {
+    transition: opacity 1s ease;
+  }
+}
+@media (max-width: 767px) {
+  .trail-plate {
+    width: 78vw;
+    --plate-opacity: 0.5;
+  }
+}
+
+/* A drawing centred on the portrait is a medallion with an edge of its own, so
+   it is not faded. */
+.patt-focus {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 .patt-canvas {
   position: absolute;

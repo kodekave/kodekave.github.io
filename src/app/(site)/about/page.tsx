@@ -63,7 +63,7 @@ export default function AboutPage() {
       />
 
       <Masthead
-        pattern="rule90"
+        pattern="guilloche"
         label="About"
         plate
         title={
@@ -101,7 +101,7 @@ export default function AboutPage() {
 
       {/* The record: roles and recognition. Each block is a ruled
           entry in one document rather than a panel of its own. */}
-      <section className="border-t border-hair bg-mist">
+      <section className="border-t border-hair band">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <Reveal>
             <div className="border-t border-hair pt-8">

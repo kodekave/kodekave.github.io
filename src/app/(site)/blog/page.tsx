@@ -145,7 +145,7 @@ export default function BlogIndexPage() {
       {/* Reference guides */}
       <section
         id="guides"
-        className="scroll-mt-20 border-t border-hair bg-mist"
+        className="scroll-mt-20 border-t border-hair band"
       >
         <div className="mx-auto max-w-4xl px-6 py-20">
           <Reveal>

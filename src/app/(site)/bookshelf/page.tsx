@@ -143,7 +143,7 @@ export default function BookshelfPage() {
         </div>
       </section>
 
-      <section className="border-t border-hair bg-mist">
+      <section className="border-t border-hair band">
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Reveal>
             <h2 className="font-display text-2xl sm:text-3xl">

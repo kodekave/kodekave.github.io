@@ -8,14 +8,19 @@
  * and nothing extra is downloaded. See components/Pattern.tsx for how they are
  * scheduled (after the page has painted, and again only if the frame resizes).
  *
- * The eleven drawings are the ones picked from the pattern galleries kept in
- * docs/redesign/reference/. The plus grid is the page's base layer (globals.css)
- * and is not drawn here.
+ * Each page's drawing is used twice: once behind its opening, and again in
+ * plates down the page's margins as you scroll (components/PatternTrail.tsx),
+ * where `focus` is "edge" and a few drawings adapt to sit at the page edge.
+ *
+ * Ten are from the pattern galleries kept in docs/redesign/reference/; guilloche
+ * was added for the About page. The plus grid is the page's base layer
+ * (globals.css) and is not drawn here.
  *
  *   harmonograph  home          the line of two damped pendulums
  *   voronoi       ventures      the boundaries between the nearest of N points
  *   chladni       research      nodal lines of a vibrating plate
- *   rule90        about         a cellular automaton growing triangles
+ *   guilloche     about         the engraved rosette on a banknote, behind the engraved portrait
+ *   rule90        (spare)       a cellular automaton growing triangles; was About's
  *   halftone      writing       dots that swell along a diagonal wave
  *   schotter      services      order dissolving row by row (Georg Nees, 1968)
  *   ridges        bookshelf     stacked, occluding terrain lines
@@ -28,6 +33,7 @@ export type PatternKind =
   | "harmonograph"
   | "voronoi"
   | "chladni"
+  | "guilloche"
   | "rule90"
   | "halftone"
   | "schotter"
@@ -35,6 +41,35 @@ export type PatternKind =
   | "julia"
   | "penrose"
   | "clifford";
+
+/**
+ * A pattern can be centred on something in the page instead of on its own
+ * frame. "portrait" is the portrait card of a page opening (Masthead with
+ * `plate`): where the card sits in that layout is worked out from the frame's
+ * width, so the drawing stays behind it at every screen size. It has to follow
+ * the layout in Masthead.tsx; if the card moves, change this too.
+ */
+export type PatternFocus = "portrait" | "edge";
+
+function focusPoint(focus: PatternFocus | undefined, W: number, H: number): [number, number] | null {
+  // "edge" is a plate in the page margin (PatternTrail), which is drawn facing
+  // the page edge on its right-hand side: centre the figure there.
+  if (focus === "edge") return [W * 0.72, H * 0.46];
+  if (focus !== "portrait") return null;
+  const rem = 16;
+  const ratio = 1161 / 900;
+  const edge = Math.min(W, 72 * rem); // the section's max-w-6xl
+  if (W >= 1024) {
+    // Two columns, the card at the bottom of the right one: pb-24, px-10.
+    const inner = edge - 80;
+    const w = Math.min(17 * rem, (inner - 64) * 0.275);
+    return [(W + edge) / 2 - 40 - w / 2, H - 96 - (w * ratio) / 2];
+  }
+  // One column, the card under the text at the left.
+  const pad = W >= 768 ? 40 : 24;
+  const w = Math.min(17 * rem, W - 2 * pad);
+  return [pad + w / 2, H - (W >= 768 ? 96 : 64) - (w * ratio) / 2];
+}
 
 /** The ink, as a CSS colour channel triple. */
 const INK = "31, 43, 39";
@@ -129,7 +164,7 @@ function iso(
 /* ------------------------------------------------------------ the patterns */
 
 /** The line a pair of damped pendulums would draw. */
-function harmonograph(ctx: Ctx, W: number, H: number, seed: number) {
+function harmonograph(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
   const r = rng(seed);
   // Seed 0 is the drawing from the redesign notes. Any other seed nudges the
   // frequencies and phases a little, which gives a different, related figure.
@@ -139,9 +174,10 @@ function harmonograph(ctx: Ctx, W: number, H: number, seed: number) {
   const d = [0.0042, 0.003, 0.003, 0.0042];
   const k = 0.62;
   const narrow = W < 768;
+  const anchor = focusPoint(focus, W, H);
   const A = Math.min(W * (narrow ? 0.62 : 0.42), H * 0.5) * 0.77;
-  const cx = W * (narrow ? 0.5 : 0.74);
-  const cy = H * (narrow ? 0.3 : 0.42);
+  const cx = anchor ? anchor[0] : W * (narrow ? 0.5 : 0.74);
+  const cy = anchor ? anchor[1] : H * (narrow ? 0.3 : 0.42);
 
   const at = (t: number): Pt => [
     cx + A * (Math.sin(f[0] * t + p[0]) * Math.exp(-d[0] * t) + k * Math.sin(f[1] * t + p[1]) * Math.exp(-d[1] * t)),
@@ -285,24 +321,81 @@ function chladni(ctx: Ctx, W: number, H: number, seed: number) {
   );
 }
 
+/**
+ * Guilloche: the engraved rosette that frames a portrait on a banknote. Dozens
+ * of closed, gently waved rings, each a little further round than the last, so
+ * where they cross they weave a lattice no single ring draws. It is the same
+ * engraver's craft as the portrait, so the two sit together.
+ */
+function guilloche(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
+  const at = focus === "portrait" ? focusPoint(focus, W, H) : null;
+  const cx = at ? at[0] : W * 0.5;
+  const cy = at ? at[1] : H * 0.5;
+  // Seed 0 is the About page's rosette; other seeds change the lobe count and
+  // how fast the weave turns, so each plate down the page is its own rosette.
+  const lobes = [14, 11, 17, 9, 13][seed % 5];
+  const turn = [0.19, 0.27, 0.15, 0.31, 0.22][seed % 5];
+  // Behind a portrait it is a medallion, close round the card; on a plate of
+  // its own it fills most of the frame.
+  const R = at ? Math.min(215, H * 0.4) : Math.min(W, H) * 0.46;
+  const rings = 54;
+  const steps = 540;
+
+  ctx.lineWidth = 0.5;
+  ctx.lineJoin = "round";
+  for (let m = 0; m < rings; m++) {
+    const t = m / (rings - 1);
+    // The rings swell and shrink about a middle radius, so the rosette has a
+    // full body with a hollow heart rather than a disc of equal lines.
+    const base = R * (0.46 + 0.5 * Math.sin(Math.PI * (0.18 + 0.64 * t)) ** 1.5);
+    const amp = R * 0.085;
+    const phase = m * turn;
+    ctx.beginPath();
+    for (let s = 0; s <= steps; s++) {
+      const a = (s / steps) * Math.PI * 2;
+      const r = base + amp * Math.sin(lobes * a + phase) + amp * 0.35 * Math.sin(2 * lobes * a - phase * 1.7);
+      const x = cx + r * Math.cos(a);
+      const y = cy + r * Math.sin(a);
+      if (s === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(${INK}, ${0.3 + 0.2 * Math.sin(Math.PI * t)})`;
+    ctx.stroke();
+  }
+}
+
 /** Clifford attractor: a strange attractor from 420,000 faint points. */
-function clifford(ctx: Ctx, W: number, H: number, seed: number) {
-  const a = -1.4 + seed * 0.04;
-  const b = 1.6;
-  const c = 1.0;
-  const d = 0.7 - seed * 0.02;
+function clifford(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
+  // On a margin plate the attractor is drawn larger, with more points to keep
+  // it as dense, so it fills the plate instead of sitting small in it. Nudging
+  // the parameters a little, as the page opening does, can land on a thin,
+  // faint attractor, so each plate takes a known good set instead.
+  const edge = focus === "edge";
+  const sets: [number, number, number, number][] = [
+    [-1.4, 1.6, 1.0, 0.7],
+    [1.6, -0.6, -1.2, 1.6],
+    [1.7, 1.7, 0.6, 1.2],
+    [1.5, -1.8, 1.6, 0.9],
+    [-1.7, 1.3, -0.1, -1.21],
+  ];
+  const [a, b, c, d] = edge
+    ? sets[seed % sets.length]
+    : [-1.4 + seed * 0.04, 1.6, 1.0, 0.7 - seed * 0.02];
   const dens = new Float32Array(W * H);
   let x = 0.1;
   let y = 0.1;
-  const sc = Math.min(W, H) / 5.2;
-  for (let i = 0; i < 420000; i++) {
+  const at = focusPoint(focus, W, H);
+  const sc = edge ? Math.max(W, H) / 4.4 : Math.min(W, H) / 5.2;
+  const cx = at ? at[0] : W * 0.66;
+  const cy = at ? at[1] : H * 0.5;
+  for (let i = 0; i < (edge ? 900000 : 420000); i++) {
     const nx = Math.sin(a * y) + c * Math.cos(a * x);
     const ny = Math.sin(b * x) + d * Math.cos(b * y);
     x = nx;
     y = ny;
     if (i < 20) continue;
-    const px = Math.floor(W * 0.66 + x * sc);
-    const py = Math.floor(H * 0.5 + y * sc);
+    const px = Math.floor(cx + x * sc);
+    const py = Math.floor(cy + y * sc);
     if (px >= 0 && px < W && py >= 0 && py < H) dens[py * W + px]++;
   }
   // putImageData ignores the canvas scale, so the density map is drawn on a
@@ -325,7 +418,7 @@ function clifford(ctx: Ctx, W: number, H: number, seed: number) {
 }
 
 /** Ridge lines: stacked terrain slices, each hiding the one behind. */
-function ridges(ctx: Ctx, W: number, H: number, seed: number) {
+function ridges(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
   const n = noiseFn(8 + seed);
   const rows = 34;
   const r = rng(13 + seed);
@@ -349,8 +442,17 @@ function ridges(ctx: Ctx, W: number, H: number, seed: number) {
     pts.forEach((p) => ctx.lineTo(p[0], p[1]));
     ctx.lineTo(W, H + 5);
     ctx.closePath();
-    ctx.fillStyle = PAPER;
+    // Each ridge hides the ones behind it. On a page opening that is a fill of
+    // paper; on a margin plate the fill erases instead, so the page's own
+    // paper, grid and panels show through the plate.
+    if (focus === "edge") {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "#000";
+    } else {
+      ctx.fillStyle = PAPER;
+    }
     ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
     ctx.beginPath();
     pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
     ctx.strokeStyle = `rgba(${INK},.62)`;
@@ -433,10 +535,14 @@ function julia(ctx: Ctx, W: number, H: number, seed: number) {
   iso(ctx, W, H, f, lv, 3, (k) => 0.18 + 0.14 * (k % 3 === 0 ? 1 : 0));
 }
 
-const DRAW: Record<PatternKind, (ctx: Ctx, W: number, H: number, seed: number) => void> = {
+const DRAW: Record<
+  PatternKind,
+  (ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) => void
+> = {
   harmonograph,
   voronoi,
   chladni,
+  guilloche,
   rule90,
   halftone,
   schotter,
@@ -454,6 +560,7 @@ export const PATTERN_OPACITY: Record<PatternKind, number> = {
   harmonograph: 1,
   voronoi: 0.6,
   chladni: 0.6,
+  guilloche: 0.5,
   rule90: 0.6,
   halftone: 0.6,
   schotter: 0.6,
@@ -464,6 +571,37 @@ export const PATTERN_OPACITY: Record<PatternKind, number> = {
 };
 
 /** Draws `kind` into a W x H (CSS pixel) area of an already-scaled context. */
-export function drawPattern(ctx: Ctx, kind: PatternKind, W: number, H: number, seed = 0) {
-  DRAW[kind](ctx, W, H, seed);
+export function drawPattern(
+  ctx: Ctx,
+  kind: PatternKind,
+  W: number,
+  H: number,
+  seed = 0,
+  focus?: PatternFocus
+) {
+  DRAW[kind](ctx, W, H, seed, focus);
+}
+
+/**
+ * Which pattern runs down each page, by the first part of its address. It is
+ * the same drawing as the page's opening (the `pattern` given to Masthead, or
+ * the harmonograph on the home page), so keep the two in step. Blog posts take
+ * the blog's.
+ */
+const PAGE_PATTERN: Record<string, PatternKind> = {
+  "": "harmonograph",
+  about: "guilloche",
+  work: "voronoi",
+  research: "chladni",
+  blog: "halftone",
+  services: "schotter",
+  bookshelf: "ridges",
+  "cross-border-operations": "julia",
+  "founders-office-guide": "penrose",
+  "fractional-coo-vs-founders-office": "clifford",
+};
+
+export function patternForPath(pathname: string | null): PatternKind | null {
+  const first = (pathname ?? "").split("/").filter(Boolean)[0] ?? "";
+  return PAGE_PATTERN[first] ?? null;
 }

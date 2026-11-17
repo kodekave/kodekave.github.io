@@ -11,7 +11,6 @@ import {
   milestones,
   profile,
   route,
-  stats,
   ventures,
 } from "@/lib/content";
 import { getPublishedPosts } from "@/lib/posts";
@@ -25,19 +24,13 @@ export const metadata = buildMetadata({
 });
 
 /**
- * The homepage, kept as plain as it can be: the opening, four doors, then four
- * quiet sections (the figures, the journey, what I bring and the writing, and
- * the way to reach me). Anything longer than a line lives on its own page.
+ * The homepage, kept as plain as it can be: the opening, four doors, then three
+ * quiet sections (the journey, what I bring and the writing, and the way to
+ * reach me). Anything longer than a line lives on its own page. The figures
+ * live on the Ventures page (/work), beside the record they come from.
  *
  * Every word on it is already somewhere on the site; nothing here is new copy.
  */
-
-/** The venture each figure comes from, for its "View source" link. */
-const sourceSlug: Record<string, string> = {
-  Uduvilla: "uduvilla-investments",
-  Neuralzome: "neuralzome-cybernetics",
-  "Genex · SpaceCat": "genex-space-spacecat",
-};
 
 /** The four doors. Lines and tags are lifted from copy that already exists. */
 const doors: {
@@ -196,59 +189,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------ 01 · figures */}
-      <section id="record" className="scroll-mt-24">
-        <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[11rem_1fr]">
-            <SectionLabel n="01" className="text-ink-faint lg:pt-1">
-              Figures
-            </SectionLabel>
-
-            <div>
-              <h2 className="sr-only">Figures</h2>
-              <p className="label text-ink-faint">
-                4 ventures · 4 countries · 6+ years
-              </p>
-
-              <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3">
-                {stats.map((s) => (
-                  <div key={s.tag} className="border-t border-hair pt-5">
-                    <dt className="sr-only">{s.label}</dt>
-                    <dd
-                      aria-hidden="true"
-                      className="font-display tabular text-[clamp(2.8rem,5.6vw,4.6rem)] leading-none"
-                    >
-                      {s.value}
-                    </dd>
-                    <dd className="mt-4 text-[0.95rem] text-ink-soft">
-                      {s.tag}
-                    </dd>
-                    <dd className="mt-2">
-                      {sourceSlug[s.source] ? (
-                        <Link
-                          href={`/work#${sourceSlug[s.source]}`}
-                          className="label link-rule text-ink-faint hover:text-ink"
-                        >
-                          View source ↗
-                          <span className="sr-only"> — {s.source}</span>
-                        </Link>
-                      ) : (
-                        <span className="label text-ink-faint">{s.source}</span>
-                      )}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------ 02 · journey */}
+      {/* ------------------------------------------------------ 01 · journey */}
       <section id="trace" className="scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
           <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[11rem_1fr]">
-            <SectionLabel n="02" className="text-ink-faint lg:pt-1">
+            <SectionLabel n="01" className="text-ink-faint lg:pt-1">
               Journey
             </SectionLabel>
             <div>
@@ -259,11 +204,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------- 03 · what I bring, and the writing */}
+      {/* ------------------------------- 02 · what I bring, and the writing */}
       <section id="writing" className="scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
           <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[11rem_1fr]">
-            <SectionLabel n="03" className="text-ink-faint lg:pt-1">
+            <SectionLabel n="02" className="text-ink-faint lg:pt-1">
               Register
             </SectionLabel>
 
@@ -337,7 +282,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ----------------------------------------------------- 04 · contact */}
+      {/* ----------------------------------------------------- 03 · contact */}
       <section id="contact" className="scroll-mt-24">
         <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 md:px-10 md:pb-32">
           <div className="callout px-6 py-16 text-center md:py-24">

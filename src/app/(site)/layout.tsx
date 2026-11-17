@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import PatternTrail from "@/components/PatternTrail";
 
 export default function SiteLayout({
   children,
@@ -9,7 +10,12 @@ export default function SiteLayout({
   return (
     <>
       <Nav />
-      <main className="flex-1">{children}</main>
+      {/* `isolate` makes main its own stacking context, so the pattern trail
+          can sit behind the page's content and in front of the page's paper. */}
+      <main className="relative isolate flex-1">
+        <PatternTrail />
+        {children}
+      </main>
       <Footer />
     </>
   );

@@ -109,7 +109,7 @@ const ART: Record<Motif, React.ReactNode> = {
       <circle className="s" cx="196" cy="120" r="4" />
       <path d="M196 120 L214 112 M214 104 V120 M214 104 H226 M214 120 H226" />
       <text x="36" y="40">₹ ⇄ $</text>
-      <text x="36" y="58">CLOSE 100%</text>
+      <text x="36" y="58">MONTHLY CLOSE</text>
     </>
   ),
   braille: (
