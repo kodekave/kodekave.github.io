@@ -37,7 +37,10 @@ export type SceneStep = {
  *      and settle into the continents, the card (places, arcs, list, details)
  *      appears on them and stays while you use it, and when you scroll on the
  *      map breaks back into the cloud and the flight carries on. While the map
- *      is up nothing of the cloud is left behind it, and the camera waits;
+ *      is up nothing of the cloud is left behind it, but the camera never
+ *      stops: it flies on under the map (slower, unseen), so the points form
+ *      the map and leave it while the curve is moving, as they do for the
+ *      equation at the end;
  *   5. at the end the cloud condenses once more, into the equation on the
  *      hoodie, which closes the loop with the opening.
  *
@@ -56,10 +59,16 @@ export type SceneStep = {
 const ZOOM = 1.1;
 const STEP = 1.1;
 /** Flight before the map, the points forming it, the hold, the points breaking up. */
-const MAP_LEAD = 0.35;
+const MAP_LEAD = 0.1;
 const MAP_FORM = 0.7;
 const MAP_HOLD = 1.1;
 const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
+/**
+ * How fast the camera flies while the map is fully up, against its speed in the
+ * open cloud (1). It never stops: it eases down to this and back up with the
+ * points, so the flight is one movement from the landing to the end.
+ */
+const MAP_PACE = 0.4;
 /** A step fades in over IN, holds, and fades out over OUT before its end. */
 const FADE_IN = 0.3;
 const FADE_OUT_AT = 0.5;
@@ -374,8 +383,29 @@ export default function JourneyScene({
     const { segs } = layout;
     const mapIdx = segs.findIndex((s) => s.map);
     const mapSeg = mapIdx >= 0 ? segs[mapIdx] : null;
-    const mapLen = mapSeg ? mapSeg.b - mapSeg.a : 0;
     const endSeg = segs[segs.length - 1];
+
+    /** How far the cloud has become the map at scroll position v (0 to 1). */
+    const mapMorphAt = (v: number) =>
+      mapSeg
+        ? Math.min(smooth01((v - mapSeg.a) / MAP_FORM), smooth01((mapSeg.b - v) / MAP_FORM))
+        : 0;
+    // How far along the curve the camera has flown at scroll position v: the
+    // scroll's own length, slowed a little (never to nothing) while the map is
+    // up. The cloud is away then, so the slowing is not seen, and the whole
+    // curve is still flown by the last step.
+    const PACE_N = 400;
+    const flownTable = new Float32Array(PACE_N + 1);
+    for (let i = 0; i < PACE_N; i++) {
+      const mid = ((i + 0.5) / PACE_N) * total;
+      flownTable[i + 1] =
+        flownTable[i] + (total / PACE_N) * (1 - (1 - MAP_PACE) * mapMorphAt(mid));
+    }
+    const flown = (v: number) => {
+      const f = clamp01(v / total) * PACE_N;
+      const i = Math.min(PACE_N - 1, Math.floor(f));
+      return flownTable[i] + (flownTable[i + 1] - flownTable[i]) * (f - i);
+    };
 
     const introEl = st.querySelector<HTMLElement>("[data-intro]");
     const fadeEls = Array.from(st.querySelectorAll<HTMLElement>("[data-intro-fade]"));
@@ -555,10 +585,11 @@ export default function JourneyScene({
       let mapMorph = 0;
       let mapUi = 0;
       if (mapSeg) {
-        mapMorph = Math.min(smooth01((v - mapSeg.a) / MAP_FORM), smooth01((mapSeg.b - v) / MAP_FORM));
+        mapMorph = mapMorphAt(v);
+        // The card comes up while the last of the points are still settling.
         mapUi =
-          smooth01((v - (mapSeg.a + MAP_FORM - 0.15)) / 0.3) *
-          smooth01((mapSeg.b - MAP_FORM + 0.15 - v) / 0.3);
+          smooth01((v - (mapSeg.a + MAP_FORM - 0.35)) / 0.4) *
+          smooth01((mapSeg.b - MAP_FORM + 0.35 - v) / 0.4);
       }
       // The equation: the cloud condenses into it as the last step arrives.
       const eqMorph = smooth01((v - (endSeg.a - 0.3)) / 0.8);
@@ -622,14 +653,14 @@ export default function JourneyScene({
         }
       }
 
-      // The cloud and its camera. The camera waits while the map is up.
+      // The cloud and its camera. The camera never stops: it flies on through
+      // the map, so the points form it, and leave it, while the curve moves.
       if (renderer && cloud) {
         const want2 = useEq ? "eq" : "map";
         if (aimed !== want2) placeTargets(want2);
 
-        const vEff = !mapSeg ? v : v >= mapSeg.b ? v - mapLen : Math.min(v, mapSeg.a);
         const start = ZOOM * 0.8;
-        const u = clamp01((vEff - start) / Math.max(0.01, total - mapLen - start));
+        const u = clamp01((flown(v) - flown(start)) / Math.max(0.01, flown(total) - flown(start)));
         const t = u * PATH_TIME;
         const idx = t / DT;
         sampleAt(cloud.eye, idx, eyeP);
