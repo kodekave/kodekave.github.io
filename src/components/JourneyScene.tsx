@@ -31,7 +31,9 @@ export type SceneStep = {
  *
  *   1. the opening zooms into the equation on the hoodie in the portrait;
  *   2. the zoom lands in a 3D cloud of points, the Lorenz attractor, and from
- *      there the scroll flies the camera along one curve through it;
+ *      there the scroll flies the camera along one curve through it (the
+ *      camera chases the scroll at a calm speed of its own, with a ceiling, so
+ *      a fast scroll does not make the curve race; see FLIGHT_MAX);
  *   3. each section fades in and out in turn over the cloud;
  *   4. one step is the journey map: the cloud's points fly across the screen
  *      and settle into the continents, the card (places, arcs, list, details)
@@ -69,6 +71,20 @@ const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
  * points, so the flight is one movement from the landing to the end.
  */
 const MAP_PACE = 0.4;
+/**
+ * How the camera flies along the curve. It does not follow the scroll one for
+ * one: it chases the scroll at a speed of its own, with a ceiling, so a quick
+ * flick of the wheel does not send the curve racing through space. The camera
+ * takes its time and arrives calmly, at one smooth speed however fast you
+ * scroll. FLIGHT_MAX is that ceiling in screens of scroll a second, GAIN how
+ * hard it chases a gap (a second order follower, so it eases in and out), and
+ * LAG how gently its speed changes. PATH_SHARE is how much of the recorded
+ * curve the whole scroll flies through (the rest is only ever cloud).
+ */
+const FLIGHT_MAX = 0.7;
+const FLIGHT_GAIN = 2;
+const FLIGHT_LAG = 0.12;
+const PATH_SHARE = 0.5;
 /** A step fades in over IN, holds, and fades out over OUT before its end. */
 const FADE_IN = 0.3;
 const FADE_OUT_AT = 0.5;
@@ -549,6 +565,10 @@ export default function JourneyScene({
     // --- scroll -> state --------------------------------------------------
     let want = 0;
     let cur = 0;
+    /** Where the camera is on the scroll's scale, and how fast it is going. */
+    let flight = 0;
+    let flightVel = 0;
+    let lastT = 0;
     let raf = 0;
     const stepOn = stepEls.map(() => true);
     let introOn = true;
@@ -560,7 +580,8 @@ export default function JourneyScene({
       el.style.pointerEvents = on ? "auto" : "none";
     };
 
-    const apply = (v: number) => {
+    /** `v` is the scroll's position, `f` where the camera has got to (see FLIGHT_MAX). */
+    const apply = (v: number, f: number) => {
       const z = clamp01(v / ZOOM);
 
       // The opening.
@@ -660,8 +681,8 @@ export default function JourneyScene({
         if (aimed !== want2) placeTargets(want2);
 
         const start = ZOOM * 0.8;
-        const u = clamp01((flown(v) - flown(start)) / Math.max(0.01, flown(total) - flown(start)));
-        const t = u * PATH_TIME;
+        const u = clamp01((flown(f) - flown(start)) / Math.max(0.01, flown(total) - flown(start)));
+        const t = u * PATH_TIME * PATH_SHARE;
         const idx = t / DT;
         sampleAt(cloud.eye, idx, eyeP);
         sampleAt(cloud.look, idx, lookP);
@@ -704,13 +725,33 @@ export default function JourneyScene({
       return r.bottom > -vh * 0.5 && r.top < vh * 1.5;
     };
 
-    function frame() {
+    function frame(now?: number) {
       raf = 0;
       want = read();
       cur += (want - cur) * 0.2;
       if (Math.abs(want - cur) < 0.0008) cur = want;
-      if (visible()) apply(cur);
-      if (cur !== want) raf = requestAnimationFrame(frame);
+
+      // The camera chases the scroll at a speed of its own: its speed follows the
+      // gap (capped), and eases towards that, so it starts and stops softly.
+      const t = now ?? performance.now();
+      const dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 1 / 60;
+      lastT = t;
+      if (visible()) {
+        const aim = Math.max(-FLIGHT_MAX, Math.min(FLIGHT_MAX, (cur - flight) * FLIGHT_GAIN));
+        flightVel += (aim - flightVel) * (1 - Math.exp(-dt / FLIGHT_LAG));
+        flight += flightVel * dt;
+        if (Math.abs(cur - flight) < 0.002 && Math.abs(flightVel) < 0.01) {
+          flight = cur;
+          flightVel = 0;
+        }
+        apply(cur, flight);
+      } else {
+        // Off screen there is nothing to fly through: stay with the scroll.
+        flight = cur;
+        flightVel = 0;
+      }
+      if (cur !== want || flight !== cur) raf = requestAnimationFrame(frame);
+      else lastT = 0;
     }
     const kick = () => {
       if (!raf) raf = requestAnimationFrame(frame);
@@ -759,15 +800,16 @@ export default function JourneyScene({
 
     // --- start ------------------------------------------------------------
     measure();
-    cur = want = read();
-    apply(cur);
+    cur = want = flight = read();
+    apply(cur, flight);
 
     const onResize = () => {
       measure();
       renderer?.resize(st.clientWidth, st.clientHeight);
       if (aimed) placeTargets(aimed);
-      cur = want = read();
-      apply(cur);
+      cur = want = flight = read();
+      flightVel = 0;
+      apply(cur, flight);
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(st);
@@ -775,7 +817,7 @@ export default function JourneyScene({
     const mapRo = mapStageEl
       ? new ResizeObserver(() => {
           if (aimed === "map") placeTargets("map");
-          apply(cur);
+          apply(cur, flight);
         })
       : null;
     if (mapStageEl) mapRo?.observe(mapStageEl);
