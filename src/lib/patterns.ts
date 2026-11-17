@@ -66,12 +66,12 @@ function focusPoint(focus: PatternFocus | undefined, W: number, H: number): [num
   if (W >= 1024) {
     // Two columns, the card at the bottom of the right one: pb-24, px-10.
     const inner = edge - 80;
-    const w = Math.min(17 * rem, (inner - 64) * 0.275);
+    const w = Math.min(21 * rem, (inner - 32) * 0.325);
     return [(W + edge) / 2 - 40 - w / 2, H - 96 - (w * ratio) / 2];
   }
   // One column, the card under the text at the left.
   const pad = W >= 768 ? 40 : 24;
-  const w = Math.min(17 * rem, W - 2 * pad);
+  const w = Math.min(19 * rem, W - 2 * pad);
   return [pad + w / 2, H - (W >= 768 ? 96 : 64) - (w * ratio) / 2];
 }
 

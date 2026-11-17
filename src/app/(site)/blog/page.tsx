@@ -151,36 +151,43 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
-      {/* Reference guides */}
-      <section
-        id="guides"
-        className="scroll-mt-20 border-t border-hair band"
-      >
-        <div className="mx-auto max-w-4xl px-6 py-20">
+      {/* Reference guides: one large folder, the long maintained ones filed
+          together. The tab carries the section's name, two sheets show behind
+          the front, and the guides are listed on it like the contents of a
+          drawer. Each row is a plain link to its guide. */}
+      <section id="guides" className="on-paper scroll-mt-20">
+        <div className="mx-auto max-w-6xl px-6 pb-24 md:px-10 md:pb-32">
           <Reveal>
-            <p className="label text-ink-faint">Reference guides</p>
-            <h2 className="font-display mt-5 text-[clamp(1.6rem,3.2vw,2.2rem)] leading-tight">
-              Longer, maintained explainers rather than dated essays.
-            </h2>
-          </Reveal>
-          <Reveal delay={60}>
-            <ul className="mt-12">
-              {guides.map((guide) => (
-                <li key={guide.href}>
-                  <Link
-                    href={guide.href}
-                    className="group block border-t border-hair py-8"
-                  >
-                    <h3 className="font-display-text text-xl leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
-                      {guide.title}
-                    </h3>
-                    <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">
-                      {guide.blurb}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="binder">
+              <span aria-hidden="true" className="binder-sheet binder-sheet-2" />
+              <span aria-hidden="true" className="binder-sheet binder-sheet-1" />
+              <p className="binder-tab label text-ink-faint">Reference guides</p>
+              <div className="binder-front">
+                <h2 className="font-display text-[clamp(1.6rem,3.2vw,2.2rem)] leading-tight">
+                  Longer, maintained explainers rather than dated essays.
+                </h2>
+                <ul className="binder-list">
+                  {guides.map((guide, i) => (
+                    <li key={guide.href}>
+                      <Link href={guide.href} className="binder-row group">
+                        <span className="label tabular text-brass-deep">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div>
+                          <h3 className="font-display-text text-xl leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                            {guide.title}
+                          </h3>
+                          <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">
+                            {guide.blurb}
+                          </p>
+                        </div>
+                        <Arrow className="door-arrow shrink-0 text-ink-faint" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
