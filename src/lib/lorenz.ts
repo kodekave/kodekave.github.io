@@ -33,6 +33,21 @@ const PAD_TIME = 3;
 const TOTAL_TIME = PATH_TIME + PAD_TIME;
 export const DT = 0.004;
 
+/** The yellow head is drawn this many seconds of path ahead of the camera's own time. */
+export const HEAD_LEAD = 0.9;
+/**
+ * The camera: it aims at the path smoothed over +-FOCUS_TIME seconds (long
+ * enough to average out a loop round a wing), CAMERA_DIST scene units back
+ * along a view direction that starts at BEARING_START degrees round the
+ * attractor, turns BEARING_TURN degrees per second of path, and looks down
+ * CAMERA_TILT radians. The page pulls it a little further back on arrival.
+ */
+const FOCUS_TIME = 0.9;
+const CAMERA_DIST = 2.2;
+const BEARING_START = 85;
+const BEARING_TURN = 12;
+const CAMERA_TILT = 0.3;
+
 /** Floats per vertex: x y z, along (0..1 of the path) or a random, kind. */
 export const FLOATS = 5;
 
@@ -49,6 +64,8 @@ export type Cloud = {
   used: number;
   /** How many of the vertices are dust (they come first); the rest are the path. */
   dust: number;
+  /** Distance along the path to each sample, from the first one. */
+  arc: Float32Array;
 };
 
 function mulberry32(seed: number) {
@@ -130,18 +147,29 @@ export function buildCloud(density = 1): Cloud {
     path[i * 3 + 2] = (s[2] - Z_CENTRE) * SCALE;
   }
 
-  // The camera rides a lightly smoothed copy of the path (so it sweeps round
-  // each wing without the tight corkscrew) and looks at a more smoothed copy,
-  // a little further on.
-  const eye = smooth(path, Math.round(0.55 / DT));
-  const lookRaw = smooth(path, Math.round(1.5 / DT));
-  const lead = Math.round(1.1 / DT);
+  // The camera does not ride the curve: a point loops round a wing every
+  // second or so, and a camera that rode with it whipped round at hundreds of
+  // degrees a second and lost the point. It aims at a smoothed copy of where the
+  // point is (so it glides from wing to wing and the point is seen looping
+  // round it), and sits a fixed distance back along a bearing that turns slowly,
+  // so the view moves in three dimensions without ever swinging.
+  const focus = smooth(path, Math.round(FOCUS_TIME / DT));
+  const lead = Math.round(HEAD_LEAD / DT);
+  const eye = new Float32Array(samples * 3);
   const look = new Float32Array(samples * 3);
+  const cosEl = Math.cos(CAMERA_TILT);
+  const sinEl = Math.sin(CAMERA_TILT);
   for (let i = 0; i < samples; i++) {
     const j = Math.min(samples - 1, i + lead);
-    look[i * 3] = lookRaw[j * 3];
-    look[i * 3 + 1] = lookRaw[j * 3 + 1];
-    look[i * 3 + 2] = lookRaw[j * 3 + 2];
+    const bearing = ((BEARING_START + BEARING_TURN * i * DT) * Math.PI) / 180;
+    // The view direction: along the bearing, tilted down a little.
+    const dx = cosEl * Math.cos(bearing);
+    const dy = cosEl * Math.sin(bearing);
+    const dz = -sinEl;
+    for (let c = 0; c < 3; c++) look[i * 3 + c] = focus[j * 3 + c];
+    eye[i * 3] = look[i * 3] - dx * CAMERA_DIST;
+    eye[i * 3 + 1] = look[i * 3 + 1] - dy * CAMERA_DIST;
+    eye[i * 3 + 2] = look[i * 3 + 2] - dz * CAMERA_DIST;
   }
 
   // Dust: trajectories from scattered starts.
@@ -178,7 +206,39 @@ export function buildCloud(density = 1): Cloud {
     vertices[v++] = 1;
   }
 
-  return { vertices, count, eye, look, path, samples, used, dust: trajectories * perTrajectory };
+  // How far along the path each sample is. A point on the attractor speeds up
+  // and slows down by a factor of five as it loops, so to move it at one even
+  // speed the page asks for a distance along the path, not a time.
+  const arc = new Float32Array(samples);
+  for (let i = 1; i < samples; i++) {
+    arc[i] =
+      arc[i - 1] +
+      Math.hypot(
+        path[i * 3] - path[(i - 1) * 3],
+        path[i * 3 + 1] - path[(i - 1) * 3 + 1],
+        path[i * 3 + 2] - path[(i - 1) * 3 + 2]
+      );
+  }
+
+  return { vertices, count, eye, look, path, samples, used, dust: trajectories * perTrajectory, arc };
+}
+
+/**
+ * The (fractional) sample index `share` of the way along the journey's path,
+ * measured by distance, so the point travels at one even speed: 0 is the start
+ * and 1 the end of the part the camera flies.
+ */
+export function indexAtShare(cloud: Cloud, share: number): number {
+  const target = Math.min(1, Math.max(0, share)) * cloud.arc[cloud.used - 1];
+  let lo = 0;
+  let hi = cloud.used - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (cloud.arc[mid] < target) lo = mid;
+    else hi = mid;
+  }
+  const span = cloud.arc[hi] - cloud.arc[lo];
+  return lo + (span > 0 ? (target - cloud.arc[lo]) / span : 0);
 }
 
 /**
