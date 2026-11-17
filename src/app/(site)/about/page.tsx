@@ -63,7 +63,7 @@ export default function AboutPage() {
       />
 
       <Masthead
-        pattern="guilloche"
+        pattern="harmonograph"
         label="About"
         plate
         title={

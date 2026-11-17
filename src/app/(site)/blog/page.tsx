@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPublishedPosts } from "@/lib/posts";
+import Arrow from "@/components/Arrow";
 import Masthead from "@/components/Masthead";
 import NewsletterForm from "@/components/NewsletterForm";
 import Reveal from "@/components/Reveal";
@@ -92,10 +93,11 @@ export default function BlogIndexPage() {
         </p>
       </Masthead>
 
-      {/* The index. A ruled list, with the date in the left column so the
-          run of posts reads chronologically at a glance. */}
+      {/* The index: a shelf of paper folders, one per post, newest first. The
+          tab carries the number and the date; the sheet inside rises when you
+          point at one. Each is a plain link to the post. */}
       <section className="on-paper">
-        <div className="mx-auto max-w-4xl px-6 py-20">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
           {posts.length === 0 ? (
             <div className="border border-dashed border-hair p-10">
               <p className="text-lg text-ink-soft">
@@ -107,32 +109,39 @@ export default function BlogIndexPage() {
               </div>
             </div>
           ) : (
-            <ul>
+            <ul className="folders grid gap-x-8 gap-y-11 sm:grid-cols-2">
               {posts.map((post, i) => (
                 <Reveal as="li" key={post.slug} delay={i * 60}>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="group grid gap-x-10 gap-y-2 border-t border-hair py-9 sm:grid-cols-[9rem_1fr]"
-                  >
-                    <time
-                      dateTime={post.published_at ?? post.created_at}
-                      className="label text-ink-faint sm:pt-2"
-                    >
-                      {new Date(
-                        post.published_at ?? post.created_at
-                      ).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </time>
-                    <div>
-                      <h2 className="font-display text-[clamp(1.5rem,3vw,2.1rem)] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[6px]">
+                  <Link href={`/blog/${post.slug}`} className="folder group">
+                    <span aria-hidden="true" className="folder-sheet" />
+                    <span className="folder-tab label tabular">
+                      <span className="text-brass-deep">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <time
+                        dateTime={post.published_at ?? post.created_at}
+                        className="text-ink-faint"
+                      >
+                        {new Date(
+                          post.published_at ?? post.created_at
+                        ).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </time>
+                    </span>
+                    <div className="folder-front">
+                      <h2 className="font-display text-[clamp(1.4rem,2.5vw,1.8rem)] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[6px]">
                         {post.title}
                       </h2>
-                      <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+                      <p className="mt-3 line-clamp-3 leading-relaxed text-ink-soft">
                         {post.excerpt}
                       </p>
+                      <span className="label mt-auto flex items-center justify-between gap-4 pt-6 text-ink-faint">
+                        <span>{post.reading_minutes} min read</span>
+                        <Arrow className="door-arrow shrink-0" />
+                      </span>
                     </div>
                   </Link>
                 </Reveal>

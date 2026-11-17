@@ -16,10 +16,12 @@
  * was added for the About page. The plus grid is the page's base layer
  * (globals.css) and is not drawn here.
  *
- *   harmonograph  home          the line of two damped pendulums
+ *   lorenz        home          the butterfly of the Lorenz attractor, in thin strands
+ *   harmonograph  about         the line of two damped pendulums (was the home page's)
+ *   contours      research      isolines of a hilly field, a stronger line every fifth: a topographic map
  *   voronoi       ventures      the boundaries between the nearest of N points
- *   chladni       research      nodal lines of a vibrating plate
- *   guilloche     about         the engraved rosette on a banknote, behind the engraved portrait
+ *   chladni       (spare)       nodal lines of a vibrating plate; was Research's
+ *   guilloche     (spare)       the engraved rosette on a banknote, was About's for a day
  *   rule90        (spare)       a cellular automaton growing triangles; was About's
  *   halftone      writing       dots that swell along a diagonal wave
  *   schotter      services      order dissolving row by row (Georg Nees, 1968)
@@ -30,6 +32,8 @@
  */
 
 export type PatternKind =
+  | "lorenz"
+  | "contours"
   | "harmonograph"
   | "voronoi"
   | "chladni"
@@ -198,6 +202,77 @@ function harmonograph(ctx: Ctx, W: number, H: number, seed: number, focus?: Patt
     px = x;
     py = y;
   }
+}
+
+/**
+ * The Lorenz attractor from a slant: the butterfly, as a few strands of thin
+ * line. Each strand is a separate trajectory from its own start, so together
+ * they fill out the two wings. It is the same system the homepage's scroll
+ * journey flies through (lib/lorenz.ts), here as a flat drawing.
+ */
+function lorenz(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
+  const r = rng(seed + 41);
+  const narrow = W < 768;
+  const anchor = focusPoint(focus, W, H);
+  const cx = anchor ? anchor[0] : W * (narrow ? 0.5 : 0.72);
+  const cy = anchor ? anchor[1] : H * (narrow ? 0.3 : 0.46);
+  // Seen from a slant the attractor is about 54 wide and 52 tall.
+  const s = Math.min(
+    (W * (narrow ? 0.95 : 0.5)) / 54,
+    (H * (anchor ? 0.9 : narrow ? 0.5 : 0.92)) / 52
+  );
+  const yaw = 0.45 + (r() - 0.5) * 0.5;
+  const cos = Math.cos(yaw);
+  const sin = Math.sin(yaw);
+
+  // One classical RK4 step of dx = 10(y-x), dy = x(28-z)-y, dz = xy-(8/3)z.
+  const rk = (p: number[], h: number) => {
+    const d = (x: number, y: number, z: number) => [10 * (y - x), x * (28 - z) - y, x * y - (8 / 3) * z];
+    const a = d(p[0], p[1], p[2]);
+    const b = d(p[0] + 0.5 * h * a[0], p[1] + 0.5 * h * a[1], p[2] + 0.5 * h * a[2]);
+    const c = d(p[0] + 0.5 * h * b[0], p[1] + 0.5 * h * b[1], p[2] + 0.5 * h * b[2]);
+    const e = d(p[0] + h * c[0], p[1] + h * c[1], p[2] + h * c[2]);
+    for (let i = 0; i < 3; i++) p[i] += (h / 6) * (a[i] + 2 * b[i] + 2 * c[i] + e[i]);
+  };
+  const at = (p: number[]): Pt => [cx + s * (p[0] * cos + p[1] * sin), cy - s * (p[2] - 24)];
+
+  ctx.lineWidth = 0.55;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = `rgba(${INK}, 0.3)`;
+  const strands = 5;
+  const h = 0.006;
+  const chunk = 24;
+  for (let k = 0; k < strands; k++) {
+    const p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
+    for (let i = 0; i < 900; i++) rk(p, h);
+    let [px, py] = at(p);
+    for (let i = 0; i < 5000; i += chunk) {
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      for (let j = 0; j < chunk; j++) {
+        rk(p, h);
+        [px, py] = at(p);
+        ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+  }
+}
+
+/**
+ * Contours: the isolines of a smooth, hilly field, with a stronger line every
+ * fifth level, like a topographic map. Measured and calm. (Pattern B of the
+ * first gallery.)
+ */
+function contours(ctx: Ctx, W: number, H: number, seed: number) {
+  const n = noiseFn(11 + seed);
+  const fbm = (x: number, y: number) => n(x, y) * 0.55 + n(x * 2, y * 2) * 0.28 + n(x * 4, y * 4) * 0.17;
+  const levels: number[] = [];
+  for (let l = 0.2; l < 0.85; l += 0.035) levels.push(l);
+  ctx.lineWidth = 0.8;
+  const cell = W * H > 700000 ? 6 : 5;
+  iso(ctx, W, H, (x, y) => fbm(x / 150 + 3, y / 150 + 1), levels, cell, (k) => (k % 5 === 0 ? 0.8 : 0.42));
 }
 
 /** Order dissolving row by row: Georg Nees's Schotter. */
@@ -539,6 +614,8 @@ const DRAW: Record<
   PatternKind,
   (ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) => void
 > = {
+  lorenz,
+  contours,
   harmonograph,
   voronoi,
   chladni,
@@ -557,6 +634,8 @@ const DRAW: Record<
  * the rest are drawn at the gallery's strength and shown at 60% of it.
  */
 export const PATTERN_OPACITY: Record<PatternKind, number> = {
+  lorenz: 1,
+  contours: 0.75,
   harmonograph: 1,
   voronoi: 0.6,
   chladni: 0.6,
@@ -585,14 +664,14 @@ export function drawPattern(
 /**
  * Which pattern runs down each page, by the first part of its address. It is
  * the same drawing as the page's opening (the `pattern` given to Masthead, or
- * the harmonograph on the home page), so keep the two in step. Blog posts take
+ * the Lorenz butterfly on the home page), so keep the two in step. Blog posts take
  * the blog's.
  */
 const PAGE_PATTERN: Record<string, PatternKind> = {
-  "": "harmonograph",
-  about: "guilloche",
+  "": "lorenz",
+  about: "harmonograph",
   work: "voronoi",
-  research: "chladni",
+  research: "contours",
   blog: "halftone",
   services: "schotter",
   bookshelf: "ridges",

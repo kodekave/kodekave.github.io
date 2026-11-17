@@ -186,10 +186,469 @@ body {
     transform: none;
   }
 }
+@keyframes settle-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   .settle {
     animation: settle 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
+  .settle-fade {
+    animation: settle-fade 0.8s ease backwards;
+  }
+}
+
+/* ------------------------------------------------------- the journey scene */
+
+/*
+ * The homepage's one-page journey (components/JourneyScene.tsx).
+ *
+ * By default, and for anyone without script or with reduced motion, this is an
+ * ordinary page: the opening fills the first screen and the sections follow, one
+ * under the next. Once the script starts it sets data-scene="live" and the
+ * stage is pinned: the track is tall, the stage sticks to the screen, and the
+ * sections are laid over the canvas one at a time, faded by the scroll. The
+ * opening has the same box either way, so nothing above the fold moves when
+ * that happens.
+ */
+.journey {
+  position: relative;
+}
+.journey-canvas,
+.journey-cue {
+  display: none;
+}
+.journey-intro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+}
+.journey-step {
+  scroll-margin-top: 6rem;
+}
+
+/*
+ * The opening's content. The stage sits below the sticky header when the page
+ * is at rest, so the foot has to leave room for it. On a phone the portrait
+ * takes whatever height the words leave, so it is never cut off; on a wide
+ * screen it sits beside them.
+ */
+.intro-grid {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  gap: 1.25rem;
+  padding: 1rem 1.5rem 5.5rem;
+}
+.intro-portrait {
+  flex: 1 1 0;
+  min-height: 9rem;
+  aspect-ratio: 900 / 1161;
+  max-width: 100%;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .intro-grid {
+    padding-inline: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    flex: 0 1 auto;
+    gap: 3.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 5.75rem;
+  }
+  .intro-portrait {
+    flex: none;
+    min-height: 0;
+    width: min(27rem, calc((100svh - 10rem) * 0.775));
+    margin-inline: 0;
+    justify-self: end;
+  }
+}
+
+/* A step with a label: the label in the left margin, as the sections were. */
+.step-body.has-label {
+  display: grid;
+  gap: 2.5rem 3rem;
+}
+@media (min-width: 1024px) {
+  .step-body.has-label {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+}
+
+/* --- live: pinned ---------------------------------------------------------- */
+
+.journey[data-scene="live"] {
+  height: calc(var(--k) * 100svh);
+}
+.journey[data-scene="live"] .journey-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.journey[data-scene="live"] .journey-canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.journey[data-scene="live"] .journey-intro {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+.journey[data-scene="live"] [data-zoom] {
+  will-change: transform, opacity;
+}
+.journey[data-scene="live"] .journey-cue {
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  width: 1px;
+  height: 2.6rem;
+  background: linear-gradient(to bottom, var(--color-ink-faint), transparent);
+}
+
+/* Each step is laid over the cloud, on the left, as a soft panel. */
+.journey[data-scene="live"] .journey-step {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 4.75rem 0 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.journey[data-scene="live"] .step-wrap {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.journey[data-scene="live"] .step-body {
+  display: block;
+  width: min(40rem, 100%);
+  max-height: calc(100svh - 6.5rem);
+  overflow: hidden;
+  padding: 1.6rem 1.75rem;
+  border: 1px solid var(--color-hair);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-paper) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.journey[data-scene="live"] .step-body.is-bare {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.journey[data-scene="live"] .step-body.has-label .step-main {
+  margin-top: 1.1rem;
+}
+
+/* The four doors, two by two, without the tall cards. */
+.journey[data-scene="live"] .doors {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.journey[data-scene="live"] .door {
+  min-height: 0;
+  padding: 1rem 1.1rem;
+}
+.journey[data-scene="live"] .door .door-art {
+  width: 3.4rem;
+}
+.journey[data-scene="live"] .door h3 {
+  margin-top: 1.1rem;
+  font-size: 1.6rem;
+}
+.journey[data-scene="live"] .door > div:last-child {
+  padding-top: 0.9rem;
+}
+.journey[data-scene="live"] .callout {
+  padding-block: 2.6rem;
+}
+
+/*
+ * The journey map inside the scene. The card is full width, with no panel of its
+ * own. From a tablet up its own canvas is hidden and its background is clear:
+ * the scene's point cloud flies into the dots of the map and sits there, so the
+ * card is only furniture (the graticule, arcs, places, list and details) laid
+ * over them. Its height is fixed so the map never shifts under the points. On a
+ * phone the card keeps its own canvas and panel and the cloud simply fades.
+ */
+.journey[data-scene="live"] .step-body.is-wide {
+  width: 100%;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (min-width: 768px) {
+  .journey[data-scene="live"] .journey-step[data-map] {
+    align-items: center;
+    padding: 4.5rem 0 1.25rem;
+  }
+  .journey[data-scene="live"] .jmap-canvas {
+    display: none;
+  }
+  .journey[data-scene="live"] .jmap {
+    background: none;
+  }
+  /* The map takes the height that is left once the bar, the padding and the
+     details are in, so the whole card always fits the screen. */
+  .journey[data-scene="live"] .jmap-stage {
+    width: min(
+      100%,
+      calc((100svh - 11.7rem - clamp(10.5rem, 28svh, 15.5rem)) * 2.375)
+    );
+    margin-inline: auto;
+  }
+  .journey[data-scene="live"] .jmap-detail {
+    height: clamp(10.5rem, 28svh, 15.5rem);
+    min-height: 0;
+    overflow-y: auto;
+    background: color-mix(in srgb, var(--color-paper) 72%, transparent);
+  }
+  .journey[data-scene="live"] .jstop {
+    padding: 0.7rem 0;
+  }
+  .journey[data-scene="live"] .jstop h3 {
+    font-size: 1.12rem;
+  }
+  .journey[data-scene="live"] .jstop p:not(.label) {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .journey[data-scene="live"] .jstop a {
+    margin-top: 0.3rem;
+  }
+}
+
+/* A laptop or larger: the cards are a little bigger, with larger type. */
+@media (min-width: 1024px) {
+  .journey[data-scene="live"] .step-body {
+    width: min(47rem, 100%);
+    padding: 2.1rem 2.4rem;
+  }
+  .journey[data-scene="live"] .step-body.has-label .step-main {
+    margin-top: 1.4rem;
+  }
+  .journey[data-scene="live"] .step-title {
+    font-size: 2.6rem;
+  }
+  .journey[data-scene="live"] .reg-list li {
+    padding-block: 1.2rem;
+  }
+  .journey[data-scene="live"] .reg-name {
+    font-size: 1.5rem;
+  }
+  .journey[data-scene="live"] .post-title {
+    font-size: 1.22rem;
+  }
+  .journey[data-scene="live"] .doors {
+    gap: 1rem;
+  }
+  .journey[data-scene="live"] .door {
+    min-height: 11rem;
+    padding: 1.3rem 1.45rem;
+  }
+  .journey[data-scene="live"] .door .door-art {
+    width: 4.1rem;
+  }
+  .journey[data-scene="live"] .door h3 {
+    margin-top: 1.5rem;
+    font-size: 2rem;
+  }
+  .journey[data-scene="live"] .door p {
+    font-size: 1rem;
+  }
+  .journey[data-scene="live"] .callout {
+    padding-block: 3.2rem;
+  }
+}
+
+/* A screen that is not tall: tighten, and drop the secondary lines. */
+@media (max-height: 780px) {
+  .journey[data-scene="live"] .step-body {
+    width: min(42rem, 100%);
+  }
+  .journey[data-scene="live"] .step-title {
+    font-size: 2.1rem;
+  }
+  .journey[data-scene="live"] .reg-list li {
+    padding-block: 0.9rem;
+  }
+  .journey[data-scene="live"] .reg-name {
+    font-size: 1.3rem;
+  }
+  .journey[data-scene="live"] .door {
+    min-height: 0;
+    padding: 1rem 1.1rem;
+  }
+  .journey[data-scene="live"] .door h3 {
+    margin-top: 1.1rem;
+    font-size: 1.6rem;
+  }
+  .journey[data-scene="live"] .door .door-art {
+    width: 3.4rem;
+  }
+  .journey[data-scene="live"] .callout {
+    padding-block: 2.6rem;
+  }
+  .journey[data-scene="live"] .step-body {
+    padding: 1.1rem 1.5rem;
+  }
+  .journey[data-scene="live"] .step-body.has-label .step-main {
+    margin-top: 0.6rem;
+  }
+  .journey[data-scene="live"] .door ul.label {
+    display: none;
+  }
+}
+
+/* Below a laptop: the step is a panel at the foot of the screen, the cloud above. */
+@media (max-width: 1023px) {
+  .journey[data-scene="live"] .journey-step {
+    align-items: flex-end;
+    padding-top: 0;
+    padding-bottom: 0.9rem;
+  }
+  .journey[data-scene="live"] .step-body {
+    width: 100%;
+    max-height: 70svh;
+  }
+}
+
+/* A phone: closer rows, shorter lines, a single column of doors. */
+@media (max-width: 767px) {
+  .journey[data-scene="live"] .step-body {
+    max-height: 72svh;
+    padding: 1rem 1.1rem;
+  }
+  .journey[data-scene="live"] .step-body.has-label .step-main {
+    margin-top: 0.7rem;
+  }
+  .journey[data-scene="live"] .door ul.label,
+  .journey[data-scene="live"] .door .door-art {
+    display: none;
+  }
+  .journey[data-scene="live"] .doors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .journey[data-scene="live"] .door {
+    padding: 0.7rem 0.95rem;
+  }
+  .journey[data-scene="live"] .door h3 {
+    margin-top: 0.15rem;
+    font-size: 1.35rem;
+  }
+  .journey[data-scene="live"] .door p {
+    margin-top: 0.2rem;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+  .journey[data-scene="live"] .door > div:last-child {
+    display: none;
+  }
+  .journey[data-scene="live"] .callout {
+    padding-block: 1.8rem;
+  }
+
+  /* The journey map card, closed up to fit a phone: the places as a 2 x 2
+     grid, the details as a short list, centred on the screen. */
+  .journey[data-scene="live"] .journey-step[data-map] {
+    align-items: center;
+    padding-bottom: 0;
+  }
+  .journey[data-scene="live"] .jmap-bar {
+    padding: 0.6rem 1rem;
+  }
+  .journey[data-scene="live"] .jmap-top {
+    gap: 0.7rem;
+    padding: 0.7rem 1rem 0.9rem;
+  }
+  .journey[data-scene="live"] .jmap-stage {
+    width: 28rem;
+  }
+  .journey[data-scene="live"] .jplaces {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.75rem;
+  }
+  .journey[data-scene="live"] .jplaces li:last-child .jplace {
+    border-bottom: 0;
+  }
+  .journey[data-scene="live"] .jplace {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0.5rem 0.55rem;
+  }
+  .journey[data-scene="live"] .jplace > :first-child {
+    display: none;
+  }
+  .journey[data-scene="live"] .jplace-name {
+    font-size: 1.05rem;
+  }
+  .journey[data-scene="live"] .jmap-detail {
+    height: auto;
+    min-height: 0;
+    padding: 0.6rem 1rem 0.8rem;
+  }
+  .journey[data-scene="live"] .jmap-place,
+  .journey[data-scene="live"] .jstop a {
+    display: none;
+  }
+  .journey[data-scene="live"] .jstop {
+    grid-template-columns: 2.7rem minmax(0, 1fr);
+    gap: 0.6rem;
+    padding: 0.45rem 0;
+  }
+  .journey[data-scene="live"] .jstop h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+  .journey[data-scene="live"] .jstop p:not(.label) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    margin-top: 0.1rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+}
+
+/* The page-wide pattern plates give way to the cloud while it is running. */
+html:has(.journey[data-scene="live"]) .trail {
+  display: none;
 }
 
 /* ----------------------------------------------------------------- plates */
@@ -216,12 +675,25 @@ body {
   width: 100%;
   height: 100%;
 }
+.badge {
+  transform: rotate(-6deg);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.badge:hover,
+.badge:focus-visible {
+  transform: rotate(2deg) scale(1.06);
+}
 .badge text {
   fill: var(--color-ink);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--font-display), Georgia, serif;
+}
+.badge .badge-in {
+  fill: var(--color-brass);
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------- the pattern */
@@ -611,6 +1083,537 @@ h3 {
 }
 
 
+/* ----------------------------------------------------- the journey map */
+
+/*
+ * The /journey page: one card holding a dot-matrix world map, the places worked
+ * joined by dotted arcs, a list of the places beside it and the details of
+ * whichever is pointed at along the foot. Bracket corners and the mono readout
+ * are the instrument-panel touch; everything else is ink, paper and one yellow.
+ */
+.jmap {
+  position: relative;
+  border: 1px solid var(--color-hair);
+  border-radius: 14px;
+  background-color: var(--color-mist);
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-ink) 5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-ink) 5%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 14px 14px;
+}
+.jmap::before,
+.jmap::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0 solid var(--color-ink);
+  pointer-events: none;
+}
+.jmap::before {
+  top: -1px;
+  left: -1px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 14px;
+}
+.jmap::after {
+  right: -1px;
+  bottom: -1px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  border-bottom-right-radius: 14px;
+}
+.jmap-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--color-hair);
+}
+.jmap-top {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.25rem;
+}
+@media (min-width: 1024px) {
+  .jmap-top {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    gap: 2.25rem;
+    padding: 1.5rem 1.75rem;
+  }
+}
+.jmap-pan {
+  min-width: 0;
+}
+.jmap-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 285 / 120;
+}
+/* A phone: the map is wider than the card and swipes, with only the place held
+   named on it (the list below is the main way to choose). */
+@media (max-width: 639px) {
+  .jmap-pan {
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .jmap-pan::-webkit-scrollbar {
+    display: none;
+  }
+  .jmap-stage {
+    flex: none;
+    width: 36rem;
+  }
+  .jspot-label {
+    display: none;
+  }
+  .jspot[aria-current="true"] .jspot-label {
+    display: block;
+  }
+}
+.jmap-canvas,
+.jmap-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.jmap-svg {
+  overflow: visible;
+  pointer-events: none;
+}
+.jmap-svg path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.jmap-grat path {
+  stroke: var(--color-ink);
+  stroke-opacity: 0.08;
+  stroke-width: 0.6;
+}
+.jmap-grat .is-equator {
+  stroke-opacity: 0.16;
+}
+/* In the map's own units (one degree), so they scale with the card. */
+.jmap-ticks text {
+  font-family: var(--font-mono);
+  font-size: 3.1px;
+  letter-spacing: 0.06px;
+  fill: var(--color-ink-faint);
+  fill-opacity: 0.7;
+}
+.jmap-aim {
+  stroke: var(--color-ink);
+  stroke-opacity: 0.2;
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+.jmap-arc {
+  stroke: var(--color-ink);
+  stroke-opacity: 0.3;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 6;
+  transition: stroke-opacity 0.4s ease;
+}
+.jmap-arc.is-travelled {
+  stroke-opacity: 0.9;
+}
+
+/* A place on the map: a real button, with a dot and a name beside it. */
+.jspot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-ink);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+.jspot-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: var(--color-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-paper) 75%, transparent);
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+.jspot[aria-current="true"] .jspot-dot {
+  background: var(--color-brass);
+  box-shadow: 0 0 0 1px var(--color-ink), 0 0 0 4px color-mix(in srgb, var(--color-paper) 75%, transparent);
+  transform: scale(1.5);
+}
+.jspot::after {
+  content: "";
+  position: absolute;
+  inset: 0.5rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.jspot[aria-current="true"]::after {
+  animation: jping 2.4s ease-out infinite;
+}
+@keyframes jping {
+  from {
+    opacity: 0.55;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+.jspot:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+.jspot-label {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 0.95rem);
+  padding: 0.1rem 0.4rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: var(--color-ink-soft);
+  background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+  border-radius: 4px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.jspot[aria-current="true"] .jspot-label {
+  color: var(--color-ink);
+}
+
+/* The list of places beside the map. */
+.jplaces {
+  align-self: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.jplaces li:last-child .jplace {
+  border-bottom: 1px solid var(--color-hair);
+}
+.jplace {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  width: 100%;
+  padding: 0.95rem 0.6rem;
+  border: 0;
+  border-top: 1px solid var(--color-hair);
+  background: transparent;
+  color: var(--color-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+.jplace-name {
+  font-size: 1.4rem;
+  line-height: 1.15;
+}
+.jplace[aria-current="true"] {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-brass) 70%, transparent),
+    transparent
+  );
+}
+.jplace[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--color-ink);
+}
+.jplace:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+
+/* The details, along the foot. */
+.jmap-detail {
+  min-height: 15rem;
+  padding: 1.5rem 1.25rem 1.75rem;
+  border-top: 1px solid var(--color-hair);
+  border-radius: 0 0 14px 14px;
+  background: color-mix(in srgb, var(--color-paper) 60%, transparent);
+}
+.jmap-panel {
+  display: grid;
+  gap: 1.25rem 3rem;
+}
+.jmap-panel[hidden] {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .jmap-panel:not([hidden]) {
+    animation: settle-fade 0.35s ease;
+  }
+}
+@media (min-width: 768px) {
+  .jmap-detail {
+    padding: 1.75rem 1.75rem 2rem;
+  }
+  .jmap-panel {
+    grid-template-columns: 14rem minmax(0, 1fr);
+  }
+}
+.jstops {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.jstop {
+  display: grid;
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-hair);
+}
+.jstop:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .jspot::after,
+  .jspot-dot,
+  .jplace,
+  .jmap-arc {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------- the blog: folders, book */
+
+/*
+ * The writing index is a shelf of paper folders, one per post. A post is an open
+ * book: two pages side by side, the title page on the left and the text on the
+ * right, and one sheet on a phone. Nothing turns or moves; it is a page-shaped
+ * layout that scrolls.
+ */
+.folders {
+  --folder: color-mix(in srgb, var(--color-mist) 80%, var(--color-chalk));
+  --folder-line: color-mix(in srgb, var(--color-ink) 24%, var(--color-paper));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.folder {
+  position: relative;
+  display: block;
+  height: 100%;
+  padding-top: 2.2rem;
+}
+.folder-tab {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  height: 2.2rem;
+  padding: 0 1.1rem;
+  white-space: nowrap;
+  border: 1px solid var(--folder-line);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: var(--folder);
+}
+/* Covers the front's top edge under the tab, so the two read as one piece. */
+.folder-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--folder);
+}
+.folder-front {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 15rem;
+  padding: 1.7rem 1.7rem 1.4rem;
+  border: 1px solid var(--folder-line);
+  border-radius: 12px;
+  background: var(--folder);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s ease;
+}
+/* A sheet of paper inside, showing above the front and rising when pointed at. */
+.folder-sheet {
+  position: absolute;
+  z-index: 0;
+  top: 1.5rem;
+  left: 11.5rem;
+  right: 1.3rem;
+  height: 3rem;
+  border: 1px solid var(--folder-line);
+  border-radius: 6px 6px 0 0;
+  background: var(--color-paper);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.folder:hover .folder-front,
+.folder:focus-visible .folder-front {
+  transform: translateY(-3px);
+  border-color: var(--color-ink-faint);
+}
+.folder:hover .folder-sheet,
+.folder:focus-visible .folder-sheet {
+  transform: translateY(-0.85rem);
+}
+.folder:focus-visible {
+  outline: none;
+}
+.folder:focus-visible .folder-front {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+.folder .door-arrow {
+  transition: transform 0.25s ease;
+}
+.folder:hover .door-arrow {
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .folder-front,
+  .folder-sheet,
+  .folder .door-arrow {
+    transition: none;
+  }
+}
+
+/* The book. One sheet by default; two pages from a wide screen. */
+.book {
+  --page: color-mix(in srgb, var(--color-paper) 55%, #fff);
+  --page-line: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper));
+  --gutter: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  position: relative;
+  margin-inline: auto;
+  max-width: 44rem;
+}
+.book-page {
+  position: relative;
+  background: var(--page);
+  border: 1px solid var(--page-line);
+  /* The thickness of the book: sheets stacked below the page, then a shadow. */
+  box-shadow:
+    0 3px 0 -1px var(--page),
+    0 4px 0 -1px var(--page-line),
+    0 7px 0 -2px var(--page),
+    0 8px 0 -2px var(--page-line),
+    0 26px 44px -22px color-mix(in srgb, var(--color-ink) 28%, transparent);
+}
+.book-left {
+  padding: 1.9rem 1.5rem 1.4rem;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  box-shadow: none;
+}
+.book-right {
+  padding: 1.4rem 1.5rem 2.2rem;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+}
+.book-right::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-bottom: 1.9rem;
+  background: var(--page-line);
+}
+.book .prose-post {
+  font-size: 1.125rem;
+}
+/* An opening capital, as a book would have. */
+.book .prose-post > p:first-child::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  font-family: var(--font-display);
+  font-size: 3.6em;
+  line-height: 0.82;
+  color: var(--color-ink);
+}
+@media (min-width: 640px) {
+  .book-left {
+    padding: 2.6rem 2.6rem 1.8rem;
+  }
+  .book-right {
+    padding: 1.8rem 2.6rem 3rem;
+  }
+}
+@media (min-width: 1100px) {
+  .book {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    max-width: 72rem;
+  }
+  .book::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  }
+  .book-left {
+    padding: 4rem 3.5rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--page-line);
+    border-radius: 14px 0 0 14px;
+    background: linear-gradient(to left, var(--gutter), transparent 15%), var(--page);
+    box-shadow:
+      0 3px 0 -1px var(--page),
+      0 4px 0 -1px var(--page-line),
+      0 7px 0 -2px var(--page),
+      0 8px 0 -2px var(--page-line),
+      0 26px 44px -22px color-mix(in srgb, var(--color-ink) 28%, transparent);
+  }
+  .book-right {
+    padding: 4rem 3.75rem 3.5rem;
+    border-top: 1px solid var(--page-line);
+    border-left: 0;
+    border-radius: 0 14px 14px 0;
+    background: linear-gradient(to right, var(--gutter), transparent 13%), var(--page);
+  }
+  .book-right::before {
+    display: none;
+  }
+  /* The title stays in view on the left while the text runs on the right. */
+  .book-left-inner {
+    position: sticky;
+    top: 6.5rem;
+  }
+}
+
 /* ----------------------------------------------------------- ruled rows */
 
 /*
@@ -776,30 +1779,6 @@ h3 {
 .stamp-now {
   border-color: var(--color-brass-deep);
   color: var(--color-brass-deep);
-}
-
-/* ------------------------------------------------------------ the journey */
-
-/* One row per stop. Hairlines between rows and a soft tint under the pointer. */
-.jlist {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-bottom: 1px solid var(--color-hair);
-}
-.jrow {
-  border-top: 1px solid var(--color-hair);
-  transition: background-color 0.25s ease;
-}
-@media (hover: hover) {
-  .jrow:hover {
-    background: color-mix(in srgb, var(--color-mist) 80%, transparent);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .jrow {
-    transition: none;
-  }
 }
 
 /* ------------------------------------------------------ cards and callout */

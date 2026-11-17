@@ -94,99 +94,113 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={jsonLdScript(graph)}
       />
 
-      {/* The post opens light, like every other page on the site. */}
-      <header className="relative overflow-hidden">
-        <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-20">
-          {/* Visible breadcrumb, matching the BreadcrumbList above. */}
-          <nav
-            aria-label="Breadcrumb"
-            className="settle settle-1 label text-ink-faint"
-          >
-            <ol className="flex flex-wrap items-center gap-2.5">
-              <li>
-                <Link href="/" className="link-rule">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li>
-                <Link href="/blog" className="link-rule">
-                  Writing
-                </Link>
-              </li>
-            </ol>
-          </nav>
-
-          <h1 className="settle settle-2 font-display mt-8 text-[clamp(1.9rem,4.8vw,3.3rem)] leading-[1.07]">
-            {post.title}
-          </h1>
-
-          <div className="settle settle-3 label mt-9 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-faint">
-            <time dateTime={post.published_at}>
-              {new Date(post.published_at ?? post.created_at).toLocaleDateString(
-                "en-US",
-                { month: "long", day: "numeric", year: "numeric" }
-              )}
-            </time>
-            <span aria-hidden="true" className="h-3 w-px bg-hair" />
-            <span>{post.reading_minutes} min read</span>
-            <span aria-hidden="true" className="h-3 w-px bg-hair" />
-            {/* Named author on the page, not just in schema — a basic E-E-A-T signal. */}
-            <Link href="/about" className="link-rule">
-              {profile.name}
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      {/* The post is an open book: the title page on the left, the text on the
+          right (one sheet on a phone). See `.book` in globals.css. */}
       <div className="on-paper">
-        <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
-          {post.cover_image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.cover_image}
-              alt={post.title}
-              width={1200}
-              height={630}
-              loading="lazy"
-              decoding="async"
-              className="mb-14 w-full object-cover"
-            />
-          )}
+        <div className="mx-auto max-w-[76rem] px-3 pb-16 pt-8 sm:px-6 md:pt-12">
+          <div className="book settle">
+            <header className="book-page book-left">
+              <div className="book-left-inner">
+                {/* Visible breadcrumb, matching the BreadcrumbList above. */}
+                <nav aria-label="Breadcrumb" className="label text-ink-faint">
+                  <ol className="flex flex-wrap items-center gap-2.5">
+                    <li>
+                      <Link href="/" className="link-rule">
+                        Home
+                      </Link>
+                    </li>
+                    <li aria-hidden="true">/</li>
+                    <li>
+                      <Link href="/blog" className="link-rule">
+                        Writing
+                      </Link>
+                    </li>
+                  </ol>
+                </nav>
 
-          <div
-            className="prose-post"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+                <h1 className="font-display mt-7 text-[clamp(1.9rem,4.2vw,3.1rem)] leading-[1.07]">
+                  {post.title}
+                </h1>
+
+                <div className="label mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-faint">
+                  <time dateTime={post.published_at}>
+                    {new Date(
+                      post.published_at ?? post.created_at
+                    ).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </time>
+                  <span aria-hidden="true" className="h-3 w-px bg-hair" />
+                  <span>{post.reading_minutes} min read</span>
+                  <span aria-hidden="true" className="h-3 w-px bg-hair" />
+                  {/* Named author on the page, not just in schema — a basic E-E-A-T signal. */}
+                  <Link href="/about" className="link-rule">
+                    {profile.name}
+                  </Link>
+                </div>
+
+                {post.tags.length > 0 && (
+                  <ul className="mt-8 flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="label rounded-full border border-hair px-3 py-1 text-ink-soft"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </header>
+
+            <div className="book-page book-right">
+              {post.cover_image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={post.cover_image}
+                  alt={post.title}
+                  width={1200}
+                  height={630}
+                  loading="lazy"
+                  decoding="async"
+                  className="mb-10 w-full object-cover"
+                />
+              )}
+
+              <div
+                className="prose-post"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+
+              {post.faqs.length > 0 && (
+                <section
+                  aria-labelledby="faq-heading"
+                  className="mt-14 border-t border-hair pt-10"
+                >
+                  <h2 id="faq-heading" className="label text-ink-faint">
+                    Common questions
+                  </h2>
+                  <dl className="mt-8">
+                    {post.faqs.map((faq) => (
+                      <div key={faq.q} className="border-t border-hair py-7">
+                        <dt className="font-display-text text-xl leading-snug">
+                          {faq.q}
+                        </dt>
+                        <dd className="mt-3 leading-[1.75] text-ink-soft">
+                          {faq.a}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </section>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      {post.faqs.length > 0 && (
-        <section
-          aria-labelledby="faq-heading"
-          className="border-t border-hair band"
-        >
-          <div className="mx-auto max-w-2xl px-6 py-16">
-            <Reveal>
-              <h2 id="faq-heading" className="label text-ink-faint">
-                Common questions
-              </h2>
-              <dl className="mt-10">
-                {post.faqs.map((faq) => (
-                  <div key={faq.q} className="border-t border-hair py-7">
-                    <dt className="font-display-text text-xl leading-snug">
-                      {faq.q}
-                    </dt>
-                    <dd className="mt-3 leading-[1.75] text-ink-soft">
-                      {faq.a}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
-          </div>
-        </section>
-      )}
 
       {related.length > 0 && (
         <section className="on-paper border-t border-hair">

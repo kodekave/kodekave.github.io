@@ -57,7 +57,7 @@ export default function ResearchPage() {
       />
 
       <Masthead
-        pattern="chladni"
+        pattern="contours"
         label="Research"
         title={<>Research and projects.</>}
         lead={<>One published study, and the research programmes around it.</>}
