@@ -1,7 +1,8 @@
 # Komal Kedarnath — personal site
 
 A fully static Next.js site — home, about, work, blog, and sponsor pages —
-deployed to GitHub Pages at [kodekave.github.io](https://kodekave.github.io).
+deployed to GitHub Pages at [komalkedarnath.wiki](https://komalkedarnath.wiki).
+The old kodekave.github.io address redirects there.
 
 ## Getting started
 
@@ -58,8 +59,11 @@ Adding a page means calling `buildMetadata({ path, title, description })`.
 - Titles: 50-60 characters, leading with the query rather than the brand.
 - Descriptions: 150-160 characters.
 - `src/lib/site.ts` holds `SITE_URL`. Nothing else should hardcode the
-  domain, so moving to a custom domain is a one-line change plus a
-  `public/CNAME` file and DNS records.
+  domain, so a change of address is a one-line change plus `public/CNAME` and
+  the DNS records. The domain is registered at Porkbun, whose DNS holds four
+  `A` and four `AAAA` records for GitHub Pages and a `www` CNAME to
+  `kodekave.github.io`. The custom domain and HTTPS are set under the
+  repository's Pages settings.
 - `trailingSlash: true` is deliberate. Without it GitHub Pages serves both
   `/about` and `/about.html` with a 200, and 404s on `/about/`. Canonicals
   and the sitemap use the slashed form to match — keep them consistent.
