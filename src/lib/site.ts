@@ -1,12 +1,13 @@
 /**
  * Single source of truth for anything that depends on where the site lives.
  *
- * Everything else in the codebase imports from here, so moving to a custom
- * domain later means changing SITE_URL on the line below and nothing else.
- * (You would also add a `public/CNAME` file containing the bare domain, and
- * point DNS at GitHub Pages — see README.)
+ * Everything else in the codebase imports from here, so a change of address
+ * means changing SITE_URL on the line below and nothing else. The site now
+ * lives on a custom domain: `public/CNAME` holds the bare domain, DNS at
+ * Porkbun points at GitHub Pages, and the old kodekave.github.io address
+ * redirects here (see README).
  */
-export const SITE_URL = "https://kodekave.github.io";
+export const SITE_URL = "https://komalkedarnath.wiki";
 
 /**
  * Google Search Console verification token (the `content` value from the
