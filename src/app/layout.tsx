@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
@@ -54,10 +54,15 @@ const plexMono = IBM_Plex_Mono({
  * homepage on all seven pages and told Google to de-index the other six.
  * Each page now builds its own complete set via `buildMetadata()`.
  */
+/** The paper colour, so a phone's address bar matches the page. */
+export const viewport: Viewport = {
+  themeColor: "#f6f5ef",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${profile.role} — ${profile.name}`,
+    default: `${profile.tagline.replace(/\.$/, "")} — ${profile.name}`,
     template: `%s — ${profile.shortName} Kedarnath`,
   },
   description: profile.schemaDescription,

@@ -29,7 +29,7 @@ export default function Nav() {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="font-display justify-self-start text-[1.3rem] leading-none whitespace-nowrap"
+            className="font-display justify-self-start py-3 text-[1.3rem] leading-none whitespace-nowrap"
           >
             Komal Kedarnath
           </Link>
@@ -61,7 +61,7 @@ export default function Nav() {
 
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center justify-self-end lg:hidden"
+            className="flex h-11 w-11 items-center justify-center justify-self-end lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             aria-controls="nav-menu"
@@ -86,7 +86,7 @@ export default function Nav() {
             the wrapper does the hiding. */}
         <div className="hidden lg:block">
           <Link href="/#contact" className="btn btn-solid-paper h-[52px]">
-            Get in touch
+            Start a conversation
           </Link>
         </div>
 
@@ -129,7 +129,7 @@ export default function Nav() {
                 onClick={() => setOpen(false)}
                 className="btn btn-solid-paper w-full justify-center"
               >
-                Get in touch
+                Start a conversation
               </Link>
             </div>
           </nav>

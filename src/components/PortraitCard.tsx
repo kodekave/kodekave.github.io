@@ -1,7 +1,5 @@
 import Plate from "./Plate";
-
-/** Her own words for the sticker. */
-export const BADGE_TEXT = "Bridging founders and operations";
+import { profile } from "@/lib/content";
 
 /**
  * The portrait as a black sketch drawn straight onto the page: no card, no
@@ -36,44 +34,57 @@ export default function PortraitCard({
 }
 
 /**
- * The sticker: yellow disc, the words once around the ring, a small mark at
- * the centre. Still, so there is nothing to switch off under reduced motion.
+ * The sticker: a yellow disc with a stitched edge, the word LinkedIn set across
+ * it on a tilt with the "in" in an ink tile, as in the LinkedIn mark itself. It
+ * is a link to the profile, and tips upright when you point at it.
  */
 function Badge() {
   return (
-    <svg
-      viewBox="0 0 120 120"
-      role="img"
-      aria-label={BADGE_TEXT}
-      className="badge absolute -bottom-7 -left-5 h-[6.5rem] w-[6.5rem] sm:-bottom-9 sm:-left-9 sm:h-[7.5rem] sm:w-[7.5rem]"
+    <a
+      href={profile.linkedin}
+      target="_blank"
+      rel="me noopener noreferrer"
+      aria-label="Komal Kedarnath on LinkedIn (opens in a new tab)"
+      className="badge absolute -bottom-5 -left-3 block h-[4.9rem] w-[4.9rem] sm:-bottom-6 sm:-left-7 sm:h-[5.6rem] sm:w-[5.6rem]"
     >
-      <circle
-        cx="60"
-        cy="60"
-        r="58"
-        fill="var(--color-brass)"
-        stroke="var(--color-ink)"
-        strokeWidth="1"
-      />
-      <path
-        id="badge-ring"
-        d="M60 60 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0"
-        fill="none"
-      />
-      <text aria-hidden="true">
-        <textPath href="#badge-ring" textLength="268" lengthAdjust="spacing">
-          {BADGE_TEXT} •
-        </textPath>
-      </text>
-      <circle
-        cx="60"
-        cy="60"
-        r="7"
-        fill="none"
-        stroke="var(--color-ink)"
-        strokeWidth="1"
-      />
-      <circle cx="60" cy="60" r="2.2" fill="var(--color-ink)" />
-    </svg>
+      <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false" className="h-full w-full">
+        <circle
+          cx="60"
+          cy="60"
+          r="58"
+          fill="var(--color-brass)"
+          stroke="var(--color-ink)"
+          strokeWidth="1"
+        />
+        <circle
+          cx="60"
+          cy="60"
+          r="51.5"
+          fill="none"
+          stroke="var(--color-ink)"
+          strokeWidth="0.7"
+          strokeDasharray="1.6 3.2"
+          strokeLinecap="round"
+        />
+        <g transform="rotate(-11 60 60)">
+          <text x="15" y="67" fontSize="21" textLength="58" lengthAdjust="spacingAndGlyphs">
+            Linked
+          </text>
+          <rect x="77" y="46" width="27" height="27" rx="4.5" fill="var(--color-ink)" />
+          <text className="badge-in" x="82" y="67" fontSize="21" textLength="17" lengthAdjust="spacingAndGlyphs">
+            in
+          </text>
+        </g>
+        <path
+          d="M82 22 l8 -8 m-6 0 h6 v6"
+          fill="none"
+          stroke="var(--color-ink)"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          transform="translate(-4 4)"
+        />
+      </svg>
+    </a>
   );
 }

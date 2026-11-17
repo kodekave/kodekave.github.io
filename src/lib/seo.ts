@@ -1,6 +1,23 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 import { OG_IMAGE, SITE_URL, absoluteUrl } from "@/lib/site";
 import { education, profile, recognition } from "@/lib/content";
+
+/**
+ * A page's own link-preview card, or the shared one when it has none. The cards
+ * are public/images/og/<key>.jpg, where <key> is the path with its slashes made
+ * dashes (/blog/some-post is blog-some-post), drawn by
+ * scripts/brand-assets/og-pages.py. This runs only when the site is built, so a
+ * post published without a card still gets the shared one.
+ */
+function pageImage(pagePath: string, alt: string): typeof OG_IMAGE {
+  const key = pagePath.replace(/^\/+|\/+$/g, "").replace(/\//g, "-");
+  if (key && existsSync(join(process.cwd(), "public", "images", "og", `${key}.jpg`))) {
+    return { url: `/images/og/${key}.jpg?v=1`, width: 1200, height: 630, alt };
+  }
+  return OG_IMAGE;
+}
 
 /**
  * Builds a complete, self-contained metadata object for one route.
@@ -22,7 +39,7 @@ export function buildMetadata({
   type = "website",
   publishedTime,
   modifiedTime,
-  image = OG_IMAGE,
+  image,
 }: {
   /** Site-relative path, e.g. "/about". Use "/" for the homepage. */
   path: string;
@@ -35,6 +52,7 @@ export function buildMetadata({
   image?: typeof OG_IMAGE;
 }): Metadata {
   const url = absoluteUrl(path);
+  const card = image ?? pageImage(path, title);
 
   return {
     title: { absolute: title },
@@ -52,7 +70,7 @@ export function buildMetadata({
       locale: "en_US",
       title,
       description,
-      images: [image],
+      images: [card],
       ...(publishedTime ? { publishedTime } : {}),
       ...(modifiedTime ? { modifiedTime } : {}),
     },
@@ -60,7 +78,7 @@ export function buildMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [image.url],
+      images: [card.url],
     },
   };
 }

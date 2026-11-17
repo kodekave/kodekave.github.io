@@ -1,6 +1,6 @@
 import Masthead from "@/components/Masthead";
 import Reveal from "@/components/Reveal";
-import { countryCode, ventures } from "@/lib/content";
+import { countryCode, stats, ventures } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site";
 import {
   PERSON_ID,
@@ -16,6 +16,13 @@ export const metadata = buildMetadata({
   description:
     "The four early-stage ventures I have run a founder's office for — AI/robotics, space-tech, hospitality and investments, and accessibility tech."
 });
+
+/** The venture each figure comes from, for its "View source" link. */
+const sourceSlug: Record<string, string> = {
+  Uduvilla: "uduvilla-investments",
+  Neuralzome: "neuralzome-cybernetics",
+  "Genex · SpaceCat": "genex-space-spacecat",
+};
 
 export default function WorkPage() {
   return (
@@ -78,6 +85,47 @@ export default function WorkPage() {
           </>
         }
       />
+
+      {/*
+        The figures, moved here from the homepage: each one links down to the
+        venture it comes from, so they sit just above the record.
+      */}
+      <section id="record" className="on-paper scroll-mt-24">
+        <div className="mx-auto max-w-5xl px-6 pt-16 md:px-10 md:pt-20">
+          <h2 className="sr-only">Figures</h2>
+          <p className="label text-ink-faint">
+            4 ventures · 4 countries · 6+ years
+          </p>
+
+          <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3">
+            {stats.map((s) => (
+              <div key={s.tag} className="border-t border-hair pt-5">
+                <dt className="sr-only">{s.label}</dt>
+                <dd
+                  aria-hidden="true"
+                  className="font-display tabular text-[clamp(2.8rem,5.6vw,4.6rem)] leading-none"
+                >
+                  {s.value}
+                </dd>
+                <dd className="mt-4 text-[0.95rem] text-ink-soft">{s.tag}</dd>
+                <dd className="mt-2">
+                  {sourceSlug[s.source] ? (
+                    <a
+                      href={`#${sourceSlug[s.source]}`}
+                      className="label link-rule text-ink-faint hover:text-ink"
+                    >
+                      View source ↗
+                      <span className="sr-only"> — {s.source}</span>
+                    </a>
+                  ) : (
+                    <span className="label text-ink-faint">{s.source}</span>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
 
       {/*
         The full record, most recent first. Numbered because the order is the

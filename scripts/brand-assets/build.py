@@ -15,9 +15,10 @@ Writes:
                                  separately for each size
 
 The card is rendered at twice its size and scaled down, so the hairline
-harmonograph and the sketch keep their detail. It uses the transparent sketch
-(`public/images/portrait-2x.webp`) over its paper halo, drawn by
-scripts/engrave.py, and the harmonograph formula from src/lib/patterns.ts.
+Lorenz butterfly and the sketch keep their detail. It uses the transparent
+sketch (`public/images/portrait-2x.webp`) over its paper halo, drawn by
+scripts/engrave.py, and the Lorenz drawing from src/lib/patterns.ts. The
+per-page and per-post cards are og-pages.py, which reuses `render` below.
 
 Needs Pillow (python3 -m pip install pillow) and Google Chrome. Set CHROME to
 use a different binary. Chrome is run with a throwaway profile so it never

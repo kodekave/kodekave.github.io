@@ -167,7 +167,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Why founders bring me in */}
-      <section className="border-t border-hair bg-mist">
+      <section className="border-t border-hair band">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <Reveal>
             <h2 className="font-display text-[clamp(1.7rem,3.6vw,2.5rem)] leading-tight">
