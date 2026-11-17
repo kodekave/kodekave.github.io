@@ -1,0 +1,121 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
+  @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #f6f5ef; }
+  /* Paper, with the site's plus grid at about 3%. */
+  .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
+          background-color: #f6f5ef; color: #1f2b27;
+          background-image: url("{{GRID}}"); }
+  /* The art on the right: the Lorenz butterfly (faded before it reaches the
+     text) or, for the journey, the dot map. */
+  .art { position: absolute; inset: 0; }
+  .art.fade { -webkit-mask-image: radial-gradient(ellipse 52% 80% at 76% 46%, #000 0%, rgba(0,0,0,.6) 46%, transparent 84%); }
+  canvas { position: absolute; left: 0; top: 0; width: 1200px; height: 630px; }
+  .text { position: absolute; left: 0; top: 0; padding: 66px 72px 62px; width: 780px; height: 630px;
+          display: flex; flex-direction: column; }
+  .label { display: inline-flex; align-items: center; gap: 14px; font: 400 15px "PM", monospace;
+           letter-spacing: 0.12em; white-space: nowrap; text-transform: uppercase; color: #5e665f; }
+  .label::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #55633a;
+                   box-shadow: 0 0 0 4px rgba(247, 239, 150, .8); }
+  h1 { font: 300 {{TITLE_PX}}px/1.06 "NR", Georgia, serif; letter-spacing: -0.022em; margin-top: 40px; max-width: {{TITLE_W}}px; }
+  .foot { margin-top: auto; }
+  .rule { width: 64px; height: 2px; background: #f7ef96; margin-bottom: 20px; box-shadow: 0 0 0 1px rgba(31,43,39,.18); }
+  .who { font: 400 25px "NR", Georgia, serif; letter-spacing: -0.01em; }
+  .url { font: 400 19px "PM", monospace; letter-spacing: 0.1em; color: #5e665f; margin-top: 10px; }
+</style>
+<div class="card">
+  <div class="art {{ART_CLASS}}"><canvas id="a" width="2400" height="1260"></canvas></div>
+  <div class="text">
+    <div class="label">{{LABEL}}</div>
+    <h1>{{TITLE}}</h1>
+    <div class="foot">
+      <div class="rule"></div>
+      <div class="who">Komal Kedarnath</div>
+      <div class="url">komalkedarnath.wiki</div>
+    </div>
+  </div>
+</div>
+<script>
+  var ART = "{{ART}}", SEED = {{SEED}}, MAP = {{MAP_JSON}}, PLACES = {{PLACES_JSON}};
+  var c = document.getElementById("a"), ctx = c.getContext("2d"), K = 2, W = 1200 * K, H = 630 * K;
+
+  function rng(seed) { var s = (seed >>> 0) || 1; return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+
+  // The Lorenz butterfly, as on the home page (src/lib/patterns.ts): five
+  // strands of the attractor seen from a slant, in thin ink.
+  function butterfly() {
+    var r = rng(SEED + 41);
+    var yaw = 0.45 + (r() - 0.5) * 0.5, cos = Math.cos(yaw), sin = Math.sin(yaw);
+    var s = Math.min(W * 0.5 / 54, H * 0.92 / 52) * 1.12, cx = W * 0.76, cy = H * 0.46;
+    function rk(p, h) {
+      function d(x, y, z) { return [10 * (y - x), x * (28 - z) - y, x * y - (8 / 3) * z]; }
+      var a = d(p[0], p[1], p[2]);
+      var b = d(p[0] + 0.5 * h * a[0], p[1] + 0.5 * h * a[1], p[2] + 0.5 * h * a[2]);
+      var cc = d(p[0] + 0.5 * h * b[0], p[1] + 0.5 * h * b[1], p[2] + 0.5 * h * b[2]);
+      var e = d(p[0] + h * cc[0], p[1] + h * cc[1], p[2] + h * cc[2]);
+      for (var i = 0; i < 3; i++) p[i] += (h / 6) * (a[i] + 2 * b[i] + 2 * cc[i] + e[i]);
+    }
+    function at(p) { return [cx + s * (p[0] * cos + p[1] * sin), cy - s * (p[2] - 24)]; }
+    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "rgba(31,43,39,0.34)";
+    for (var k = 0; k < 5; k++) {
+      var p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
+      for (var i = 0; i < 900; i++) rk(p, 0.006);
+      var q = at(p);
+      for (var j = 0; j < 5000; j += 24) {
+        ctx.beginPath(); ctx.moveTo(q[0], q[1]);
+        for (var m = 0; m < 24; m++) { rk(p, 0.006); q = at(p); ctx.lineTo(q[0], q[1]); }
+        ctx.stroke();
+      }
+    }
+  }
+
+  // The journey: the world as dots (the same land bitmap and view as the map on
+  // the site), the places worked, and the dotted route between them.
+  function worldMap() {
+    var LON_L = -135, LON_R = 150, LAT_T = 72, LAT_B = -48;
+    var c0 = Math.round((LON_L - MAP.lonLeft) / MAP.step), c1 = Math.round((LON_R - MAP.lonLeft) / MAP.step);
+    var r0 = Math.round((MAP.latTop - LAT_T) / MAP.step), r1 = Math.round((MAP.latTop - LAT_B) / MAP.step);
+    var bin = atob(MAP.bits), bits = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bits[i] = bin.charCodeAt(i);
+    function land(r, col) {
+      if (r < 0 || r >= MAP.rows || col < 0 || col >= MAP.cols) return false;
+      var n = r * MAP.cols + col; return ((bits[n >> 3] >> (n & 7)) & 1) === 1;
+    }
+    var w = 640 * K, cs = w / (c1 - c0), x0 = 520 * K, y0 = 250 * K;
+    function px(lon) { return x0 + (lon - LON_L) / (LON_R - LON_L) * w; }
+    function py(lat) { return y0 + (LAT_T - lat) / (LAT_T - LAT_B) * (r1 - r0) * cs; }
+    for (var pass = 0; pass < 2; pass++) {
+      ctx.beginPath();
+      for (var r = r0; r < r1; r++) for (var col = c0; col < c1; col++) {
+        if (!land(r, col)) continue;
+        var coast = !land(r - 1, col) || !land(r + 1, col) || !land(r, col - 1) || !land(r, col + 1);
+        if ((pass === 1) !== coast) continue;
+        var x = x0 + (col - c0 + 0.5) * cs, y = y0 + (r - r0 + 0.5) * cs, rad = pass ? cs * 0.36 : cs * 0.27;
+        ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = pass ? "rgba(31,43,39,0.72)" : "rgba(31,43,39,0.26)"; ctx.fill();
+    }
+    // The dotted route, in the order the places were worked.
+    ctx.fillStyle = "rgba(31,43,39,0.85)";
+    for (var i2 = 0; i2 < PLACES.length - 1; i2++) {
+      var a = PLACES[i2], b = PLACES[i2 + 1];
+      var x1 = px(a[0]), y1 = py(a[1]), x2 = px(b[0]), y2 = py(b[1]);
+      var d = Math.hypot(x2 - x1, y2 - y1), mx = (x1 + x2) / 2, my = Math.max(y0 + 6 * K, (y1 + y2) / 2 - d * 0.28);
+      for (var t = 0; t <= 1; t += 1 / Math.max(8, d / (7 * K))) {
+        var u = 1 - t, qx = u * u * x1 + 2 * u * t * mx + t * t * x2, qy = u * u * y1 + 2 * u * t * my + t * t * y2;
+        ctx.beginPath(); ctx.arc(qx, qy, 1.6 * K, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    for (var i3 = 0; i3 < PLACES.length; i3++) {
+      var last = i3 === PLACES.length - 1;
+      ctx.beginPath(); ctx.arc(px(PLACES[i3][0]), py(PLACES[i3][1]), (last ? 7 : 4.5) * K, 0, Math.PI * 2);
+      ctx.fillStyle = last ? "#f7ef96" : "#1f2b27"; ctx.fill();
+      if (last) { ctx.lineWidth = 1.4 * K; ctx.strokeStyle = "#1f2b27"; ctx.stroke(); }
+    }
+  }
+
+  if (ART === "map") worldMap(); else butterfly();
+</script>

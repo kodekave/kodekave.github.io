@@ -64,8 +64,8 @@ export function absoluteUrl(path = "/"): string {
 export const OG_IMAGE = {
   // The `?v=` is a cache-buster: LinkedIn, Slack and Facebook keep a share
   // image by its URL for days, so bump it whenever the card is regenerated.
-  url: "/images/og-card.jpg?v=2",
+  url: "/images/og-card.jpg?v=3",
   width: 1200,
   height: 630,
-  alt: "Komal Kedarnath G — Helping Visionaries Build Ideas For The World",
+  alt: "Komal Kedarnath — Helping founders build from idea to execution",
 };

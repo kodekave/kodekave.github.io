@@ -9,10 +9,14 @@ export default function SiteLayout({
 }) {
   return (
     <>
+      {/* The first thing a keyboard reaches: past the navigation, to the page. */}
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <Nav />
       {/* `isolate` makes main its own stacking context, so the pattern trail
           can sit behind the page's content and in front of the page's paper. */}
-      <main className="relative isolate flex-1">
+      <main id="main" tabIndex={-1} className="relative isolate flex-1 focus:outline-none">
         <PatternTrail />
         {children}
       </main>

@@ -1,12 +1,12 @@
 export const profile = {
-  name: "Komal Kedarnath G",
+  name: "Komal Kedarnath",
   shortName: "Komal",
   /**
    * Name variants that appear across the site and the wider web. Published
    * in `alternateName` so search engines and language models resolve every
    * spelling to the same person rather than treating them as separate people.
    */
-  alternateNames: ["Komal Kedarnath", "kodekave"],
+  alternateNames: ["Komal Kedarnath G", "kodekave"],
   /** Her own line, in her words. It is the page title and the structured-data job title. */
   role: "Helping Visionaries Build Ideas For The World",
   /** Her own line. It leads the homepage. */

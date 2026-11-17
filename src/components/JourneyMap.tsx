@@ -71,7 +71,9 @@ export default function JourneyMap({ places }: { places: MapPlace[] }) {
   const pan = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [selected, setSelected] = useState(places.length - 1);
+  // It opens on the first place, where the journey started; each click lights
+  // the next leg of the route.
+  const [selected, setSelected] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
   const shown = hover ?? selected;
   const here = places[shown];

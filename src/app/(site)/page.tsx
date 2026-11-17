@@ -7,7 +7,6 @@ import LocalTime from "@/components/LocalTime";
 import Pattern from "@/components/Pattern";
 import PortraitCard from "@/components/PortraitCard";
 import SectionLabel from "@/components/SectionLabel";
-import StopArt, { type Motif } from "@/components/StopArt";
 import { engagements, profile } from "@/lib/content";
 import { buildPlaces } from "@/lib/journey-places";
 import { getPublishedPosts } from "@/lib/posts";
@@ -15,7 +14,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   path: "/",
-  title: `${profile.role} — ${profile.name}`,
+  title: `${profile.tagline.replace(/\.$/, "")} — ${profile.name}`,
   description:
     "Komal Kedarnath helps founders build from idea to execution: four ventures across India, the Maldives, the US and the UK in more than six years.",
 });
@@ -23,55 +22,12 @@ export const metadata = buildMetadata({
 /**
  * The homepage as a one-page journey (see JourneyScene): the opening, then the
  * journey as a map the cloud's points form (the same card is /journey), what I
- * bring, the writing, the four doors and the way to reach me, one after another
- * as you scroll. Anything longer than a line lives on its own page, and the
- * figures live on the Ventures page (/work).
+ * bring, the writing and the way to reach me, one after another as you scroll.
+ * Anything longer than a line lives on its own page, and the figures live on
+ * the Ventures page (/work).
  *
  * Every word on it is already somewhere on the site; nothing here is new copy.
  */
-
-/** The four doors. Lines and tags are lifted from copy that already exists. */
-const doors: {
-  n: string;
-  title: string;
-  href: string;
-  line: string;
-  tags: string[];
-  motif: Motif;
-}[] = [
-  {
-    n: "01",
-    title: "Ventures",
-    href: "/work",
-    line: "4 ventures, 4 countries.",
-    tags: ["4 ventures", "4 countries", "6+ years"],
-    motif: "stars",
-  },
-  {
-    n: "02",
-    title: "Research",
-    href: "/research",
-    line: "One published study, and the research programmes around it.",
-    tags: ["Paper", "OpenFOAM", "Zenodo"],
-    motif: "flow",
-  },
-  {
-    n: "03",
-    title: "Writing",
-    href: "/blog",
-    line: "Notes from the founder’s office.",
-    tags: ["Founder’s office", "GTM strategy", "Cross-border"],
-    motif: "ledger",
-  },
-  {
-    n: "04",
-    title: "Contact",
-    href: "/#contact",
-    line: "Building something? Let’s talk.",
-    tags: ["Email", "LinkedIn", profile.location],
-    motif: "orbit",
-  },
-];
 
 const profiles = [
   { href: profile.linkedin, label: "LinkedIn", me: true },
@@ -152,6 +108,11 @@ export default function HomePage() {
               <Arrow className="btn-arrow" />
             </a>
           </div>
+
+          {/* The proof, in your own words from the Ventures page. */}
+          <p className="label mt-5 text-ink-faint md:mt-6">
+            4 ventures · 4 countries · 6+ years
+          </p>
         </div>
 
         <div data-zoom className="intro-portrait settle-fade">
@@ -177,6 +138,7 @@ export default function HomePage() {
       // cloud's points fly in to form the map (`map`), and break up again when
       // you scroll on. The same card is the /journey page.
       id: "journey",
+      label: "Journey",
       map: true,
       node: (
         <Step bare wide>
@@ -187,6 +149,7 @@ export default function HomePage() {
     },
     {
       id: "work-with-me",
+      label: "What I bring",
       node: (
         <Step
           label={
@@ -224,6 +187,7 @@ export default function HomePage() {
       ? [
           {
             id: "writing",
+            label: "Latest writing",
             node: (
               <Step
                 label={
@@ -269,48 +233,8 @@ export default function HomePage() {
         ]
       : []),
     {
-      id: "doors",
-      node: (
-        <Step>
-          <h2 className="sr-only">Where to go next</h2>
-          <ul className="doors grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {doors.map((d) => (
-              <li key={d.title}>
-                <Link
-                  href={d.href}
-                  className="door group flex h-full min-h-[19rem] flex-col p-6"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="label tabular text-ink-faint">{d.n}</span>
-                    <div className="door-art w-[4.75rem] opacity-90">
-                      <StopArt motif={d.motif} />
-                    </div>
-                  </div>
-
-                  <h3 className="font-display mt-9 text-[2rem] leading-none">
-                    {d.title}
-                  </h3>
-                  <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
-                    {d.line}
-                  </p>
-
-                  <div className="mt-auto flex items-end justify-between gap-4 pt-8">
-                    <ul className="label flex flex-wrap gap-x-3 gap-y-1.5 text-ink-faint">
-                      {d.tags.map((t) => (
-                        <li key={t}>{t}</li>
-                      ))}
-                    </ul>
-                    <Arrow className="door-arrow shrink-0" />
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Step>
-      ),
-    },
-    {
       id: "contact",
+      label: "Contact",
       node: (
         <Step bare>
           <div className="callout px-6 py-16 text-center md:py-24">
@@ -331,7 +255,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <ul className="label mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-ink-faint">
+          <ul className="profile-links label mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-ink-faint">
             {profiles.map((p) => (
               <li key={p.label}>
                 <a

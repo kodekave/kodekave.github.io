@@ -9,7 +9,7 @@
   .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
           background-color: #f6f5ef; color: #1f2b27;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%231f2b27' stroke-opacity='.075' stroke-width='1'/%3E%3C/svg%3E"); }
-  /* The harmonograph, drawn below, faded before it reaches the text. */
+  /* The Lorenz butterfly, drawn below, faded before it reaches the text. */
   .patt { position: absolute; inset: 0;
           -webkit-mask-image: radial-gradient(ellipse 52% 80% at 76% 46%, #000 0%, rgba(0,0,0,.6) 46%, transparent 84%); }
   canvas { position: absolute; left: 0; top: 0; width: 1200px; height: 630px; }
@@ -17,8 +17,9 @@
   .pic { position: absolute; right: 64px; top: 34px; width: 450px; aspect-ratio: 900 / 1161; }
   .halo { position: absolute; inset: -3% -6%; background: url("{{HALO}}") center / 100% 100% no-repeat; }
   .pic img { position: relative; display: block; width: 100%; height: 100%; }
-  .badge { position: absolute; left: -70px; bottom: 20px; width: 150px; height: 150px; }
-  .badge text { fill: #1f2b27; font: 400 9.5px "PM", monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+  .badge { position: absolute; left: -56px; bottom: 26px; width: 120px; height: 120px; transform: rotate(-6deg); }
+  .badge text { fill: #1f2b27; font: 300 21px "NR", Georgia, serif; }
+  .badge text.in { fill: #f7ef96; }
   .text { position: absolute; left: 0; top: 0; padding: 66px 72px 62px; width: 740px; height: 630px;
           display: flex; flex-direction: column; }
   .label { display: inline-flex; align-items: center; gap: 14px; font: 400 15px "PM", monospace;
@@ -41,16 +42,19 @@
     <img src="{{PORTRAIT}}" alt="">
     <svg class="badge" viewBox="0 0 120 120">
       <circle cx="60" cy="60" r="58" fill="#f7ef96" stroke="#1f2b27" stroke-width="1"/>
-      <path id="r" d="M60 60 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0" fill="none"/>
-      <text><textPath href="#r" textLength="268" lengthAdjust="spacing">Bridging founders and operations &#8226;</textPath></text>
-      <circle cx="60" cy="60" r="7" fill="none" stroke="#1f2b27" stroke-width="1"/>
-      <circle cx="60" cy="60" r="2.2" fill="#1f2b27"/>
+      <circle cx="60" cy="60" r="51.5" fill="none" stroke="#1f2b27" stroke-width="0.7" stroke-dasharray="1.6 3.2" stroke-linecap="round"/>
+      <g transform="rotate(-11 60 60)">
+        <text x="15" y="67" textLength="58" lengthAdjust="spacingAndGlyphs">Linked</text>
+        <rect x="77" y="46" width="27" height="27" rx="4.5" fill="#1f2b27"/>
+        <text class="in" x="82" y="67" textLength="17" lengthAdjust="spacingAndGlyphs">in</text>
+      </g>
+      <path d="M82 22 l8 -8 m-6 0 h6 v6" fill="none" stroke="#1f2b27" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" transform="translate(-4 4)"/>
     </svg>
   </div>
   <div class="text">
     <div class="label">Founder's office &middot; GTM &middot; Cross-border ops</div>
     <h1>Helping founders<br>build from idea<br>to execution.</h1>
-    <div class="who"><span>Komal Kedarnath G</span><span class="id">Startups-Operator. Maker. Explorer.</span></div>
+    <div class="who"><span>Komal Kedarnath</span><span class="id">Startups-Operator. Maker. Explorer.</span></div>
     <div class="foot">
       <div class="rule"></div>
       <div class="proof">6+ years<b>&middot;</b>4 ventures<b>&middot;</b>4 countries</div>
@@ -59,22 +63,35 @@
   </div>
 </div>
 <script>
-  // The same harmonograph as the home page (src/lib/patterns.ts, seed 0),
-  // drawn at twice size because the card is rendered at twice size.
+  // The same Lorenz butterfly as the home page (src/lib/patterns.ts, seed 0):
+  // five strands of the attractor seen from a slant, in thin ink. Drawn at
+  // twice size because the card is rendered at twice size.
   (function () {
     var c = document.getElementById("h"), ctx = c.getContext("2d"), K = 2;
-    var W = 1200 * K, H = 630 * K, f = [2.01, 3, 3, 2], p = [0, 1, 0.5, 0], d = [0.0042, 0.003, 0.003, 0.0042], k = 0.62;
-    var A = Math.min(W * 0.42, H * 0.5) * 0.77 * 1.15, cx = W * 0.76, cy = H * 0.46;
-    function at(t) {
-      return [
-        cx + A * (Math.sin(f[0] * t + p[0]) * Math.exp(-d[0] * t) + k * Math.sin(f[1] * t + p[1]) * Math.exp(-d[1] * t)),
-        cy + A * (Math.sin(f[2] * t + p[2]) * Math.exp(-d[2] * t) + k * Math.sin(f[3] * t + p[3]) * Math.exp(-d[3] * t))
-      ];
+    var W = 1200 * K, H = 630 * K;
+    function rng(seed) { var s = (seed >>> 0) || 1; return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+    var r = rng(0 + 41);
+    var yaw = 0.45 + (r() - 0.5) * 0.5, cos = Math.cos(yaw), sin = Math.sin(yaw);
+    var s = Math.min(W * 0.5 / 54, H * 0.92 / 52) * 1.12, cx = W * 0.76, cy = H * 0.46;
+    function rk(p, h) {
+      function d(x, y, z) { return [10 * (y - x), x * (28 - z) - y, x * y - (8 / 3) * z]; }
+      var a = d(p[0], p[1], p[2]);
+      var b = d(p[0] + 0.5 * h * a[0], p[1] + 0.5 * h * a[1], p[2] + 0.5 * h * a[2]);
+      var cc = d(p[0] + 0.5 * h * b[0], p[1] + 0.5 * h * b[1], p[2] + 0.5 * h * b[2]);
+      var e = d(p[0] + h * cc[0], p[1] + h * cc[1], p[2] + h * cc[2]);
+      for (var i = 0; i < 3; i++) p[i] += (h / 6) * (a[i] + 2 * b[i] + 2 * cc[i] + e[i]);
     }
-    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.strokeStyle = "rgba(31,43,39,0.30)";
-    var q = at(0);
-    for (var t = 0.012; t <= 110; t += 0.012) {
-      var r = at(t); ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(r[0], r[1]); ctx.stroke(); q = r;
+    function at(p) { return [cx + s * (p[0] * cos + p[1] * sin), cy - s * (p[2] - 24)]; }
+    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "rgba(31,43,39,0.34)";
+    for (var k = 0; k < 5; k++) {
+      var p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
+      for (var i = 0; i < 900; i++) rk(p, 0.006);
+      var q = at(p);
+      for (var j = 0; j < 5000; j += 24) {
+        ctx.beginPath(); ctx.moveTo(q[0], q[1]);
+        for (var m = 0; m < 24; m++) { rk(p, 0.006); q = at(p); ctx.lineTo(q[0], q[1]); }
+        ctx.stroke();
+      }
     }
   })();
 </script>

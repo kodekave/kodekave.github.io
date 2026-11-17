@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
+import { EQUATION } from "@/lib/equation-points";
 import {
   buildCloud,
   DT,
@@ -15,6 +16,8 @@ import { type LandCell, VIEW_COLS, landCells } from "@/lib/world-dots";
 
 export type SceneStep = {
   id: string;
+  /** The section's own name, for the dot rail. */
+  label: string;
   node: ReactNode;
   /** This step is the map: the point cloud flies into it, then breaks up again. */
   map?: boolean;
@@ -34,7 +37,11 @@ export type SceneStep = {
  *      and settle into the continents, the card (places, arcs, list, details)
  *      appears on them and stays while you use it, and when you scroll on the
  *      map breaks back into the cloud and the flight carries on. While the map
- *      is up nothing of the cloud is left behind it, and the camera waits.
+ *      is up nothing of the cloud is left behind it, and the camera waits;
+ *   5. at the end the cloud condenses once more, into the equation on the
+ *      hoodie, which closes the loop with the opening.
+ *
+ * A row of dots down the right edge names the sections and jumps between them.
  *
  * Without script, with reduced motion, or before it has started, the stage is
  * not pinned and the sections are an ordinary page, one under the next (see
@@ -46,13 +53,17 @@ export type SceneStep = {
  *
  * Scroll lengths below are in viewport heights.
  */
-const ZOOM = 1.4;
-const STEP = 1.25;
+const ZOOM = 1.1;
+const STEP = 1.1;
 /** Flight before the map, the points forming it, the hold, the points breaking up. */
-const MAP_LEAD = 0.6;
-const MAP_FORM = 0.85;
-const MAP_HOLD = 1.3;
+const MAP_LEAD = 0.35;
+const MAP_FORM = 0.7;
+const MAP_HOLD = 1.1;
 const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
+/** A step fades in over IN, holds, and fades out over OUT before its end. */
+const FADE_IN = 0.3;
+const FADE_OUT_AT = 0.5;
+const FADE_OUT = 0.3;
 /** Where the equation sits in the portrait image, as fractions of its box. */
 const EQ_X = 0.375;
 const EQ_Y = 0.82;
@@ -123,8 +134,9 @@ void main() {
   if (kind < 1.5) a *= clamp(1.7 / max(size / uPx, 1.0), 0.35, 1.0);
   a *= 1.0 - behind;
 
-  // Into the map. A point with a target flies to it, each at its own moment;
-  // every other point fades away, so none of the cloud is left behind the map.
+  // Into a shape (the map, or the equation). A point with a target flies to it,
+  // each at its own moment; every other point fades away, so none of the cloud
+  // is left behind the shape.
   float isMap = step(0.5, aMap.z);
   float m = smoothstep(0.0, 1.0, clamp((uMorph - aMeta.x * 0.5) / 0.5, 0.0, 1.0)) * isMap;
   a *= 1.0 - clamp(uMorph * 1.8, 0.0, 1.0) * (1.0 - isMap);
@@ -168,12 +180,16 @@ type Renderer = {
     prog: number;
     fade: number;
     shift: [number, number];
-    /** 0 is the cloud, 1 is the map. */
+    /** 0 is the cloud, 1 is the shape (the map or the equation). */
     morph: number;
   }) => void;
   resize: (cssW: number, cssH: number) => void;
-  /** Where each of the first `count` points goes, as x, y, kind (NDC, 1 land, 2 coast). */
-  setMap: (data: Float32Array, count: number, cellPx: number) => void;
+  /**
+   * Where each of the first `count` points goes, as x, y, kind (NDC; 1 is a
+   * land dot, 2 a stronger one), and the dots' sizes in CSS pixels. The array
+   * covers every set-aside point, zero past `count`.
+   */
+  setTargets: (data: Float32Array, count: number, inner: number, rim: number) => void;
   dispose: () => void;
 };
 
@@ -264,8 +280,9 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
   let cssH = 1;
   let w = 1;
   let h = 1;
-  let mapCount = 0;
-  let cellPx = 0;
+  let targetCount = 0;
+  let pxInner = 0;
+  let pxRim = 0;
 
   return {
     resize(cssW, cssHeight) {
@@ -277,9 +294,10 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       canvas.height = h;
       gl.viewport(0, 0, w, h);
     },
-    setMap(data, count, cs) {
-      mapCount = count;
-      cellPx = cs;
+    setTargets(data, count, inner, rim) {
+      targetCount = count;
+      pxInner = inner;
+      pxRim = rim;
       gl.bindBuffer(gl.ARRAY_BUFFER, mapBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
     },
@@ -290,14 +308,14 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.uniformMatrix4fv(loc.vp, false, vp);
       gl.uniform2f(loc.shift, shift[0], shift[1]);
       gl.uniform1f(loc.px, dpr * Math.min(1.25, Math.max(0.75, cssH / 900)));
-      gl.uniform2f(loc.mapPx, cellPx * 0.54 * dpr, cellPx * 0.72 * dpr);
+      gl.uniform2f(loc.mapPx, pxInner * dpr, pxRim * dpr);
       gl.uniform1f(loc.prog, progress);
       gl.uniform1f(loc.fade, fade);
       gl.uniform1f(loc.morph, morph);
 
-      // Once every point is in place only the map's own points are drawn.
+      // Once every point is in place only the shape's own points are drawn.
       bindMain();
-      gl.drawArrays(gl.POINTS, 0, morph >= 0.999 && mapCount > 0 ? mapCount : cloud.count);
+      gl.drawArrays(gl.POINTS, 0, morph >= 0.999 && targetCount > 0 ? targetCount : cloud.count);
 
       if (morph < 0.99) {
         headData[0] = head[0];
@@ -316,6 +334,18 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
   };
+}
+
+/** The equation's points, as fractions of its box (0..1), decoded once. */
+function equationPoints(): Float32Array {
+  const bin = atob(EQUATION.data);
+  const out = new Float32Array(EQUATION.count * 2);
+  for (let i = 0; i < EQUATION.count; i++) {
+    const o = i * 4;
+    out[i * 2] = (bin.charCodeAt(o) | (bin.charCodeAt(o + 1) << 8)) / 4095;
+    out[i * 2 + 1] = (bin.charCodeAt(o + 2) | (bin.charCodeAt(o + 3) << 8)) / 4095;
+  }
+  return out;
 }
 
 export default function JourneyScene({
@@ -345,11 +375,13 @@ export default function JourneyScene({
     const mapIdx = segs.findIndex((s) => s.map);
     const mapSeg = mapIdx >= 0 ? segs[mapIdx] : null;
     const mapLen = mapSeg ? mapSeg.b - mapSeg.a : 0;
+    const endSeg = segs[segs.length - 1];
 
     const introEl = st.querySelector<HTMLElement>("[data-intro]");
     const fadeEls = Array.from(st.querySelectorAll<HTMLElement>("[data-intro-fade]"));
     const zoomEl = st.querySelector<HTMLElement>("[data-zoom]");
     const stepEls = Array.from(st.querySelectorAll<HTMLElement>("[data-step]"));
+    const railEls = Array.from(st.querySelectorAll<HTMLElement>("[data-rail]"));
     const ids = stepEls.map((el) => el.id);
     const mapStepEl = mapSeg ? stepEls[mapIdx] : null;
     const mapCard = mapStepEl?.querySelector<HTMLElement>(".jmap") ?? null;
@@ -393,28 +425,60 @@ export default function JourneyScene({
     const lookP = [0, 0, 0];
     const headP = [0, 0, 0];
 
-    // --- the map: where each of the cloud's points goes --------------------
+    // --- the shapes the cloud becomes: the map, then the equation -----------
     let cells: LandCell[] = [];
+    let eqPts: Float32Array | null = null;
+    /** How many points are set aside for each shape (0 when it is not formed). */
     let mapCount = 0;
-    let mapData: Float32Array | null = null;
+    let eqCount = 0;
+    let setAside = 0;
+    let targets: Float32Array | null = null;
+    /** Which shape the points are currently aimed at. */
+    let aimed: "map" | "eq" | null = null;
 
-    const placeMap = () => {
-      if (!renderer || !mapStageEl || !mapStepEl || !mapCount) return;
-      const keep = mapStepEl.style.transform;
-      mapStepEl.style.transform = "none";
-      const r = mapStageEl.getBoundingClientRect();
-      const s = st.getBoundingClientRect();
-      mapStepEl.style.transform = keep;
-      if (!r.width) return;
-      const cs = r.width / VIEW_COLS;
-      const data = mapData ?? (mapData = new Float32Array(mapCount * 3));
-      for (let k = 0; k < mapCount; k++) {
-        const cell = cells[k];
-        data[k * 3] = ((r.left - s.left + (cell.c + 0.5) * cs) / vw) * 2 - 1;
-        data[k * 3 + 1] = 1 - ((r.top - s.top + (cell.r + 0.5) * cs) / vh) * 2;
-        data[k * 3 + 2] = cell.coast ? 2 : 1;
+    const placeTargets = (want: "map" | "eq") => {
+      if (!renderer || !targets) return;
+      if (want === "map") {
+        // A phone has no points set aside for the map: its card draws its own.
+        if (!mapStageEl || !mapStepEl || !mapCount) {
+          aimed = "map";
+          return;
+        }
+        const keep = mapStepEl.style.transform;
+        mapStepEl.style.transform = "none";
+        const r = mapStageEl.getBoundingClientRect();
+        const s = st.getBoundingClientRect();
+        mapStepEl.style.transform = keep;
+        if (!r.width) return;
+        const cs = r.width / VIEW_COLS;
+        targets.fill(0);
+        for (let k = 0; k < mapCount; k++) {
+          const cell = cells[k];
+          targets[k * 3] = ((r.left - s.left + (cell.c + 0.5) * cs) / vw) * 2 - 1;
+          targets[k * 3 + 1] = 1 - ((r.top - s.top + (cell.r + 0.5) * cs) / vh) * 2;
+          targets[k * 3 + 2] = cell.coast ? 2 : 1;
+        }
+        renderer.setTargets(targets, mapCount, cs * 0.54, cs * 0.72);
+        aimed = "map";
+        return;
       }
-      renderer.setMap(data, mapCount, cs);
+      if (!eqPts || !eqCount) return;
+      targets.fill(0);
+      // The equation sits to the right of the contact card on a wide screen,
+      // and above it on a narrow one.
+      const wEq = desktop ? vw * 0.4 : vw * 0.84;
+      const hEq = wEq / EQUATION.aspect;
+      const cx = desktop ? vw * 0.75 : vw * 0.5;
+      const cy = desktop ? vh * 0.5 : vh * 0.27;
+      for (let k = 0; k < eqCount; k++) {
+        const px = cx - wEq / 2 + eqPts[k * 2] * wEq;
+        const py = cy - hEq / 2 + eqPts[k * 2 + 1] * hEq;
+        targets[k * 3] = (px / vw) * 2 - 1;
+        targets[k * 3 + 1] = 1 - (py / vh) * 2;
+        targets[k * 3 + 2] = 2;
+      }
+      renderer.setTargets(targets, eqCount, desktop ? 2.4 : 2, desktop ? 2.4 : 2);
+      aimed = "eq";
     };
 
     // Start-up is split over two idle moments (the points, then the GL context),
@@ -431,19 +495,23 @@ export default function JourneyScene({
       starting = true;
       const mobile = window.innerWidth < 768;
       const built = buildCloud(mobile ? 0.5 : 1);
-      // A phone does not form the map from the cloud (its map pans), so only a
-      // wider screen sets aside the points that will.
+      eqPts = equationPoints();
+      eqCount = EQUATION.count;
+      // A phone does not form the map from the cloud (its map pans), but it does
+      // form the equation; a wider screen forms both.
       if (mapSeg && !mobile) {
         cells = landCells();
-        mapCount = pickMapPoints(built, cells.length);
+        mapCount = cells.length;
       }
+      setAside = pickMapPoints(built, Math.max(mapCount, eqCount));
+      mapCount = Math.min(mapCount, setAside);
+      targets = new Float32Array(setAside * 3);
       await idleTick();
       if (disposed) return;
       cloud = built;
       renderer = createRenderer(cv, built, mobile);
       if (renderer) {
         renderer.resize(st.clientWidth, st.clientHeight);
-        placeMap();
         frame();
       }
     };
@@ -455,6 +523,7 @@ export default function JourneyScene({
     const stepOn = stepEls.map(() => true);
     let introOn = true;
     let mapShown = false;
+    let railNow = "";
 
     const setInert = (el: HTMLElement, on: boolean) => {
       (el as HTMLElement & { inert: boolean }).inert = !on;
@@ -483,14 +552,19 @@ export default function JourneyScene({
       }
 
       // The map: how far the cloud has become it, and how visible its card is.
-      let morph = 0;
+      let mapMorph = 0;
       let mapUi = 0;
       if (mapSeg) {
-        morph = Math.min(smooth01((v - mapSeg.a) / MAP_FORM), smooth01((mapSeg.b - v) / MAP_FORM));
+        mapMorph = Math.min(smooth01((v - mapSeg.a) / MAP_FORM), smooth01((mapSeg.b - v) / MAP_FORM));
         mapUi =
           smooth01((v - (mapSeg.a + MAP_FORM - 0.15)) / 0.3) *
           smooth01((mapSeg.b - MAP_FORM + 0.15 - v) / 0.3);
       }
+      // The equation: the cloud condenses into it as the last step arrives.
+      const eqMorph = smooth01((v - (endSeg.a - 0.3)) / 0.8);
+      // Between the two there is a stretch where the cloud is whole, and that is
+      // where the points are re-aimed from the map to the equation.
+      const useEq = v > (mapSeg ? mapSeg.b + 0.45 : ZOOM + 0.45);
 
       // The steps: in, hold, out, with a clear gap between neighbours.
       for (let i = 0; i < stepEls.length; i++) {
@@ -506,8 +580,8 @@ export default function JourneyScene({
           }
           continue;
         }
-        const fin = smooth01((v - (sg.a - 0.12)) / 0.42);
-        const fout = i === stepEls.length - 1 ? 0 : smooth01((v - (sg.b - 0.62)) / 0.34);
+        const fin = smooth01((v - (sg.a - 0.1)) / FADE_IN);
+        const fout = i === stepEls.length - 1 ? 0 : smooth01((v - (sg.b - FADE_OUT_AT)) / FADE_OUT);
         const o = fin * (1 - fout);
         const dy = (1 - fin) * 18 - fout * 18;
         el.style.opacity = o.toFixed(3);
@@ -519,9 +593,27 @@ export default function JourneyScene({
         }
       }
 
+      // The dot rail: which section is showing.
+      let now = "hero";
+      if (v >= ZOOM * 0.6) {
+        now = ids[ids.length - 1];
+        for (let i = 0; i < segs.length; i++) {
+          if (v < segs[i].b - 0.2) {
+            now = ids[i];
+            break;
+          }
+        }
+      }
+      if (now !== railNow) {
+        railNow = now;
+        for (const el of railEls) {
+          if (el.dataset.rail === now) el.setAttribute("aria-current", "true");
+          else el.removeAttribute("aria-current");
+        }
+      }
+
       // On a phone the card draws its own dots: tell it when it is revealed.
-      const formsFromCloud = mapCount > 0;
-      if (mapCard && !formsFromCloud) {
+      if (mapCard && mapCount === 0) {
         if (mapUi > 0.25 && !mapShown) {
           mapShown = true;
           mapCard.dispatchEvent(new Event("jmap-show"));
@@ -532,6 +624,9 @@ export default function JourneyScene({
 
       // The cloud and its camera. The camera waits while the map is up.
       if (renderer && cloud) {
+        const want2 = useEq ? "eq" : "map";
+        if (aimed !== want2) placeTargets(want2);
+
         const vEff = !mapSeg ? v : v >= mapSeg.b ? v - mapLen : Math.min(v, mapSeg.a);
         const start = ZOOM * 0.8;
         const u = clamp01((vEff - start) / Math.max(0.01, total - mapLen - start));
@@ -552,15 +647,19 @@ export default function JourneyScene({
           eyeP[1] -= (fy / fl) * back;
           eyeP[2] -= (fz / fl) * back;
         }
+
+        // The shape being formed now, and how far it is: the map, the equation,
+        // or (a phone's map) nothing, with the cloud fading instead.
+        const shapeOk = useEq ? eqCount > 0 : mapCount > 0;
+        const morph = useEq ? eqMorph : mapMorph;
         renderer.draw({
           eye: eyeP,
           target: lookP,
           head: headP,
           prog: (t + 0.9) / DT / cloud.samples,
-          // With no points to form the map, the cloud simply fades out for it.
-          fade: smooth01((z - 0.48) / 0.45) * (formsFromCloud ? 1 : 1 - morph),
+          fade: smooth01((z - 0.48) / 0.45) * (shapeOk ? 1 : 1 - morph),
           shift: desktop ? [0.3, 0] : [0, 0.34],
-          morph: formsFromCloud ? morph : 0,
+          morph: shapeOk ? morph : 0,
         });
       }
     };
@@ -599,6 +698,10 @@ export default function JourneyScene({
             : sg.a + (sg.b - sg.a) / 2;
       window.scrollTo({ top: top + v * vh, behavior: smoothly ? "smooth" : "auto" });
     };
+    const goTop = (smoothly: boolean) => {
+      const r = track.getBoundingClientRect();
+      window.scrollTo({ top: window.scrollY + r.top, behavior: smoothly ? "smooth" : "auto" });
+    };
     const onClick = (ev: MouseEvent) => {
       if (ev.defaultPrevented || ev.button !== 0) return;
       if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
@@ -607,16 +710,20 @@ export default function JourneyScene({
       const url = new URL(a.href, window.location.href);
       if (url.origin !== window.location.origin) return;
       if (url.pathname.replace(/\/$/, "") !== window.location.pathname.replace(/\/$/, "")) return;
-      const i = ids.indexOf(url.hash.slice(1));
-      if (i < 0) return;
+      const hash = url.hash.slice(1);
+      const i = ids.indexOf(hash);
+      if (i < 0 && hash !== "hero") return;
       ev.preventDefault();
       ev.stopPropagation();
       window.history.replaceState(null, "", url.hash);
-      goTo(i, true);
+      if (hash === "hero") goTop(true);
+      else goTo(i, true);
     };
     const onHash = () => {
-      const i = ids.indexOf(window.location.hash.slice(1));
+      const hash = window.location.hash.slice(1);
+      const i = ids.indexOf(hash);
       if (i >= 0) goTo(i, false);
+      else if (hash === "hero") goTop(false);
     };
 
     // --- start ------------------------------------------------------------
@@ -627,7 +734,7 @@ export default function JourneyScene({
     const onResize = () => {
       measure();
       renderer?.resize(st.clientWidth, st.clientHeight);
-      placeMap();
+      if (aimed) placeTargets(aimed);
       cur = want = read();
       apply(cur);
     };
@@ -636,7 +743,7 @@ export default function JourneyScene({
     // The card's map can change size on its own (a short screen shrinks it).
     const mapRo = mapStageEl
       ? new ResizeObserver(() => {
-          placeMap();
+          if (aimed === "map") placeTargets("map");
           apply(cur);
         })
       : null;
@@ -656,8 +763,6 @@ export default function JourneyScene({
     };
     if (document.readyState === "complete") begin();
     else window.addEventListener("load", begin, { once: true });
-
-    track.dataset.scene = "live";
 
     // A page opened on "/#contact" goes straight to that step.
     if (ids.includes(window.location.hash.slice(1))) {
@@ -689,6 +794,7 @@ export default function JourneyScene({
         el.style.pointerEvents = "";
         (el as HTMLElement & { inert: boolean }).inert = false;
       }
+      for (const el of railEls) el.removeAttribute("aria-current");
       if (introEl) (introEl as HTMLElement & { inert: boolean }).inert = false;
     };
   }, [layout, total]);
@@ -713,6 +819,17 @@ export default function JourneyScene({
             {s.node}
           </section>
         ))}
+        {/* The dot rail: one dot a section, to see where you are and to jump. */}
+        <nav aria-label="Sections" className="journey-rail">
+          <a href="#hero" data-rail="hero" className="journey-dot">
+            <span className="journey-dot-label label">Top</span>
+          </a>
+          {steps.map((s) => (
+            <a key={s.id} href={`#${s.id}`} data-rail={s.id} className="journey-dot">
+              <span className="journey-dot-label label">{s.label}</span>
+            </a>
+          ))}
+        </nav>
       </div>
     </div>
   );

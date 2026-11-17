@@ -124,9 +124,10 @@ body {
 }
 
 /* Mono small caps: dates, labels and tags, and nothing else. */
+/* No smaller than 12px: the smallest type on the site. */
 .label {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -137,6 +138,23 @@ body {
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+/* The skip link: out of sight until a keyboard reaches it. */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 6px;
+  background: var(--color-brass);
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
 }
 /* A label with its one small dot: olive, with a pale yellow ring. */
 .label-dot {
@@ -370,27 +388,101 @@ body {
   margin-top: 1.1rem;
 }
 
-/* The four doors, two by two, without the tall cards. */
-.journey[data-scene="live"] .doors {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-.journey[data-scene="live"] .door {
-  min-height: 0;
-  padding: 1rem 1.1rem;
-}
-.journey[data-scene="live"] .door .door-art {
-  width: 3.4rem;
-}
-.journey[data-scene="live"] .door h3 {
-  margin-top: 1.1rem;
-  font-size: 1.6rem;
-}
-.journey[data-scene="live"] .door > div:last-child {
-  padding-top: 0.9rem;
-}
 .journey[data-scene="live"] .callout {
   padding-block: 2.6rem;
+}
+
+/* The dot rail down the right edge: the sections, where you are, and a way to jump. */
+.journey-rail {
+  display: none;
+}
+@media (min-width: 768px) {
+  .journey[data-scene="live"] .journey-rail {
+    position: absolute;
+    top: 50%;
+    right: 0.9rem;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-50%);
+  }
+}
+.journey-dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+}
+.journey-dot::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  background: transparent;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+.journey-dot[aria-current="true"]::before {
+  background: var(--color-ink);
+  transform: scale(1.3);
+}
+.journey-dot:hover::before {
+  background: var(--color-brass);
+}
+.journey-dot:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+.journey-dot-label {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper) 92%, transparent);
+  border: 1px solid var(--color-hair);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translate(4px, -50%);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.journey-dot:hover .journey-dot-label,
+.journey-dot:focus-visible .journey-dot-label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-dot::before,
+  .journey-dot-label {
+    transition: none;
+  }
+}
+
+/* The closing links get a backing, so they stay readable over the cloud. */
+.journey[data-scene="live"] .profile-links {
+  width: fit-content;
+  margin-inline: auto;
+  padding: 0.35rem 1.2rem;
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+  border: 1px solid var(--color-hair);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.journey[data-scene="live"] .profile-links a {
+  display: inline-block;
+  padding: 0.45rem 0.1rem;
+}
+@media (max-width: 767px) {
+  .journey[data-scene="live"] .profile-links {
+    column-gap: 1.1rem;
+    padding-inline: 1rem;
+  }
 }
 
 /*
@@ -453,6 +545,20 @@ body {
   }
 }
 
+/* The contact card is narrower on a laptop, leaving the right of the screen for
+   the equation the cloud condenses into at the end. */
+@media (min-width: 1024px) {
+  .journey[data-scene="live"] .step-body.is-bare:not(.is-wide) {
+    width: min(33rem, 100%);
+  }
+  .journey[data-scene="live"] .callout {
+    padding-inline: 1.5rem;
+  }
+  .journey[data-scene="live"] .callout h2 {
+    font-size: clamp(2rem, 3.4vw, 3.1rem);
+  }
+}
+
 /* A laptop or larger: the cards are a little bigger, with larger type. */
 @media (min-width: 1024px) {
   .journey[data-scene="live"] .step-body {
@@ -474,23 +580,6 @@ body {
   .journey[data-scene="live"] .post-title {
     font-size: 1.22rem;
   }
-  .journey[data-scene="live"] .doors {
-    gap: 1rem;
-  }
-  .journey[data-scene="live"] .door {
-    min-height: 11rem;
-    padding: 1.3rem 1.45rem;
-  }
-  .journey[data-scene="live"] .door .door-art {
-    width: 4.1rem;
-  }
-  .journey[data-scene="live"] .door h3 {
-    margin-top: 1.5rem;
-    font-size: 2rem;
-  }
-  .journey[data-scene="live"] .door p {
-    font-size: 1rem;
-  }
   .journey[data-scene="live"] .callout {
     padding-block: 3.2rem;
   }
@@ -510,17 +599,6 @@ body {
   .journey[data-scene="live"] .reg-name {
     font-size: 1.3rem;
   }
-  .journey[data-scene="live"] .door {
-    min-height: 0;
-    padding: 1rem 1.1rem;
-  }
-  .journey[data-scene="live"] .door h3 {
-    margin-top: 1.1rem;
-    font-size: 1.6rem;
-  }
-  .journey[data-scene="live"] .door .door-art {
-    width: 3.4rem;
-  }
   .journey[data-scene="live"] .callout {
     padding-block: 2.6rem;
   }
@@ -529,9 +607,6 @@ body {
   }
   .journey[data-scene="live"] .step-body.has-label .step-main {
     margin-top: 0.6rem;
-  }
-  .journey[data-scene="live"] .door ul.label {
-    display: none;
   }
 }
 
@@ -556,28 +631,6 @@ body {
   }
   .journey[data-scene="live"] .step-body.has-label .step-main {
     margin-top: 0.7rem;
-  }
-  .journey[data-scene="live"] .door ul.label,
-  .journey[data-scene="live"] .door .door-art {
-    display: none;
-  }
-  .journey[data-scene="live"] .doors {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .journey[data-scene="live"] .door {
-    padding: 0.7rem 0.95rem;
-  }
-  .journey[data-scene="live"] .door h3 {
-    margin-top: 0.15rem;
-    font-size: 1.35rem;
-  }
-  .journey[data-scene="live"] .door p {
-    margin-top: 0.2rem;
-    font-size: 0.84rem;
-    line-height: 1.4;
-  }
-  .journey[data-scene="live"] .door > div:last-child {
-    display: none;
   }
   .journey[data-scene="live"] .callout {
     padding-block: 1.8rem;
@@ -1067,17 +1120,14 @@ h3 {
   background: transparent;
   color: var(--color-ink);
 }
-.btn .btn-arrow,
-.door .door-arrow {
+.btn .btn-arrow {
   transition: transform 0.25s ease;
 }
-.btn:hover .btn-arrow,
-.door:hover .door-arrow {
+.btn:hover .btn-arrow {
   transform: translateX(4px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .btn .btn-arrow,
-  .door .door-arrow {
+  .btn .btn-arrow {
     transition: none;
   }
 }
@@ -1207,10 +1257,10 @@ h3 {
 /* In the map's own units (one degree), so they scale with the card. */
 .jmap-ticks text {
   font-family: var(--font-mono);
-  font-size: 3.1px;
+  font-size: 3.5px;
   letter-spacing: 0.06px;
   fill: var(--color-ink-faint);
-  fill-opacity: 0.7;
+  fill-opacity: 0.85;
 }
 .jmap-aim {
   stroke: var(--color-ink);
@@ -1289,7 +1339,7 @@ h3 {
   top: 50%;
   left: calc(50% + 0.95rem);
   padding: 0.1rem 0.4rem;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
   white-space: nowrap;
   color: var(--color-ink-soft);
@@ -1783,22 +1833,6 @@ h3 {
 
 /* ------------------------------------------------------ cards and callout */
 
-.door {
-  border: 1px solid var(--color-hair);
-  background: color-mix(in srgb, var(--color-mist) 70%, transparent);
-  border-radius: 10px;
-  transition: border-color 0.25s ease, background-color 0.25s ease;
-}
-.door:hover {
-  border-color: var(--color-ink-faint);
-  background: var(--color-mist);
-}
-@media (prefers-reduced-motion: reduce) {
-  .door {
-    transition: none;
-  }
-}
-
 /* A soft panel on a faint 14px grid: the contact moment. */
 .callout {
   border: 1px solid var(--color-hair);
@@ -1815,47 +1849,6 @@ h3 {
       transparent 1px
     );
   background-size: 14px 14px;
-}
-
-/* The small line drawings, in ink on paper. */
-.stop-art {
-  display: block;
-  width: 100%;
-  max-width: 9rem;
-  height: auto;
-  overflow: visible;
-  color: var(--color-ink);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.stop-art .g {
-  stroke: var(--color-ink-faint);
-  stroke-width: 1;
-  opacity: 0.5;
-}
-.stop-art .s {
-  fill: currentColor;
-  stroke: none;
-}
-.stop-art .d {
-  fill: var(--color-ink-faint);
-  stroke: none;
-  opacity: 0.6;
-}
-.stop-art text {
-  fill: var(--color-ink-faint);
-  stroke: none;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-}
-.stop-art .big {
-  fill: var(--color-ink);
-  font-size: 30px;
-  letter-spacing: 0;
 }
 
 /* A ruled list: hairlines on each row, closed by one at the foot. */
