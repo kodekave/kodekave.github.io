@@ -1559,6 +1559,135 @@ h3 {
   }
 }
 
+/*
+ * The reference guides are one large folder, cut like the shelf above: a tab
+ * with the section's name, two sheets stepping up behind the front, and the
+ * guides listed on the front. A row lifts out of it as a sheet when pointed at.
+ */
+.binder {
+  --folder: color-mix(in srgb, var(--color-mist) 80%, var(--color-chalk));
+  --folder-line: color-mix(in srgb, var(--color-ink) 24%, var(--color-paper));
+  position: relative;
+  padding-top: 2.6rem;
+}
+.binder-tab {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  height: 2.6rem;
+  padding: 0 1.5rem;
+  white-space: nowrap;
+  border: 1px solid var(--folder-line);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--folder);
+}
+/* Covers the front's top edge under the tab, so the two read as one piece. */
+.binder-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--folder);
+}
+.binder-sheet {
+  position: absolute;
+  z-index: 0;
+  display: none;
+  height: 3rem;
+  border: 1px solid var(--folder-line);
+  border-radius: 8px 8px 0 0;
+  background: var(--color-paper);
+}
+.binder-sheet-1 {
+  top: 1.35rem;
+  left: 15rem;
+  right: 2.4rem;
+}
+.binder-sheet-2 {
+  top: 0.6rem;
+  left: 17.5rem;
+  right: 4.2rem;
+}
+@media (min-width: 640px) {
+  .binder-sheet {
+    display: block;
+  }
+}
+.binder-front {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1.5rem 3.5rem;
+  padding: 2.2rem 1.2rem 0.6rem;
+  border: 1px solid var(--folder-line);
+  border-radius: 14px;
+  background: var(--folder);
+}
+@media (min-width: 640px) {
+  .binder-front {
+    padding: 2.4rem 1.5rem 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .binder-front {
+    padding: 2.8rem 2.6rem 1.4rem;
+  }
+}
+@media (min-width: 1024px) {
+  .binder-front {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    align-items: start;
+  }
+}
+.binder-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.binder-list li {
+  border-top: 1px solid var(--folder-line);
+}
+.binder-row {
+  display: grid;
+  grid-template-columns: 1.7rem minmax(0, 1fr) auto;
+  gap: 0 0.7rem;
+  align-items: start;
+  margin-inline: -1rem;
+  padding: 1.6rem 1rem;
+  border-radius: 10px;
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.25s ease,
+    box-shadow 0.3s ease;
+}
+.binder-row:hover,
+.binder-row:focus-visible {
+  transform: translateY(-2px);
+  background: var(--color-paper);
+  box-shadow: 0 14px 24px -20px color-mix(in srgb, var(--color-ink) 60%, transparent);
+}
+.binder-row:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+.binder-row .door-arrow {
+  margin-top: 0.4rem;
+  transition: transform 0.25s ease;
+}
+.binder-row:hover .door-arrow {
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .binder-row,
+  .binder-row .door-arrow {
+    transition: none;
+  }
+}
+
 /* The book. One sheet by default; two pages from a wide screen. */
 .book {
   --page: color-mix(in srgb, var(--color-paper) 55%, #fff);
@@ -1762,35 +1891,43 @@ h3 {
     animation-play-state: running;
   }
 }
+/* The elbow channel: a 3D wireframe drawn live on the canvas (see
+   lib/elbow3d.ts). The still SVG is what the server sends, and what stays with
+   no script or reduced motion; the canvas takes over once it is running. */
 .phone-elbow {
+  position: relative;
   width: 100%;
+  aspect-ratio: 200 / 170;
   margin-block: auto;
-  overflow: visible;
 }
-.flow-wall {
+.phone-elbow > svg,
+.phone-elbow > canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.phone-elbow > canvas {
+  display: none;
+}
+.phone[data-canvas] .phone-elbow > canvas {
+  display: block;
+}
+.phone[data-canvas] .phone-elbow > svg {
+  display: none;
+}
+.wire {
   fill: none;
-  stroke: var(--color-paper-faint);
-  stroke-width: 1;
+  stroke: var(--color-paper);
+  stroke-opacity: 0.3;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
 }
-.flow-line {
-  fill: none;
-  stroke: var(--color-brass);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-dasharray: 0.1 9;
+.wire-edge {
+  stroke-opacity: 0.6;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .phone[data-armed] .flow-line {
-    animation: flow 1.6s linear infinite paused;
-  }
-  .phone[data-armed][data-live="true"] .flow-line {
-    animation-play-state: running;
-  }
-}
-@keyframes flow {
-  to {
-    stroke-dashoffset: -19;
-  }
+.wire-dot {
+  fill: var(--color-brass);
 }
 .phone-readout {
   display: flex;

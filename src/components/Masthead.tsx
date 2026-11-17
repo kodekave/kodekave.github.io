@@ -43,7 +43,7 @@ export default function Masthead({
       <div
         className={`settle relative mx-auto max-w-6xl px-6 pb-16 pt-14 md:px-10 md:pb-24 md:pt-20 ${
           plate
-            ? "grid gap-12 lg:grid-cols-[1.45fr_0.55fr] lg:items-end lg:gap-16"
+            ? "grid gap-12 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:gap-8"
             : ""
         }`}
       >
@@ -89,8 +89,8 @@ export default function Masthead({
           <PortraitCard
             alt="Engraved portrait"
             priority
-            sizes="(max-width: 640px) 70vw, 22vw"
-            className="w-full max-w-[17rem] justify-self-start lg:justify-self-end"
+            sizes="(max-width: 640px) 80vw, 26vw"
+            className="w-full max-w-[19rem] justify-self-start lg:max-w-[21rem] lg:justify-self-end"
           />
         )}
       </div>
