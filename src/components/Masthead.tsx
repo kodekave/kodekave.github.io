@@ -78,7 +78,7 @@ export default function Masthead({
             {title}
           </h1>
           {lead && (
-            <p className="mt-8 max-w-xl text-[1.15rem] leading-[1.7] text-ink-soft">
+            <p className="mt-8 max-w-xl text-[1.125rem] leading-[1.7] text-ink-soft">
               {lead}
             </p>
           )}

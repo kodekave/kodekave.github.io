@@ -53,7 +53,7 @@ export default function Footer() {
         <div className="border-t border-hair">
           <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 md:flex-row md:items-start md:justify-between md:px-10">
             <div className="flex flex-col gap-3">
-              <Link href="/" className="font-display py-2 text-[1.3rem] leading-none">
+              <Link href="/" className="font-display py-3 text-[1.25rem] leading-none">
                 Komal Kedarnath
               </Link>
               <p className="label text-ink-faint">
@@ -67,7 +67,7 @@ export default function Footer() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="link-rule self-start py-[0.7rem] text-[0.92rem] text-ink-soft hover:text-ink"
+                    className="link-rule hit hit-x self-start py-[0.7rem] text-[0.9375rem] text-ink-soft hover:text-ink"
                   >
                     {link.label}
                   </Link>
@@ -91,7 +91,7 @@ export default function Footer() {
                             : "noopener noreferrer",
                         }
                       : {})}
-                    className="link-rule self-start py-[0.7rem] text-[0.92rem] text-ink-soft hover:text-ink"
+                    className="link-rule hit hit-x self-start py-[0.7rem] text-[0.9375rem] text-ink-soft hover:text-ink"
                   >
                     {link.label}
                   </a>

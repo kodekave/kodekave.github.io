@@ -107,12 +107,12 @@ export default function WorkPage() {
                 >
                   {s.value}
                 </dd>
-                <dd className="mt-4 text-[0.95rem] text-ink-soft">{s.tag}</dd>
+                <dd className="mt-4 text-[0.9375rem] text-ink-soft">{s.tag}</dd>
                 <dd className="mt-2">
                   {sourceSlug[s.source] ? (
                     <a
                       href={`#${sourceSlug[s.source]}`}
-                      className="label link-rule text-ink-faint hover:text-ink"
+                      className="label link-rule hit text-ink-faint hover:text-ink"
                     >
                       View source ↗
                       <span className="sr-only"> — {s.source}</span>
@@ -184,7 +184,7 @@ export default function WorkPage() {
                             href={l.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="label ref text-ink-soft"
+                            className="label ref hit text-ink-soft"
                           >
                             {l.label}
                           </a>

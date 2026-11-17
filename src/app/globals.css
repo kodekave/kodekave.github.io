@@ -150,7 +150,7 @@ body {
   border-radius: 6px;
   background: var(--color-brass);
   color: var(--color-ink);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   transform: translateY(-200%);
 }
 .skip-link:focus {
@@ -411,8 +411,8 @@ body {
   position: relative;
   display: grid;
   place-items: center;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
 }
 .journey-dot::before {
@@ -534,10 +534,10 @@ body {
     padding: 0.7rem 0;
   }
   .journey[data-scene="live"] .jstop h3 {
-    font-size: 1.12rem;
+    font-size: 1.125rem;
   }
   .journey[data-scene="live"] .jstop p:not(.label) {
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     line-height: 1.45;
   }
   .journey[data-scene="live"] .jstop a {
@@ -578,7 +578,7 @@ body {
     font-size: 1.5rem;
   }
   .journey[data-scene="live"] .post-title {
-    font-size: 1.22rem;
+    font-size: 1.25rem;
   }
   .journey[data-scene="live"] .callout {
     padding-block: 3.2rem;
@@ -597,7 +597,7 @@ body {
     padding-block: 0.9rem;
   }
   .journey[data-scene="live"] .reg-name {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
   }
   .journey[data-scene="live"] .callout {
     padding-block: 2.6rem;
@@ -668,7 +668,7 @@ body {
     display: none;
   }
   .journey[data-scene="live"] .jplace-name {
-    font-size: 1.05rem;
+    font-size: 1.0625rem;
   }
   .journey[data-scene="live"] .jmap-detail {
     height: auto;
@@ -694,7 +694,7 @@ body {
     -webkit-line-clamp: 1;
     overflow: hidden;
     margin-top: 0.1rem;
-    font-size: 0.8rem;
+    font-size: 0.8125rem;
     line-height: 1.35;
   }
 }
@@ -925,6 +925,27 @@ html:has(.journey[data-scene="live"]) .trail {
   }
 }
 
+/*
+ * Grows a small standalone link's tap area to about 44px without changing how
+ * it looks: an invisible box around it. `hit-sm` is for links already 28 to 35px
+ * tall, `hit-x` for ones that are tall enough but narrow. Not used on links
+ * inside a sentence, where the box would sit over the words beside them.
+ */
+.hit {
+  position: relative;
+}
+.hit::before {
+  content: "";
+  position: absolute;
+  inset: -14px -8px;
+}
+.hit-sm::before {
+  inset: -8px -8px;
+}
+.hit-x::before {
+  inset: 0 -12px;
+}
+
 /* Inline reference links in body copy — the corroborating links this site
    leans on, so they stay visibly links rather than tinted text. */
 .ref {
@@ -1076,7 +1097,7 @@ html:has(.journey[data-scene="live"]) .trail {
   gap: 0.4em;
   padding: 0;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-ink-soft);
@@ -1285,8 +1306,8 @@ h3 {
   position: absolute;
   display: grid;
   place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.75rem;
+  height: 2.75rem;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -1339,7 +1360,7 @@ h3 {
   top: 50%;
   left: calc(50% + 0.95rem);
   padding: 0.1rem 0.4rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   white-space: nowrap;
   color: var(--color-ink-soft);
@@ -1368,6 +1389,7 @@ h3 {
   grid-template-columns: 1.9rem minmax(0, 1fr) auto;
   align-items: baseline;
   width: 100%;
+  min-height: 2.75rem;
   padding: 0.95rem 0.6rem;
   border: 0;
   border-top: 1px solid var(--color-hair);

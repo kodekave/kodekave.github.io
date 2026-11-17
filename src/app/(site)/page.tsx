@@ -94,10 +94,10 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-6 flex flex-wrap items-baseline gap-x-5 gap-y-1 md:mt-11">
-            <span className="font-display-text text-[1.2rem]">
+            <span className="font-display-text text-[1.25rem]">
               {profile.name}
             </span>
-            <span className="font-display-text text-[1.2rem] text-brass-deep">
+            <span className="font-display-text text-[1.25rem] text-brass-deep">
               Startups-Operator. Maker. Explorer.
             </span>
           </p>
@@ -162,7 +162,7 @@ export default function HomePage() {
             <h2 className="step-title font-display text-3xl sm:text-4xl">What I bring</h2>
             <Link
               href="/services"
-              className="label link-rule text-ink-soft hover:text-ink"
+              className="label link-rule hit text-ink-soft hover:text-ink"
             >
               How it works
             </Link>
@@ -173,7 +173,7 @@ export default function HomePage() {
                 key={e.name}
                 className="flex items-baseline justify-between gap-6 border-t border-hair py-4"
               >
-                <span className="reg-name font-display-text text-[1.2rem] leading-snug">
+                <span className="reg-name font-display-text text-[1.25rem] leading-snug">
                   {e.name}
                 </span>
                 <span className="label shrink-0 text-ink-faint">{e.stamp}</span>
@@ -202,7 +202,7 @@ export default function HomePage() {
                   </h2>
                   <Link
                     href="/blog"
-                    className="label link-rule text-ink-soft hover:text-ink"
+                    className="label link-rule hit text-ink-soft hover:text-ink"
                   >
                     All posts
                   </Link>
@@ -220,7 +220,7 @@ export default function HomePage() {
                         >
                           {post.published_at.slice(0, 10)}
                         </time>
-                        <span className="post-title font-display-text text-[1.05rem] leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                        <span className="post-title font-display-text text-[1.0625rem] leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
                           {post.title}
                         </span>
                       </Link>
@@ -262,7 +262,7 @@ export default function HomePage() {
                   href={p.href}
                   target="_blank"
                   rel={p.me ? "me noopener noreferrer" : "noopener noreferrer"}
-                  className="link-rule hover:text-ink"
+                  className="link-rule hit hit-sm hover:text-ink"
                 >
                   {p.label}
                   <span className="sr-only"> (opens in a new tab)</span>
