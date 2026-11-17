@@ -5,8 +5,9 @@ import { EQUATION } from "@/lib/equation-points";
 import {
   buildCloud,
   DT,
+  HEAD_LEAD,
   FLOATS,
-  PATH_TIME,
+  indexAtShare,
   pickMapPoints,
   sampleAt,
   viewProjection,
@@ -79,12 +80,16 @@ const MAP_PACE = 0.4;
  * scroll. FLIGHT_MAX is that ceiling in screens of scroll a second, GAIN how
  * hard it chases a gap (a second order follower, so it eases in and out), and
  * LAG how gently its speed changes. PATH_SHARE is how much of the recorded
- * curve the whole scroll flies through (the rest is only ever cloud).
+ * curve's length the whole scroll flies through (the rest is only ever
+ * cloud). The point is moved by distance along the curve, not by time (it
+ * would otherwise speed up and slow down fivefold as it loops), so this sets
+ * its one even speed: 0.2 is about 2 scene units a second at the fastest
+ * flight, slow enough to follow with the eye.
  */
 const FLIGHT_MAX = 0.7;
 const FLIGHT_GAIN = 2;
 const FLIGHT_LAG = 0.12;
-const PATH_SHARE = 0.5;
+const PATH_SHARE = 0.2;
 /** A step fades in over IN, holds, and fades out over OUT before its end. */
 const FADE_IN = 0.3;
 const FADE_OUT_AT = 0.5;
@@ -682,11 +687,13 @@ export default function JourneyScene({
 
         const start = ZOOM * 0.8;
         const u = clamp01((flown(f) - flown(start)) / Math.max(0.01, flown(total) - flown(start)));
-        const t = u * PATH_TIME * PATH_SHARE;
-        const idx = t / DT;
+        // How far along the path the camera is, by distance, so the point goes
+        // at one even speed; the head is drawn a little further on.
+        const idx = indexAtShare(cloud, u * PATH_SHARE);
+        const headIdx = idx + HEAD_LEAD / DT;
         sampleAt(cloud.eye, idx, eyeP);
         sampleAt(cloud.look, idx, lookP);
-        sampleAt(cloud.path, (t + 0.9) / DT, headP);
+        sampleAt(cloud.path, headIdx, headP);
         // Land from outside: start pulled back along the view, close in as
         // the zoom ends.
         const back = 0.8 + 2.6 * (1 - smooth01((z - 0.4) / 0.6));
@@ -708,7 +715,7 @@ export default function JourneyScene({
           eye: eyeP,
           target: lookP,
           head: headP,
-          prog: (t + 0.9) / DT / cloud.samples,
+          prog: headIdx / cloud.samples,
           fade: smooth01((z - 0.48) / 0.45) * (shapeOk ? 1 : 1 - morph),
           shift: desktop ? [0.3, 0] : [0, 0.34],
           morph: shapeOk ? morph : 0,
