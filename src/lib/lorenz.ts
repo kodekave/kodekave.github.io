@@ -33,20 +33,49 @@ const PAD_TIME = 3;
 const TOTAL_TIME = PATH_TIME + PAD_TIME;
 export const DT = 0.004;
 
-/** The yellow head is drawn this many seconds of path ahead of the camera's own time. */
-export const HEAD_LEAD = 0.9;
 /**
- * The camera: it aims at the path smoothed over +-FOCUS_TIME seconds (long
- * enough to average out a loop round a wing), CAMERA_DIST scene units back
- * along a view direction that starts at BEARING_START degrees round the
- * attractor, turns BEARING_TURN degrees per second of path, and looks down
- * CAMERA_TILT radians. The page pulls it a little further back on arrival.
+ * The yellow point is drawn this far (scene units along the curve) ahead of the
+ * spot the page asks about, and the camera is placed relative to it.
  */
-const FOCUS_TIME = 0.9;
-const CAMERA_DIST = 2.2;
-const BEARING_START = 85;
-const BEARING_TURN = 12;
-const CAMERA_TILT = 0.3;
+export const HEAD_ARC = 2.0;
+/**
+ * The camera rides the curve behind the point and looks at it, so the point
+ * stays in view while the view swings through three dimensions with it.
+ * Everything is measured along the curve (scene units of distance travelled),
+ * not in seconds, because a point on the attractor speeds up and slows down
+ * about five times as it loops, and the page moves it by distance.
+ *
+ *  - The eye rides a copy of the curve averaged over +-EYE_ARC (so it follows
+ *    the sweeps without the tightest corkscrew), EYE_BEHIND behind the point and
+ *    EYE_LIFT above it.
+ *  - It looks at the point itself, averaged over only +-AIM_ARC.
+ *  - The page pulls it a little further back along the view on arrival.
+ */
+const EYE_ARC = 1.2;
+const EYE_BEHIND = 7;
+const EYE_LIFT = 0.6;
+const AIM_ARC = 0.2;
+
+/**
+ * Other points move through the cloud while the camera follows the first: each
+ * is its own run of the system from a start close to the first one's, so they
+ * begin beside it and fan out as the system magnifies the difference. Each
+ * leaves a short fading trail. They go by distance too, at nearly the same
+ * speed as the first (FOLLOWER_SPEED times it).
+ */
+export const FOLLOWERS = 5;
+/** Points in each one's trail, FOLLOWER_STEP units of distance apart. */
+export const FOLLOWER_TRAIL = 84;
+const FOLLOWER_STEP = 0.022;
+const FOLLOWER_SPEED = [1, 0.88, 1.12, 0.8, 1.2];
+/** How far each starts from the first point, in Lorenz units. */
+const FOLLOWER_SPREAD = [
+  [3, -2, 1],
+  [-2.5, 3, -1.5],
+  [1.5, 2.5, 3],
+  [-3, -1.5, -2.5],
+  [2, -3, -1],
+];
 
 /** Floats per vertex: x y z, along (0..1 of the path) or a random, kind. */
 export const FLOATS = 5;
@@ -66,6 +95,8 @@ export type Cloud = {
   dust: number;
   /** Distance along the path to each sample, from the first one. */
   arc: Float32Array;
+  /** The other points' own runs of the system, and the distance along each. */
+  followers: { xyz: Float32Array; arc: Float32Array }[];
 };
 
 function mulberry32(seed: number) {
@@ -108,25 +139,6 @@ function rk4(s: number[], h: number) {
   s[2] = z + (h / 6) * (k1z + 2 * k2z + 2 * k3z + k4z);
 }
 
-/** A centred moving average of an xyz array, `radius` samples each side. */
-function smooth(src: Float32Array, radius: number): Float32Array {
-  const n = src.length / 3;
-  const out = new Float32Array(src.length);
-  const pre = new Float64Array((n + 1) * 3);
-  for (let i = 0; i < n; i++) {
-    for (let c = 0; c < 3; c++) pre[(i + 1) * 3 + c] = pre[i * 3 + c] + src[i * 3 + c];
-  }
-  for (let i = 0; i < n; i++) {
-    const a = Math.max(0, i - radius);
-    const b = Math.min(n - 1, i + radius);
-    const len = b - a + 1;
-    for (let c = 0; c < 3; c++) {
-      out[i * 3 + c] = (pre[(b + 1) * 3 + c] - pre[a * 3 + c]) / len;
-    }
-  }
-  return out;
-}
-
 /**
  * Build the cloud. `density` is 1 on a desktop and about half on a phone; it
  * scales the point counts only, so the shape is the same.
@@ -137,6 +149,7 @@ export function buildCloud(density = 1): Cloud {
   // The camera's trajectory: settle onto the attractor, then record.
   const s = [-5.9, -7.2, 24.5];
   for (let i = 0; i < 1500; i++) rk4(s, DT);
+  const origin = [s[0], s[1], s[2]];
   const samples = Math.round(TOTAL_TIME / DT);
   const used = Math.round(PATH_TIME / DT);
   const path = new Float32Array(samples * 3);
@@ -147,30 +160,59 @@ export function buildCloud(density = 1): Cloud {
     path[i * 3 + 2] = (s[2] - Z_CENTRE) * SCALE;
   }
 
-  // The camera does not ride the curve: a point loops round a wing every
-  // second or so, and a camera that rode with it whipped round at hundreds of
-  // degrees a second and lost the point. It aims at a smoothed copy of where the
-  // point is (so it glides from wing to wing and the point is seen looping
-  // round it), and sits a fixed distance back along a bearing that turns slowly,
-  // so the view moves in three dimensions without ever swinging.
-  const focus = smooth(path, Math.round(FOCUS_TIME / DT));
-  const lead = Math.round(HEAD_LEAD / DT);
+  // How far along the path each sample is. A point on the attractor speeds up
+  // and slows down by a factor of five as it loops, so the camera, the head and
+  // the page all work in distance along the path, not in time.
+  const arc = new Float32Array(samples);
+  for (let i = 1; i < samples; i++) {
+    arc[i] =
+      arc[i - 1] +
+      Math.hypot(
+        path[i * 3] - path[(i - 1) * 3],
+        path[i * 3 + 1] - path[(i - 1) * 3 + 1],
+        path[i * 3 + 2] - path[(i - 1) * 3 + 2]
+      );
+  }
+
+  // The camera rides the curve behind the point and looks at it (see EYE_ARC
+  // and the rest).
+  const ride = smoothByArc(path, arc, EYE_ARC);
+  const aimAt = smoothByArc(path, arc, AIM_ARC);
   const eye = new Float32Array(samples * 3);
   const look = new Float32Array(samples * 3);
-  const cosEl = Math.cos(CAMERA_TILT);
-  const sinEl = Math.sin(CAMERA_TILT);
+  const here = [0, 0, 0];
+  const aim = [0, 0, 0];
   for (let i = 0; i < samples; i++) {
-    const j = Math.min(samples - 1, i + lead);
-    const bearing = ((BEARING_START + BEARING_TURN * i * DT) * Math.PI) / 180;
-    // The view direction: along the bearing, tilted down a little.
-    const dx = cosEl * Math.cos(bearing);
-    const dy = cosEl * Math.sin(bearing);
-    const dz = -sinEl;
-    for (let c = 0; c < 3; c++) look[i * 3 + c] = focus[j * 3 + c];
-    eye[i * 3] = look[i * 3] - dx * CAMERA_DIST;
-    eye[i * 3 + 1] = look[i * 3 + 1] - dy * CAMERA_DIST;
-    eye[i * 3 + 2] = look[i * 3 + 2] - dz * CAMERA_DIST;
+    sampleAt(ride, arcIndex(arc, arc[i] + HEAD_ARC - EYE_BEHIND), here);
+    sampleAt(aimAt, arcIndex(arc, arc[i] + HEAD_ARC), aim);
+    eye[i * 3] = here[0];
+    eye[i * 3 + 1] = here[1];
+    eye[i * 3 + 2] = here[2] + EYE_LIFT;
+    for (let c = 0; c < 3; c++) look[i * 3 + c] = aim[c];
   }
+
+  // The other points: their own runs of the system from close to the same start.
+  const followers = FOLLOWER_SPREAD.map((d) => {
+    const f = [origin[0] + d[0], origin[1] + d[1], origin[2] + d[2]];
+    const xyz = new Float32Array(samples * 3);
+    const along = new Float32Array(samples);
+    for (let i = 0; i < samples; i++) {
+      rk4(f, DT);
+      xyz[i * 3] = f[0] * SCALE;
+      xyz[i * 3 + 1] = f[1] * SCALE;
+      xyz[i * 3 + 2] = (f[2] - Z_CENTRE) * SCALE;
+      if (i > 0) {
+        along[i] =
+          along[i - 1] +
+          Math.hypot(
+            xyz[i * 3] - xyz[(i - 1) * 3],
+            xyz[i * 3 + 1] - xyz[(i - 1) * 3 + 1],
+            xyz[i * 3 + 2] - xyz[(i - 1) * 3 + 2]
+          );
+      }
+    }
+    return { xyz, arc: along };
+  });
 
   // Dust: trajectories from scattered starts.
   const trajectories = 12;
@@ -206,39 +248,83 @@ export function buildCloud(density = 1): Cloud {
     vertices[v++] = 1;
   }
 
-  // How far along the path each sample is. A point on the attractor speeds up
-  // and slows down by a factor of five as it loops, so to move it at one even
-  // speed the page asks for a distance along the path, not a time.
-  const arc = new Float32Array(samples);
-  for (let i = 1; i < samples; i++) {
-    arc[i] =
-      arc[i - 1] +
-      Math.hypot(
-        path[i * 3] - path[(i - 1) * 3],
-        path[i * 3 + 1] - path[(i - 1) * 3 + 1],
-        path[i * 3 + 2] - path[(i - 1) * 3 + 2]
-      );
-  }
+  return { vertices, count, eye, look, path, samples, used, dust: trajectories * perTrajectory, arc, followers };
+}
 
-  return { vertices, count, eye, look, path, samples, used, dust: trajectories * perTrajectory, arc };
+/**
+ * Where the other points are, with their trails, when the first point is
+ * `here` units of distance along the path (see HEAD_ARC): FOLLOWERS runs of
+ * FOLLOWER_TRAIL xyz points, newest first, written into `out`.
+ */
+export function followerPoints(cloud: Cloud, here: number, out: Float32Array) {
+  const p = [0, 0, 0];
+  for (let k = 0; k < cloud.followers.length; k++) {
+    const f = cloud.followers[k];
+    const tip = here * FOLLOWER_SPEED[k % FOLLOWER_SPEED.length];
+    for (let j = 0; j < FOLLOWER_TRAIL; j++) {
+      sampleAt(f.xyz, arcIndex(f.arc, tip - j * FOLLOWER_STEP), p);
+      const o = (k * FOLLOWER_TRAIL + j) * 3;
+      out[o] = p[0];
+      out[o + 1] = p[1];
+      out[o + 2] = p[2];
+    }
+  }
+}
+
+/** Distance along the journey's path, `share` of the way (see indexAtShare). */
+export function pathArcAt(cloud: Cloud, share: number): number {
+  return Math.min(1, Math.max(0, share)) * cloud.arc[cloud.used - 1];
+}
+
+/** The (fractional) sample index `a` units of distance along the path, clamped to its ends. */
+function arcIndex(arc: Float32Array, a: number): number {
+  const n = arc.length;
+  if (a <= 0) return 0;
+  if (a >= arc[n - 1]) return n - 1;
+  let lo = 0;
+  let hi = n - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (arc[mid] < a) lo = mid;
+    else hi = mid;
+  }
+  const span = arc[hi] - arc[lo];
+  return lo + (span > 0 ? (a - arc[lo]) / span : 0);
+}
+
+/**
+ * A centred moving average of an xyz array over +-`radius` units of distance
+ * along the path (each sample weighted by the stretch of path it covers, so a
+ * fast part of the loop counts as much as a slow one).
+ */
+function smoothByArc(src: Float32Array, arc: Float32Array, radius: number): Float32Array {
+  const n = src.length / 3;
+  const out = new Float32Array(src.length);
+  const pre = new Float64Array((n + 1) * 3);
+  const weight = new Float64Array(n + 1);
+  for (let i = 0; i < n; i++) {
+    const w = i === 0 ? 0 : arc[i] - arc[i - 1];
+    weight[i + 1] = weight[i] + w;
+    for (let c = 0; c < 3; c++) pre[(i + 1) * 3 + c] = pre[i * 3 + c] + w * src[i * 3 + c];
+  }
+  for (let i = 0; i < n; i++) {
+    const a = Math.floor(arcIndex(arc, arc[i] - radius));
+    const b = Math.floor(arcIndex(arc, arc[i] + radius));
+    const total = weight[b + 1] - weight[a] || 1;
+    for (let c = 0; c < 3; c++) out[i * 3 + c] = (pre[(b + 1) * 3 + c] - pre[a * 3 + c]) / total;
+  }
+  return out;
 }
 
 /**
  * The (fractional) sample index `share` of the way along the journey's path,
  * measured by distance, so the point travels at one even speed: 0 is the start
- * and 1 the end of the part the camera flies.
+ * and 1 the end of the part the camera flies. `ahead` moves it that many units
+ * further along the path (the head runs HEAD_ARC ahead of the camera).
  */
-export function indexAtShare(cloud: Cloud, share: number): number {
-  const target = Math.min(1, Math.max(0, share)) * cloud.arc[cloud.used - 1];
-  let lo = 0;
-  let hi = cloud.used - 1;
-  while (hi - lo > 1) {
-    const mid = (lo + hi) >> 1;
-    if (cloud.arc[mid] < target) lo = mid;
-    else hi = mid;
-  }
-  const span = cloud.arc[hi] - cloud.arc[lo];
-  return lo + (span > 0 ? (target - cloud.arc[lo]) / span : 0);
+export function indexAtShare(cloud: Cloud, share: number, ahead = 0): number {
+  const target = Math.min(1, Math.max(0, share)) * cloud.arc[cloud.used - 1] + ahead;
+  return arcIndex(cloud.arc, target);
 }
 
 /**
