@@ -4,8 +4,7 @@ import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "
 import { EQUATION } from "@/lib/equation-points";
 import {
   buildCloud,
-  DT,
-  HEAD_LEAD,
+  HEAD_ARC,
   FLOATS,
   indexAtShare,
   pickMapPoints,
@@ -690,7 +689,7 @@ export default function JourneyScene({
         // How far along the path the camera is, by distance, so the point goes
         // at one even speed; the head is drawn a little further on.
         const idx = indexAtShare(cloud, u * PATH_SHARE);
-        const headIdx = idx + HEAD_LEAD / DT;
+        const headIdx = indexAtShare(cloud, u * PATH_SHARE, HEAD_ARC);
         sampleAt(cloud.eye, idx, eyeP);
         sampleAt(cloud.look, idx, lookP);
         sampleAt(cloud.path, headIdx, headP);
