@@ -163,7 +163,7 @@ export default function ResearchPage() {
                         {r.title}
                       </h3>
                       <p className="label mt-2 text-ink-faint">{r.org}</p>
-                      <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+                      <p className="mt-4 max-w-[32em] leading-relaxed text-ink-soft">
                         {r.detail}
                       </p>
                       {r.url && (
@@ -172,7 +172,7 @@ export default function ResearchPage() {
                             href={r.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="label ref text-ink-soft"
+                            className="label ref hit text-ink-soft"
                           >
                             {r.linkLabel ?? "Reference"}
                           </a>

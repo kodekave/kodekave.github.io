@@ -344,9 +344,9 @@ export default function JourneyMap({ places }: { places: MapPlace[] }) {
                   <p className="label tabular pt-1.5 text-ink-faint">{s.year}</p>
                   <div>
                     <h3 className="font-display-text text-[1.25rem] leading-snug">{s.title}</h3>
-                    <p className="mt-1 text-[0.95rem] leading-relaxed text-ink-soft">{s.line}</p>
+                    <p className="mt-1 max-w-[32em] text-[0.9375rem] leading-relaxed text-ink-soft">{s.line}</p>
                     {s.href && (
-                      <Link href={s.href} className="label link-rule mt-2 inline-block text-ink">
+                      <Link href={s.href} className="label link-rule hit mt-2 inline-block text-ink">
                         {s.hrefLabel ?? "Open the record"}
                       </Link>
                     )}

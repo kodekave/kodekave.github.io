@@ -145,7 +145,7 @@ export default function ServicesPage() {
                     </h3>
                     <span className="stamp">{e.stamp}</span>
                   </div>
-                  <p className="mt-5 max-w-2xl text-lg leading-[1.75] text-ink-soft">
+                  <p className="mt-5 max-w-[32em] text-lg leading-[1.75] text-ink-soft">
                     {e.summary}
                   </p>
                   <ul className="mt-8 flex flex-col gap-3.5 border-t border-hair pt-7">
@@ -196,7 +196,7 @@ export default function ServicesPage() {
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                     <Link
                       href={`/work#${v.slug}`}
-                      className="font-display-text link-rule text-xl"
+                      className="font-display-text link-rule hit hit-sm text-xl"
                     >
                       {v.company}
                     </Link>
@@ -209,7 +209,7 @@ export default function ServicesPage() {
                     />
                     <span className="label text-ink-faint">{v.country}</span>
                   </div>
-                  <p className="mt-3 leading-relaxed text-ink-soft">
+                  <p className="mt-3 max-w-[32em] leading-relaxed text-ink-soft">
                     {v.summary}
                   </p>
                 </li>

@@ -57,7 +57,7 @@ export default function NewsletterForm({
           placeholder="you@company.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`min-w-0 flex-1 rounded-md border px-4 py-3 text-[0.95rem] outline-none transition-colors focus:border-ink ${
+          className={`min-w-0 flex-1 rounded-md border px-4 py-3 text-[0.9375rem] outline-none transition-colors focus:border-ink ${
             onInk
               ? "border-hair-inv bg-transparent text-paper placeholder:text-paper-faint"
               : "border-hair bg-white text-ink placeholder:text-ink-faint"
@@ -70,7 +70,7 @@ export default function NewsletterForm({
 
       <p
         aria-live="polite"
-        className={`mt-3 text-[0.82rem] leading-relaxed ${
+        className={`mt-3 text-[0.8125rem] leading-relaxed ${
           onInk ? "text-paper-faint" : "text-ink-faint"
         }`}
       >

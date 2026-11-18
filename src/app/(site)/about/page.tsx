@@ -90,7 +90,7 @@ export default function AboutPage() {
                 <h2 className="font-display text-[clamp(1.6rem,3.2vw,2.2rem)] leading-tight">
                   {section.heading}
                 </h2>
-                <p className="mt-5 text-lg leading-[1.75] text-ink-soft">
+                <p className="mt-5 max-w-[32em] text-lg leading-[1.75] text-ink-soft">
                   {section.body}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function AboutPage() {
                             href={role.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ref"
+                            className="ref hit"
                           >
                             {role.company}
                           </a>
@@ -126,7 +126,7 @@ export default function AboutPage() {
                       </h3>
                       <p className="label text-ink-faint">{role.period}</p>
                     </div>
-                    <p className="mt-3 leading-relaxed text-ink-soft">
+                    <p className="mt-3 max-w-[32em] leading-relaxed text-ink-soft">
                       {role.description}
                     </p>
                     {role.reference && (
@@ -135,7 +135,7 @@ export default function AboutPage() {
                           href={role.reference.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="label ref text-ink-soft"
+                          className="label ref hit text-ink-soft"
                         >
                           {role.reference.label}
                         </a>
@@ -170,7 +170,7 @@ export default function AboutPage() {
                       <p className="label text-ink-faint">{r.period}</p>
                     </div>
                     <p className="label mt-2 text-ink-faint">{r.org}</p>
-                    <p className="mt-3 leading-relaxed text-ink-soft">
+                    <p className="mt-3 max-w-[32em] leading-relaxed text-ink-soft">
                       {r.detail}
                     </p>
                     {r.url && (
@@ -179,7 +179,7 @@ export default function AboutPage() {
                           href={r.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="label ref text-ink-soft"
+                          className="label ref hit text-ink-soft"
                         >
                           {r.linkLabel ?? "Reference"}
                         </a>
@@ -188,7 +188,7 @@ export default function AboutPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 max-w-xl text-sm leading-relaxed text-ink-faint">
+              <p className="mt-8 max-w-[32em] text-sm leading-relaxed text-ink-faint">
                 Certificates for each of the above are available on request.
                 They are not published here because they carry third-party
                 names and contact details.

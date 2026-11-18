@@ -29,7 +29,7 @@ export default function Nav() {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="font-display justify-self-start py-3 text-[1.3rem] leading-none whitespace-nowrap"
+            className="font-display justify-self-start py-3 text-[1.25rem] leading-none whitespace-nowrap"
           >
             Komal Kedarnath
           </Link>
@@ -42,7 +42,7 @@ export default function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded px-3.5 py-2 text-[0.9rem] text-ink-soft transition-colors hover:bg-paper/80 hover:text-ink"
+                className="rounded px-3.5 py-2.5 text-[0.875rem] text-ink-soft transition-colors hover:bg-paper/80 hover:text-ink"
               >
                 {link.label}
               </Link>
@@ -54,7 +54,7 @@ export default function Nav() {
             target="_blank"
             rel="me noopener noreferrer"
             aria-label="LinkedIn (opens in a new tab)"
-            className="hidden h-9 w-9 items-center justify-center justify-self-end rounded text-ink-soft transition-colors hover:text-ink lg:flex"
+            className="hidden h-11 w-11 items-center justify-center justify-self-end rounded text-ink-soft transition-colors hover:text-ink lg:flex"
           >
             <LinkedInMark className="h-[17px] w-[17px]" />
           </a>
@@ -101,7 +101,7 @@ export default function Nav() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="font-display-text block border-b border-hair px-5 py-4 text-[1.35rem]"
+                className="font-display-text block border-b border-hair px-5 py-4 text-[1.25rem]"
               >
                 {link.label}
               </Link>
