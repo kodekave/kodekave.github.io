@@ -4,9 +4,13 @@ import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "
 import { EQUATION } from "@/lib/equation-points";
 import {
   buildCloud,
+  followerPoints,
+  FOLLOWER_TRAIL,
+  FOLLOWERS,
   HEAD_ARC,
   FLOATS,
   indexAtShare,
+  pathArcAt,
   pickMapPoints,
   sampleAt,
   viewProjection,
@@ -60,8 +64,12 @@ export type SceneStep = {
  */
 const ZOOM = 1.1;
 const STEP = 1.1;
-/** Flight before the map, the points forming it, the hold, the points breaking up. */
-const MAP_LEAD = 0.1;
+/**
+ * Flight before the map (after the zoom: the camera following the point through
+ * the curve, with the other points moving), the points forming it, the hold, the
+ * points breaking up.
+ */
+const MAP_LEAD = 1.7;
 const MAP_FORM = 0.7;
 const MAP_HOLD = 1.1;
 const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
@@ -82,13 +90,14 @@ const MAP_PACE = 0.4;
  * curve's length the whole scroll flies through (the rest is only ever
  * cloud). The point is moved by distance along the curve, not by time (it
  * would otherwise speed up and slow down fivefold as it loops), so this sets
- * its one even speed: 0.2 is about 2 scene units a second at the fastest
- * flight, slow enough to follow with the eye.
+ * its one even speed: 0.14 is about 1.5 scene units a second at the fastest
+ * flight (the camera rides the curve now, so the view swings with the point
+ * and this keeps it from spinning too fast).
  */
 const FLIGHT_MAX = 0.7;
 const FLIGHT_GAIN = 2;
 const FLIGHT_LAG = 0.12;
-const PATH_SHARE = 0.2;
+const PATH_SHARE = 0.14;
 /** A step fades in over IN, holds, and fades out over OUT before its end. */
 const FADE_IN = 0.3;
 const FADE_OUT_AT = 0.5;
@@ -145,14 +154,18 @@ void main() {
   float near = smoothstep(0.05, 0.4, d);
   float far = 1.0 - smoothstep(2.4, 7.0, d);
   float size;
-  if (kind > 1.5) size = 20.0 * uPx;
+  if (kind > 2.5) size = clamp(uPx * 5.6 / d, 2.2 * uPx, 9.0 * uPx) * (1.0 - 0.6 * aMeta.x) * (aMeta.x < 0.001 ? 1.9 : 1.0);
+  else if (kind > 1.5) size = 20.0 * uPx;
   else if (kind > 0.5) size = clamp(uPx * 2.6 / d, 1.3 * uPx, 8.0 * uPx);
   else size = clamp(uPx * 1.9 / d, 1.0 * uPx, 7.0 * uPx);
   vec3 ink = vec3(0.122, 0.169, 0.153);
   vec3 deep = vec3(0.333, 0.388, 0.227);
   vec3 col = ink;
   float a = 0.2;
-  if (kind > 1.5) {
+  if (kind > 2.5) {
+    // The other points: a dot with a trail that fades with its age (aMeta.x).
+    a = pow(1.0 - aMeta.x, 1.3) * 0.95;
+  } else if (kind > 1.5) {
     a = 1.0;
   } else if (kind > 0.5) {
     float done = step(aMeta.x, uProg);
@@ -189,7 +202,7 @@ varying float vKind;
 void main() {
   float r = length(gl_PointCoord - 0.5);
   if (r > 0.5) discard;
-  if (vKind > 1.5) {
+  if (vKind > 1.5 && vKind < 2.5) {
     vec3 yellow = vec3(0.969, 0.937, 0.588);
     vec3 ink = vec3(0.122, 0.169, 0.153);
     vec3 c = mix(yellow, ink, smoothstep(0.3, 0.36, r));
@@ -206,6 +219,8 @@ type Renderer = {
     eye: number[];
     target: number[];
     head: number[];
+    /** The other points and their trails: xyz, FOLLOWER_TRAIL per point, newest first. */
+    others: Float32Array;
     prog: number;
     fade: number;
     shift: [number, number];
@@ -277,6 +292,16 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
   const headData = new Float32Array([0, 0, 0, 0, 2]);
   gl.bindBuffer(gl.ARRAY_BUFFER, headBuf);
   gl.bufferData(gl.ARRAY_BUFFER, headData, gl.DYNAMIC_DRAW);
+  // The other points: kind 3, with each trail point's age (0 newest, 1 oldest).
+  const othersBuf = gl.createBuffer();
+  const othersN = FOLLOWERS * FOLLOWER_TRAIL;
+  const othersData = new Float32Array(othersN * FLOATS);
+  for (let i = 0; i < othersN; i++) {
+    othersData[i * FLOATS + 3] = (i % FOLLOWER_TRAIL) / (FOLLOWER_TRAIL - 1);
+    othersData[i * FLOATS + 4] = 3;
+  }
+  gl.bindBuffer(gl.ARRAY_BUFFER, othersBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, othersData, gl.DYNAMIC_DRAW);
 
   const stride = FLOATS * 4;
   const bindMain = () => {
@@ -289,8 +314,8 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
     gl.enableVertexAttribArray(loc.map);
     gl.vertexAttribPointer(loc.map, 3, gl.FLOAT, false, 12, 0);
   };
-  const bindHead = () => {
-    gl.bindBuffer(gl.ARRAY_BUFFER, headBuf);
+  const bindOwn = (buf: WebGLBuffer | null) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.enableVertexAttribArray(loc.pos);
     gl.vertexAttribPointer(loc.pos, 3, gl.FLOAT, false, stride, 0);
     gl.enableVertexAttribArray(loc.meta);
@@ -298,6 +323,8 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
     gl.disableVertexAttribArray(loc.map);
     gl.vertexAttrib3f(loc.map, 0, 0, 0);
   };
+  const bindHead = () => bindOwn(headBuf);
+  const bindOthers = () => bindOwn(othersBuf);
 
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -330,7 +357,7 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.bindBuffer(gl.ARRAY_BUFFER, mapBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
     },
-    draw({ eye, target, head, prog: progress, fade, shift, morph }) {
+    draw({ eye, target, head, others, prog: progress, fade, shift, morph }) {
       gl.clear(gl.COLOR_BUFFER_BIT);
       if (fade <= 0.002) return;
       viewProjection(vp, eye, target, w / h, fovY);
@@ -347,6 +374,15 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.drawArrays(gl.POINTS, 0, morph >= 0.999 && targetCount > 0 ? targetCount : cloud.count);
 
       if (morph < 0.99) {
+        for (let i = 0; i < othersN; i++) {
+          othersData[i * FLOATS] = others[i * 3];
+          othersData[i * FLOATS + 1] = others[i * 3 + 1];
+          othersData[i * FLOATS + 2] = others[i * 3 + 2];
+        }
+        bindOthers();
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, othersData);
+        gl.drawArrays(gl.POINTS, 0, othersN);
+
         headData[0] = head[0];
         headData[1] = head[1];
         headData[2] = head[2];
@@ -359,6 +395,7 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.deleteBuffer(main);
       gl.deleteBuffer(mapBuf);
       gl.deleteBuffer(headBuf);
+      gl.deleteBuffer(othersBuf);
       gl.deleteProgram(prog);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
@@ -474,6 +511,7 @@ export default function JourneyScene({
     const eyeP = [0, 0, 0];
     const lookP = [0, 0, 0];
     const headP = [0, 0, 0];
+    const othersP = new Float32Array(FOLLOWERS * FOLLOWER_TRAIL * 3);
 
     // --- the shapes the cloud becomes: the map, then the equation -----------
     let cells: LandCell[] = [];
@@ -693,6 +731,7 @@ export default function JourneyScene({
         sampleAt(cloud.eye, idx, eyeP);
         sampleAt(cloud.look, idx, lookP);
         sampleAt(cloud.path, headIdx, headP);
+        followerPoints(cloud, pathArcAt(cloud, u * PATH_SHARE) + HEAD_ARC, othersP);
         // Land from outside: start pulled back along the view, close in as
         // the zoom ends.
         const back = 0.8 + 2.6 * (1 - smooth01((z - 0.4) / 0.6));
@@ -714,6 +753,7 @@ export default function JourneyScene({
           eye: eyeP,
           target: lookP,
           head: headP,
+          others: othersP,
           prog: headIdx / cloud.samples,
           fade: smooth01((z - 0.48) / 0.45) * (shapeOk ? 1 : 1 - morph),
           shift: desktop ? [0.3, 0] : [0, 0.34],
