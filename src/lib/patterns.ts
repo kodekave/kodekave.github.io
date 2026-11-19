@@ -76,8 +76,17 @@ function focusPoint(focus: PatternFocus | undefined, W: number, H: number): [num
 }
 
 /** The ink, as a CSS colour channel triple. */
-export const INK = "31, 43, 39";
-const PAPER = "#f6f5ef";
+export let INK = "31, 43, 39";
+let PAPER = "#f6f5ef";
+
+/**
+ * The page's ink and paper for the theme now showing (lib/theme.ts). Set it
+ * before a drawing is made; the drawings read it as they go.
+ */
+export function setPatternColours(ink: string, paper: string) {
+  INK = ink;
+  PAPER = paper;
+}
 
 /** A small seeded random, so a page's pattern is the same on every load. */
 function rng(seed: number) {

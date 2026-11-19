@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import LinkedInMark from "@/components/LinkedInMark";
+import ThemeToggle from "@/components/ThemeToggle";
 import { profile } from "@/lib/content";
 
 /** Unchanged routes and labels: the redesign restyles, it does not re-lay
@@ -17,7 +18,9 @@ const links = [
 /**
  * A soft panel floating a little below the top edge: the name on the left, the
  * four pages in the middle, the LinkedIn mark on the right. Beside it, the one
- * yellow button the site asks you to press. The page scrolls under both.
+ * yellow button the site asks you to press, and at the far right the switch for
+ * the dark page (on a phone it sits in the panel, beside the menu). The page
+ * scrolls under all of it.
  */
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -49,37 +52,41 @@ export default function Nav() {
             ))}
           </nav>
 
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="me noopener noreferrer"
-            aria-label="LinkedIn (opens in a new tab)"
-            className="hidden h-11 w-11 items-center justify-center justify-self-end rounded text-ink-soft transition-colors hover:text-ink lg:flex"
-          >
-            <LinkedInMark className="h-[17px] w-[17px]" />
-          </a>
+          <div className="flex items-center justify-self-end">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="me noopener noreferrer"
+              aria-label="LinkedIn (opens in a new tab)"
+              className="hidden h-11 w-11 items-center justify-center rounded text-ink-soft transition-colors hover:text-ink lg:flex"
+            >
+              <LinkedInMark className="h-[17px] w-[17px]" />
+            </a>
 
-          <button
-            type="button"
-            className="flex h-11 w-11 items-center justify-center justify-self-end lg:hidden"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            aria-controls="nav-menu"
-            onClick={() => setOpen(!open)}
-          >
-            <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true">
-              <path
-                d={open ? "M4 4L18 18" : "M2 7H20"}
-                stroke="currentColor"
-                strokeWidth="1.25"
-              />
-              <path
-                d={open ? "M18 4L4 18" : "M2 15H20"}
-                stroke="currentColor"
-                strokeWidth="1.25"
-              />
-            </svg>
-          </button>
+            <ThemeToggle className="h-11 w-11 lg:hidden" />
+
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center lg:hidden"
+              aria-label="Toggle menu"
+              aria-expanded={open}
+              aria-controls="nav-menu"
+              onClick={() => setOpen(!open)}
+            >
+              <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true">
+                <path
+                  d={open ? "M4 4L18 18" : "M2 7H20"}
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                />
+                <path
+                  d={open ? "M18 4L4 18" : "M2 15H20"}
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* `.btn` sets its own display, which beats the `hidden` utility, so
@@ -88,6 +95,10 @@ export default function Nav() {
           <Link href="/#contact" className="btn btn-solid-paper h-[52px]">
             Start a conversation
           </Link>
+        </div>
+
+        <div className="hidden lg:block">
+          <ThemeToggle className="h-[52px] w-[52px] rounded-md border border-hair bg-mist/90 backdrop-blur-md" />
         </div>
 
         {open && (

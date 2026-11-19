@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { buildCloud, FLOATS, type Cloud } from "@/lib/lorenz";
+import { cssRgb, onTheme } from "@/lib/theme";
 import {
   type LandCell,
   LAT_T,
@@ -52,7 +53,6 @@ export type MapPlace = {
 const LONS = [-120, -90, -60, -30, 0, 30, 60, 90, 120, 150];
 const LATS = [60, 30, 0, -30];
 
-const INK = "31, 43, 39";
 
 const pct = (v: number, span: number) => `${((v / span) * 100).toFixed(3)}%`;
 
@@ -97,6 +97,8 @@ export default function JourneyMap({
     const card = box.closest<HTMLElement>(".jmap");
     const scene = card?.closest<HTMLElement>(".journey") ?? null;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The dots are drawn in the theme's ink.
+    let ink = cssRgb("--color-ink", "31, 43, 39");
 
     // The dots are built only when they are first drawn, not at page load.
     let ready = false;
@@ -155,7 +157,7 @@ export default function JourneyMap({
           ctx.arc(x, y, r, 0, Math.PI * 2);
         }
         const fade = u < 1 ? 0.45 + 0.55 * ease(u) : 1;
-        ctx.fillStyle = `rgba(${INK}, ${(coastPass ? 0.72 : 0.26) * fade})`;
+        ctx.fillStyle = `rgba(${ink}, ${(coastPass ? 0.72 : 0.26) * fade})`;
         ctx.fill();
       }
     };
@@ -200,6 +202,10 @@ export default function JourneyMap({
     size();
     const ro = new ResizeObserver(size);
     ro.observe(box);
+    const offTheme = onTheme(() => {
+      ink = cssRgb("--color-ink", "31, 43, 39");
+      if (W && H) paint(animating ? Math.min(1, (performance.now() - start) / 1800) : 1);
+    });
 
     // On its own page the dots are drawn once the browser is idle. In the
     // homepage's scroll scene a wider screen never draws them here (the cloud
@@ -221,6 +227,7 @@ export default function JourneyMap({
     }
     card?.addEventListener("jmap-show", play);
     return () => {
+      offTheme();
       cancelAnimationFrame(raf);
       ro.disconnect();
       io?.disconnect();

@@ -47,6 +47,9 @@ OUT_DIR = "public/images"
 # site's green), and the paper under it is the page colour.
 INK_RGB = (13, 17, 15)
 PAPER_RGB = (246, 245, 239)
+# The dark page's version of the same drawing: light line on the dark page, the
+# page's own ink colour (see --color-ink in the dark theme).
+CHALK_RGB = (235, 234, 226)
 
 # The hero plate. The crop drops the busy distressed wall at the right and
 # the lower third of the hoodie; the vignette centre is the face rather than
@@ -155,6 +158,11 @@ PORTRAIT = dict(
 )
 
 
+# Where the chalk begins and how fast it comes in, in the screen's tone.
+DARK_LO = 0.30
+DARK_SPAN = 0.62
+
+
 def _smooth(x):
     x = np.clip(x, 0, 1)
     return x * x * (3 - 2 * x)
@@ -162,9 +170,15 @@ def _smooth(x):
 
 def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
            vignette=1.3, vig_start=0.42, cx=0.45, cy=0.43, hoodie=0.80,
-           wall=0.06, ss=2, cut=150):
+           wall=0.06, ss=2, cut=150, dark=False):
     """Render the sketch as two RGBA layers: the ink, on a transparent ground,
     and a small soft halo of paper that follows the outline.
+
+    `dark` draws it for the dark page: the line is light and follows LIGHT, as
+    chalk on a blackboard does, so the lit face is dense line and shadow and
+    hair are left as the dark page. (Inverting the black sketch instead gives a
+    photographic negative: white hair, dark face.) The chalk equation on the
+    hoodie is then drawn, not cut out.
 
     There is no white rectangle: the ink is the only thing with an edge, and it
     fades out on its own. The halo sits behind it so the page's pattern does
@@ -174,9 +188,14 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
     h, w = lum.shape
     ruling, _ = rulings(lum.shape, freq, ss)
 
-    # Ink follows darkness: shadow and hair are dense, the lit face is paper.
-    t = np.clip((1 - lum) * gain, 0, 1)
-    t = _smooth((t - 0.10) / 0.80) * maxink
+    if dark:
+        # Chalk follows light: the lit face is dense, shadow and hair are page.
+        t = np.clip(lum * gain, 0, 1)
+        t = _smooth((t - DARK_LO) / DARK_SPAN) * maxink
+    else:
+        # Ink follows darkness: shadow and hair are dense, the lit face is paper.
+        t = np.clip((1 - lum) * gain, 0, 1)
+        t = _smooth((t - 0.10) / 0.80) * maxink
 
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
     X, Y = xx / w, yy / h
@@ -204,13 +223,17 @@ def sketch(src, width, crop=None, freq=150, gain=1.0, maxink=0.84,
         Image.fromarray((lum * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(10 * ss))
     ).astype(np.float32) / 255
     chalk = ((lum - blur) > 0.07) & (lum > 0.30) & (region > 0.5)
+    if dark:
+        # Drawn, not cut out, so keep to where the equation is: a bright thing
+        # at the edge of the photograph is not part of it.
+        chalk &= np.abs(X - 0.36) < 0.34
     grown = Image.fromarray((chalk * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3 * ss + 1))
-    ink[np.asarray(grown) > 0] = 0
+    ink[np.asarray(grown) > 0] = 1 if dark else 0
 
     alpha = Image.fromarray((ink * 255).astype(np.uint8), mode="L")
     alpha = alpha.resize((alpha.width // ss, alpha.height // ss), Image.LANCZOS)
     alpha = alpha.point(lambda v: 255 if v > cut else 0, mode="L")
-    ink_layer = Image.new("RGBA", alpha.size, INK_RGB + (0,))
+    ink_layer = Image.new("RGBA", alpha.size, (CHALK_RGB if dark else INK_RGB) + (0,))
     ink_layer.putalpha(alpha)
 
     # The halo: a feathered patch of paper, 1/10 the size (it is a soft blob,
@@ -251,7 +274,19 @@ def main():
     ap.add_argument("--name", default="plate")
     ap.add_argument("--freq", type=float, default=165)
     ap.add_argument("--widths", type=int, nargs="+", default=[900, 1600])
+    ap.add_argument("--dark-only", action="store_true",
+                    help="write only the dark page's portrait (portrait-dark-*)")
     args = ap.parse_args()
+
+    if args.dark_only:
+        p = dict(PORTRAIT)
+        pw, pname, psrc = p.pop("widths"), p.pop("name"), p.pop("src")
+        pname = f"{pname}-dark"
+        print(f"{psrc} -> {OUT_DIR}/{pname}-*.{{webp,png}}")
+        for i, width in enumerate(pw, start=1):
+            ink_layer, _ = sketch(psrc, width, dark=True, **p)
+            write_rgba(ink_layer, f"{pname}-{i}x")
+        return
 
     spec = dict(HERO)
     if args.src:

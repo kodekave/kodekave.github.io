@@ -53,7 +53,7 @@ function Badge() {
           cy="60"
           r="58"
           fill="var(--color-brass)"
-          stroke="var(--color-ink)"
+          stroke="var(--color-on-brass)"
           strokeWidth="1"
         />
         <circle
@@ -61,7 +61,7 @@ function Badge() {
           cy="60"
           r="51.5"
           fill="none"
-          stroke="var(--color-ink)"
+          stroke="var(--color-on-brass)"
           strokeWidth="0.7"
           strokeDasharray="1.6 3.2"
           strokeLinecap="round"
@@ -70,7 +70,7 @@ function Badge() {
           <text x="15" y="67" fontSize="21" textLength="58" lengthAdjust="spacingAndGlyphs">
             Linked
           </text>
-          <rect x="77" y="46" width="27" height="27" rx="4.5" fill="var(--color-ink)" />
+          <rect x="77" y="46" width="27" height="27" rx="4.5" fill="var(--color-on-brass)" />
           <text className="badge-in" x="82" y="67" fontSize="21" textLength="17" lengthAdjust="spacingAndGlyphs">
             in
           </text>
@@ -78,7 +78,7 @@ function Badge() {
         <path
           d="M82 22 l8 -8 m-6 0 h6 v6"
           fill="none"
-          stroke="var(--color-ink)"
+          stroke="var(--color-on-brass)"
           strokeWidth="1.1"
           strokeLinecap="round"
           strokeLinejoin="round"

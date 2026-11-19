@@ -22,16 +22,28 @@
 
   --color-brass: #f7ef96;
   --color-brass-deep: #55633a;
+  /* The ink on the yellow: the same dark in both themes, since the yellow is. */
+  --color-on-brass: #1f2b27;
+  /* The fill of a text field: white on the paper, a step above the page in the dark. */
+  --color-field: #fff;
+
+  /* The dark panel (the band, the code block, the phone) and the text on it. In
+     the light theme they are ink and paper; the dark theme sets its own, since
+     there the page is already dark and the panel is a lighter step of it. */
+  --color-panel: var(--color-ink);
+  --color-on-panel: var(--color-paper);
 
   --color-ink-soft: color-mix(in srgb, var(--color-ink) 84%, var(--color-paper));
   --color-ink-faint: color-mix(in srgb, var(--color-ink) 72%, var(--color-paper));
   --color-hair: color-mix(in srgb, var(--color-ink) 14%, var(--color-paper));
 
-  /* Paper on the dark panel. */
-  --color-paper-soft: color-mix(in srgb, var(--color-paper) 80%, var(--color-ink));
-  --color-paper-faint: color-mix(in srgb, var(--color-paper) 62%, var(--color-ink));
-  --color-hair-inv: color-mix(in srgb, var(--color-paper) 20%, var(--color-ink));
-  --color-ink-deep: color-mix(in srgb, var(--color-ink) 74%, #000);
+  /* Text and lines on the dark panel. */
+  --color-paper-soft: color-mix(in srgb, var(--color-on-panel) 80%, var(--color-panel));
+  --color-paper-faint: color-mix(in srgb, var(--color-on-panel) 62%, var(--color-panel));
+  --color-hair-inv: color-mix(in srgb, var(--color-on-panel) 20%, var(--color-panel));
+  --color-ink-deep: color-mix(in srgb, var(--color-panel) 74%, #000);
+
+  color-scheme: light;
 
   --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-read: var(--font-newsreader), Georgia, "Times New Roman", serif;
@@ -51,6 +63,10 @@
   --color-chalk: var(--color-chalk);
   --color-brass: var(--color-brass);
   --color-brass-deep: var(--color-brass-deep);
+  --color-on-brass: var(--color-on-brass);
+  --color-field: var(--color-field);
+  --color-panel: var(--color-panel);
+  --color-on-panel: var(--color-on-panel);
   --color-paper-soft: var(--color-paper-soft);
   --color-paper-faint: var(--color-paper-faint);
   --color-hair-inv: var(--color-hair-inv);
@@ -59,6 +75,30 @@
   --font-read: var(--font-read);
   --font-sans: var(--font-sans-stack);
   --font-mono: var(--font-mono-stack);
+}
+
+/*
+ * The dark theme: the same palette read the other way, set on <html> by the
+ * toggle in the nav (see lib/theme.ts). Every surface already takes its colour
+ * from the tokens above, so this is the whole of it. Page, soft panel and deep
+ * panel step up in lightness the way paper, mist and chalk step down; the ink
+ * is the warm paper itself, and the greys stay one field at a percentage of the
+ * other. The yellow is a fill in both themes and keeps its dark text
+ * (`on-brass`); the olive that carries small text is lifted so it holds on dark.
+ * Contrast, measured: ink-faint on paper 8.3:1 and on mist 7.6:1; brass-deep
+ * on paper 9.7:1 and on mist 9.0:1; on the panel, its text 12.9:1 and the
+ * faintest 5.9:1.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: #ebeae2;
+  --color-paper: #101614;
+  --color-mist: #171f1c;
+  --color-chalk: #212a26;
+  --color-brass-deep: #b4c486;
+  --color-field: #1b2420;
+  --color-panel: #1c2622;
+  --color-on-panel: #ebeae2;
 }
 
 /*
@@ -74,10 +114,13 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
+:root[data-theme="dark"] body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%23ebeae2' stroke-opacity='.06' stroke-width='1'/%3E%3C/svg%3E");
+}
 
 ::selection {
   background: var(--color-brass);
-  color: var(--color-ink);
+  color: var(--color-on-brass);
 }
 
 /* Smooth scrolling is motion too: anchor jumps are instant for anyone who
@@ -94,6 +137,28 @@ body {
 }
 .on-ink :focus-visible {
   outline-color: var(--color-brass);
+}
+
+/* ----------------------------------------------------------------- theme */
+
+/* The switch shows the moon on the light page, the sun on the dark one. */
+.theme-toggle .theme-sun {
+  display: none;
+}
+:root[data-theme="dark"] .theme-toggle .theme-moon {
+  display: none;
+}
+:root[data-theme="dark"] .theme-toggle .theme-sun {
+  display: block;
+}
+/* For a moment after the switch is pressed, colours ease instead of snapping. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-anim *,
+  html.theme-anim *::before,
+  html.theme-anim *::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease,
+      fill 0.3s ease, stroke 0.3s ease;
+  }
 }
 
 /* ------------------------------------------------------------------ type */
@@ -149,7 +214,7 @@ body {
   border: 1px solid var(--color-ink);
   border-radius: 6px;
   background: var(--color-brass);
-  color: var(--color-ink);
+  color: var(--color-on-brass);
   font-size: 0.875rem;
   transform: translateY(-200%);
 }
@@ -179,8 +244,8 @@ body {
 /* --------------------------------------------------------------- surfaces */
 
 .on-ink {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-panel);
+  color: var(--color-on-panel);
 }
 /* Transparent on purpose: the plus grid on the body shows through. */
 .on-paper {
@@ -720,13 +785,28 @@ html:has(.journey[data-scene="live"]) .trail {
 .portrait-halo {
   position: absolute;
   inset: -3% -6%;
-  background: url("/images/portrait-halo.png") center / 100% 100% no-repeat;
+  /* The halo file is paper with a soft edge; used as a mask over the paper
+     token it follows the theme. */
+  background-color: var(--color-paper);
+  -webkit-mask: url("/images/portrait-halo.png") center / 100% 100% no-repeat;
+  mask: url("/images/portrait-halo.png") center / 100% 100% no-repeat;
 }
 .portrait .plate {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
+}
+/* The black ruling is for the light page; the dark page has its own drawing,
+   in light line that follows light (see scripts/engrave.py --dark-only). */
+.portrait .plate-dark {
+  display: none;
+}
+:root[data-theme="dark"] .portrait .plate-dark {
+  display: block;
+}
+:root[data-theme="dark"] .portrait .plate-light {
+  display: none;
 }
 .badge {
   transform: rotate(-6deg);
@@ -737,7 +817,7 @@ html:has(.journey[data-scene="live"]) .trail {
   transform: rotate(2deg) scale(1.06);
 }
 .badge text {
-  fill: var(--color-ink);
+  fill: var(--color-on-brass);
   font-family: var(--font-display), Georgia, serif;
 }
 .badge .badge-in {
@@ -892,9 +972,9 @@ html:has(.journey[data-scene="live"]) .trail {
   color: var(--color-paper);
 }
 .btn-paper:hover {
-  background: var(--color-paper);
-  border-color: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--color-on-panel);
+  border-color: var(--color-on-panel);
+  color: var(--color-panel);
 }
 @media (prefers-reduced-motion: reduce) {
   .btn {
@@ -1061,8 +1141,8 @@ html:has(.journey[data-scene="live"]) .trail {
   padding: 0.15em 0.4em;
 }
 .prose-post pre {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-panel);
+  color: var(--color-on-panel);
   font-family: var(--font-mono);
   font-size: 0.86rem;
   line-height: 1.65;
@@ -1126,11 +1206,11 @@ h3 {
 .btn-solid-paper {
   background: var(--color-brass);
   border-color: var(--color-brass);
-  color: var(--color-ink);
+  color: var(--color-on-brass);
 }
 .btn-solid-paper:hover {
-  background: color-mix(in srgb, var(--color-brass) 78%, var(--color-ink));
-  border-color: color-mix(in srgb, var(--color-brass) 78%, var(--color-ink));
+  background: color-mix(in srgb, var(--color-brass) 78%, var(--color-on-brass));
+  border-color: color-mix(in srgb, var(--color-brass) 78%, var(--color-on-brass));
 }
 .btn-solid-ink {
   background: var(--color-ink);
@@ -1711,6 +1791,9 @@ h3 {
 }
 
 /* The book. One sheet by default; two pages from a wide screen. */
+:root[data-theme="dark"] .book {
+  --page: var(--color-mist);
+}
 .book {
   --page: color-mix(in srgb, var(--color-paper) 55%, #fff);
   --page-line: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper));
@@ -1862,9 +1945,9 @@ h3 {
   aspect-ratio: 9 / 18.5;
   padding: 0.75rem;
   border-radius: 2.7rem;
-  background: var(--color-ink);
-  box-shadow: 0 40px 70px -40px color-mix(in srgb, var(--color-ink) 70%, transparent);
-  color: var(--color-paper);
+  background: var(--color-panel);
+  box-shadow: 0 40px 70px -40px color-mix(in srgb, var(--color-panel) 70%, transparent);
+  color: var(--color-on-panel);
 }
 .phone-screen {
   display: flex;
