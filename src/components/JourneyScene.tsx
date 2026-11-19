@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 import { EQUATION } from "@/lib/equation-points";
+import { cssUnit, onTheme } from "@/lib/theme";
 import {
   buildCloud,
   followerPoints,
@@ -157,6 +158,20 @@ const easeInOut = (x: number) => {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 };
 
+/**
+ * The two colours the cloud is drawn in: the ink, and the olive a point turns
+ * once the yellow one has passed it. They are read off the stylesheet, so the
+ * dark theme gets its own (see `readPalette`, called when the theme changes).
+ */
+const palette = {
+  ink: [0.122, 0.169, 0.153] as [number, number, number],
+  deep: [0.333, 0.388, 0.227] as [number, number, number],
+};
+function readPalette() {
+  palette.ink = cssUnit("--color-ink", palette.ink);
+  palette.deep = cssUnit("--color-brass-deep", palette.deep);
+}
+
 const VERTEX = `
 attribute vec3 aPos;
 attribute vec2 aMeta;
@@ -169,6 +184,8 @@ uniform float uProg;
 uniform float uFade;
 uniform float uMorph;
 uniform float uGhost;
+uniform vec3 uInk;
+uniform vec3 uDeep;
 varying vec4 vCol;
 varying float vKind;
 void main() {
@@ -185,8 +202,8 @@ void main() {
   else if (kind > 1.5) size = 20.0 * uPx;
   else if (kind > 0.5) size = clamp(uPx * 2.6 / d, 1.3 * uPx, 8.0 * uPx);
   else size = clamp(uPx * 1.9 / d, 1.0 * uPx, 7.0 * uPx);
-  vec3 ink = vec3(0.122, 0.169, 0.153);
-  vec3 deep = vec3(0.333, 0.388, 0.227);
+  vec3 ink = uInk;
+  vec3 deep = uDeep;
   vec3 col = ink;
   float a = 0.2;
   if (kind > 2.5) {
@@ -235,8 +252,7 @@ void main() {
   if (r > 0.5) discard;
   if (vKind > 1.5 && vKind < 2.5) {
     vec3 yellow = vec3(0.969, 0.937, 0.588);
-    vec3 ink = vec3(0.122, 0.169, 0.153);
-    vec3 c = mix(yellow, ink, smoothstep(0.3, 0.36, r));
+    vec3 c = mix(yellow, vCol.rgb, smoothstep(0.3, 0.36, r));
     float a = vCol.a * (1.0 - smoothstep(0.46, 0.5, r));
     gl_FragColor = vec4(c * a, a);
     return;
@@ -314,6 +330,8 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
     fade: gl.getUniformLocation(prog, "uFade"),
     morph: gl.getUniformLocation(prog, "uMorph"),
     ghost: gl.getUniformLocation(prog, "uGhost"),
+    ink: gl.getUniformLocation(prog, "uInk"),
+    deep: gl.getUniformLocation(prog, "uDeep"),
   };
 
   const main = gl.createBuffer();
@@ -403,6 +421,8 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.uniform1f(loc.fade, fade);
       gl.uniform1f(loc.morph, morph);
       gl.uniform1f(loc.ghost, ghost);
+      gl.uniform3f(loc.ink, palette.ink[0], palette.ink[1], palette.ink[2]);
+      gl.uniform3f(loc.deep, palette.deep[0], palette.deep[1], palette.deep[2]);
 
       // Once every point is in place only the shape's own points are drawn,
       // unless the cloud is meant to stay faintly behind the map (ghost).
@@ -935,6 +955,11 @@ export default function JourneyScene({
     window.addEventListener("scroll", kick, { passive: true });
     document.addEventListener("click", onClick, true);
     window.addEventListener("hashchange", onHash);
+    readPalette();
+    const offTheme = onTheme(() => {
+      readPalette();
+      kick();
+    });
 
     let idle = 0;
     let wait = 0;
@@ -959,6 +984,7 @@ export default function JourneyScene({
     reduce.addEventListener("change", onReduce);
 
     return () => {
+      offTheme();
       ro.disconnect();
       mapRo?.disconnect();
       window.removeEventListener("scroll", kick);

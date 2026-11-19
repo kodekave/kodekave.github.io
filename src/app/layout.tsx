@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/content";
+import { themeInit } from "@/lib/theme";
 import { GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
 import {
   jsonLdGraph,
@@ -93,8 +94,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // `data-theme` is set by the script below before the page paints.
+      suppressHydrationWarning
       className={`${dmSans.variable} ${newsreader.variable} ${newsreaderItalic.variable} ${plexMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/*
           One @graph containing the Person and WebSite nodes, cross-referenced

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { onTheme } from "@/lib/theme";
 
 /**
  * The 404's picture: a live Lorenz butterfly with a yellow point wandering it,
@@ -99,7 +100,11 @@ export default function LostInCurve() {
       const n = parseInt(h.length === 3 ? h.replace(/./g, "$&$&") : h, 16);
       return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
     };
-    const ink = rgb(inkRaw);
+    let ink = rgb(inkRaw);
+    // The theme can change while the curve runs: the next frame is in the new ink.
+    const offTheme = onTheme(() => {
+      ink = rgb(getComputedStyle(document.documentElement).getPropertyValue("--color-ink").trim() || inkRaw);
+    });
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -370,6 +375,7 @@ export default function LostInCurve() {
     start();
 
     return () => {
+      offTheme();
       if (raf) cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();

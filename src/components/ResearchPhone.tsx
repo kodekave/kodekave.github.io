@@ -167,7 +167,7 @@ export default function ResearchPhone({ courant }: { courant: number }) {
     if (cv && ctx) {
       const cs = getComputedStyle(el);
       ink = {
-        wire: cs.getPropertyValue("--color-paper").trim() || ink.wire,
+        wire: cs.getPropertyValue("--color-on-panel").trim() || ink.wire,
         dot: cs.getPropertyValue("--color-brass").trim() || ink.dot,
       };
       // From here the canvas replaces the still SVG (see .phone-elbow).

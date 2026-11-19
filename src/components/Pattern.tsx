@@ -5,10 +5,12 @@ import {
   drawPattern,
   lorenzStrands,
   PATTERN_OPACITY,
+  setPatternColours,
   type PatternFocus,
   type PatternKind,
 } from "@/lib/patterns";
 import { startFlow } from "@/lib/pattern-flow";
+import { cssRgb, cssValue, onTheme } from "@/lib/theme";
 
 /**
  * One generated background pattern, behind a page's opening. The frame fills
@@ -80,6 +82,7 @@ export default function Pattern({
       const ctx = cv.getContext("2d");
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      setPatternColours(cssRgb("--color-ink", "31, 43, 39"), cssValue("--color-paper", "#f6f5ef"));
       drawPattern(ctx, kind, W, H, seed, focus);
       setShown(true);
 
@@ -87,9 +90,7 @@ export default function Pattern({
       stopFlow = undefined;
       const fc = flowCanvas.current;
       if (flow && kind === "lorenz" && fc && !still) {
-        const brass =
-          getComputedStyle(document.documentElement).getPropertyValue("--color-brass").trim() ||
-          "#f7ef96";
+        const brass = cssValue("--color-brass", "#f7ef96");
         stopFlow = startFlow(fc, W, H, lorenzStrands(W, H, seed, focus), {
           accent: brass,
           opening: () => (opening ? parseFloat(opening.style.opacity || "1") : 1),
@@ -126,7 +127,14 @@ export default function Pattern({
     }
     const ro = new ResizeObserver(schedule);
     ro.observe(el);
+    // A drawing is made once, in the theme's ink; it is made again when the
+    // theme changes.
+    const offTheme = onTheme(() => {
+      drawn = "";
+      schedule();
+    });
     return () => {
+      offTheme();
       io?.disconnect();
       ro.disconnect();
       window.clearTimeout(wait);

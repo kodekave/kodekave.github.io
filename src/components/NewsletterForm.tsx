@@ -59,8 +59,8 @@ export default function NewsletterForm({
           onChange={(e) => setEmail(e.target.value)}
           className={`min-w-0 flex-1 rounded-md border px-4 py-3 text-[0.9375rem] outline-none transition-colors focus:border-ink ${
             onInk
-              ? "border-hair-inv bg-transparent text-paper placeholder:text-paper-faint"
-              : "border-hair bg-white text-ink placeholder:text-ink-faint"
+              ? "border-hair-inv bg-transparent text-on-panel placeholder:text-paper-faint"
+              : "border-hair bg-field text-ink placeholder:text-ink-faint"
           }`}
         />
         <button type="submit" className="btn btn-solid-paper justify-center">
