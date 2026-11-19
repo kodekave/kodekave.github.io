@@ -67,7 +67,18 @@ function arc(a: MapPlace, b: MapPlace): string {
   return `M${x1.toFixed(2)} ${y1.toFixed(2)} Q${((x1 + x2) / 2).toFixed(2)} ${cy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
 }
 
-export default function JourneyMap({ places }: { places: MapPlace[] }) {
+export default function JourneyMap({
+  places,
+  cardNumber,
+}: {
+  places: MapPlace[];
+  /**
+   * Where this card sits among the home page's cards ("01/04"). Without it the
+   * header counts the places instead (India, Maldives, ...), which is what the
+   * stand-alone journey page shows.
+   */
+  cardNumber?: string;
+}) {
   const pan = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -223,7 +234,7 @@ export default function JourneyMap({ places }: { places: MapPlace[] }) {
       <div className="jmap-bar label">
         <span className="flex items-center gap-3 text-ink-faint">
           <span className="text-brass-deep tabular">
-            {String(shown + 1).padStart(2, "0")}/{String(places.length).padStart(2, "0")}
+            {cardNumber ?? `${String(shown + 1).padStart(2, "0")}/${String(places.length).padStart(2, "0")}`}
           </span>
           <span>Journey</span>
         </span>
