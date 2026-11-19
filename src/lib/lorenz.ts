@@ -39,21 +39,38 @@ export const DT = 0.004;
  */
 export const HEAD_ARC = 2.0;
 /**
- * The camera rides the curve behind the point and looks at it, so the point
- * stays in view while the view swings through three dimensions with it.
- * Everything is measured along the curve (scene units of distance travelled),
- * not in seconds, because a point on the attractor speeds up and slows down
- * about five times as it loops, and the page moves it by distance.
+ * The camera. It does not sit on the curve (that flips sides when the path
+ * crosses from one wing to the other), and it does not try to face along the
+ * point's heading either (the point circles each wing every ~6 units, so a
+ * camera that follows the heading spins with it). Instead it keeps the point
+ * dead centre and orbits it slowly, like a crane shot round a subject:
  *
- *  - The eye rides a copy of the curve averaged over +-EYE_ARC (so it follows
- *    the sweeps without the tightest corkscrew), EYE_BEHIND behind the point and
- *    EYE_LIFT above it.
- *  - It looks at the point itself, averaged over only +-AIM_ARC.
- *  - The page pulls it a little further back along the view on arrival.
+ *  - The direction it looks from turns steadily, ORBIT_RATE radians per unit
+ *    of distance the point travels, with a slow ORBIT_WEAVE on top so it eases
+ *    and quickens instead of turning at a fixed rate.
+ *  - It looks down on the point at an angle that rises and falls
+ *    (TILT_BASE +- TILT_SWING, always well short of straight down, where "up"
+ *    is undefined and the picture would flip).
+ *  - Its distance breathes between DIST_BASE +- DIST_SWING: closer in the
+ *    tight loops, out in the sweeps.
+ *
+ * Every one of these is a smooth function of distance along the curve, so the
+ * view cannot jump: the point loops through the middle of the frame and the
+ * cloud swings round behind it. Everything is measured along the curve (scene
+ * units of distance), not in seconds, because a point on the attractor speeds
+ * up and slows down about five times as it loops, and the page moves it by
+ * distance.
  */
-const EYE_ARC = 1.2;
-const EYE_BEHIND = 7;
-const EYE_LIFT = 0.6;
+const ORBIT_START = 2.4;
+const ORBIT_RATE = 0.2;
+const ORBIT_WEAVE = 0.55;
+const ORBIT_WEAVE_LEN = 5.5;
+const TILT_BASE = 0.34;
+const TILT_SWING = 0.16;
+const TILT_LEN = 3.7;
+const DIST_BASE = 1.55;
+const DIST_SWING = 0.3;
+const DIST_LEN = 4.3;
 const AIM_ARC = 0.2;
 
 /**
@@ -174,22 +191,8 @@ export function buildCloud(density = 1): Cloud {
       );
   }
 
-  // The camera rides the curve behind the point and looks at it (see EYE_ARC
-  // and the rest).
-  const ride = smoothByArc(path, arc, EYE_ARC);
-  const aimAt = smoothByArc(path, arc, AIM_ARC);
-  const eye = new Float32Array(samples * 3);
-  const look = new Float32Array(samples * 3);
-  const here = [0, 0, 0];
-  const aim = [0, 0, 0];
-  for (let i = 0; i < samples; i++) {
-    sampleAt(ride, arcIndex(arc, arc[i] + HEAD_ARC - EYE_BEHIND), here);
-    sampleAt(aimAt, arcIndex(arc, arc[i] + HEAD_ARC), aim);
-    eye[i * 3] = here[0];
-    eye[i * 3 + 1] = here[1];
-    eye[i * 3 + 2] = here[2] + EYE_LIFT;
-    for (let c = 0; c < 3; c++) look[i * 3 + c] = aim[c];
-  }
+  // The camera: a chase rig, built once along the path (see CHASE_*).
+  const { eye, look } = chaseRig(path, arc, samples);
 
   // The other points: their own runs of the system from close to the same start.
   const followers = FOLLOWER_SPREAD.map((d) => {
@@ -269,6 +272,31 @@ export function followerPoints(cloud: Cloud, here: number, out: Float32Array) {
       out[o + 2] = p[2];
     }
   }
+}
+
+/**
+ * The camera's eye and look-at for every sample of the path (see ORBIT_*). The
+ * eye is a pure function of how far along the curve the point is.
+ */
+function chaseRig(path: Float32Array, arc: Float32Array, n: number) {
+  const aimAt = smoothByArc(path, arc, AIM_ARC);
+  const eye = new Float32Array(n * 3);
+  const look = new Float32Array(n * 3);
+  const p = [0, 0, 0];
+  for (let i = 0; i < n; i++) {
+    const a = arc[i] + HEAD_ARC;
+    sampleAt(aimAt, arcIndex(arc, a), p);
+    const yaw = ORBIT_START + ORBIT_RATE * a + ORBIT_WEAVE * Math.sin(a / ORBIT_WEAVE_LEN);
+    const tilt = TILT_BASE + TILT_SWING * Math.sin(a / TILT_LEN + 1.3);
+    const dist = DIST_BASE + DIST_SWING * Math.sin(a / DIST_LEN + 0.6);
+    eye[i * 3] = p[0] - Math.cos(yaw) * Math.cos(tilt) * dist;
+    eye[i * 3 + 1] = p[1] - Math.sin(yaw) * Math.cos(tilt) * dist;
+    eye[i * 3 + 2] = p[2] + Math.sin(tilt) * dist;
+    look[i * 3] = p[0];
+    look[i * 3 + 1] = p[1];
+    look[i * 3 + 2] = p[2];
+  }
+  return { eye, look };
 }
 
 /** Distance along the journey's path, `share` of the way (see indexAtShare). */
