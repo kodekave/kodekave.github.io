@@ -1,36 +1,13 @@
-/* Offline support: everything the map needs is cached on first load. Bump VERSION when you change files. */
-const VERSION = 'tsmap-v2';
-const FILES = [
-  './', 'index.html', 'css/style.css',
-  'js/core.js', 'js/router.js', 'js/map.js', 'js/ui.js',
-  'data/geo.js', 'manifest.webmanifest',
-  'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'
-];
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', (e) => {
+/* The Times Square map moved to https://mystery-maps.pages.dev/. This replaces the old offline service worker:
+   it deletes the copy of the old map that was cached on visitors' devices, removes itself, and reloads open tabs
+   so they reach the redirect page. Keep this file here; deleting it would leave old cached copies in place. */
+self.addEventListener('install', function () { self.skipWaiting(); });
+self.addEventListener('activate', function (e) {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-// Cache first (instant, works offline), refresh in the background for next time.
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  e.respondWith(
-    caches.open(VERSION).then((cache) =>
-      cache.match(req, { ignoreSearch: true }).then((hit) => {
-        const net = fetch(req).then((res) => {
-          if (res && res.ok) cache.put(req, res.clone());
-          return res;
-        }).catch(() => hit);
-        return hit || net;
-      })
-    )
+    caches.keys()
+      .then(function (keys) { return Promise.all(keys.filter(function (k) { return k.indexOf('tsmap') === 0; }).map(function (k) { return caches.delete(k); })); })
+      .then(function () { return self.registration.unregister(); })
+      .then(function () { return self.clients.matchAll({ type: 'window' }); })
+      .then(function (clients) { clients.forEach(function (c) { c.navigate(c.url); }); })
   );
 });
