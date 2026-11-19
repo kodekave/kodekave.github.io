@@ -6,7 +6,6 @@ import JourneyScene, { type SceneStep } from "@/components/JourneyScene";
 import LocalTime from "@/components/LocalTime";
 import Pattern from "@/components/Pattern";
 import PortraitCard from "@/components/PortraitCard";
-import SectionLabel from "@/components/SectionLabel";
 import { engagements, profile } from "@/lib/content";
 import { buildPlaces } from "@/lib/journey-places";
 import { getPublishedPosts } from "@/lib/posts";
@@ -35,6 +34,28 @@ const profiles = [
   { href: "https://orcid.org/0000-0003-4980-5945", label: "ORCID", me: true },
   { href: "https://zenodo.org/records/24120078", label: "Zenodo", me: false },
 ];
+
+/**
+ * The header of a card: its place in the run of cards ("02/04") and its name,
+ * set the same way as the map card's own header. The names are the ones on the
+ * dot rail (see the steps below).
+ */
+function CardLabel({
+  n,
+  className = "",
+  children,
+}: {
+  n: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <p className={`label flex items-center gap-3 text-ink-faint ${className}`}>
+      <span className="text-brass-deep tabular">{n}</span>
+      <span>{children}</span>
+    </p>
+  );
+}
 
 /**
  * One stop on the journey. Shown as an ordinary section when the page is not
@@ -69,6 +90,10 @@ function Step({
 
 export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
+  // The cards are numbered as a run ("01/04"): the map, what I bring, the
+  // writing (only when there are posts) and contact.
+  const total = posts.length > 0 ? 4 : 3;
+  const num = (i: number) => `${String(i).padStart(2, "0")}/${String(total).padStart(2, "0")}`;
   // ------------------------------------------------------- the opening
   // `data-zoom` is the portrait: the scroll zooms into the equation on the
   // hoodie. `data-intro-fade` is whatever falls away first.
@@ -143,7 +168,7 @@ export default function HomePage() {
       node: (
         <Step bare wide>
           <h2 className="sr-only">The journey</h2>
-          <JourneyMap places={buildPlaces()} />
+          <JourneyMap places={buildPlaces()} cardNumber={num(1)} />
         </Step>
       ),
     },
@@ -153,9 +178,9 @@ export default function HomePage() {
       node: (
         <Step
           label={
-            <SectionLabel n="01" className="text-ink-faint lg:pt-1">
-              Register
-            </SectionLabel>
+            <CardLabel n={num(2)} className="lg:pt-1">
+              What I bring
+            </CardLabel>
           }
         >
           <div className="flex items-baseline justify-between gap-4">
@@ -191,9 +216,9 @@ export default function HomePage() {
             node: (
               <Step
                 label={
-                  <SectionLabel n="01" className="text-ink-faint lg:pt-1">
-                    Register
-                  </SectionLabel>
+                  <CardLabel n={num(3)} className="lg:pt-1">
+                    Latest writing
+                  </CardLabel>
                 }
               >
                 <div className="flex items-baseline justify-between gap-4">
@@ -239,7 +264,8 @@ export default function HomePage() {
         <Step bare>
           <div className="callout px-6 py-16 text-center md:py-24">
             <p className="label label-dot justify-center text-ink-faint">
-              Contact
+              <span className="text-brass-deep tabular">{num(total)}</span>
+              <span>Contact</span>
             </p>
             <h2 className="font-display mx-auto mt-7 max-w-2xl text-[clamp(2.4rem,5.6vw,4.4rem)] leading-[1.02]">
               Building something? Let&rsquo;s talk.

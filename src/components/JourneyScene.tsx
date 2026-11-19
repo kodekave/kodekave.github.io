@@ -74,6 +74,28 @@ const MAP_FORM = 0.7;
 const MAP_HOLD = 1.1;
 const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
 /**
+ * Scroll after the map has broken up and before the next card arrives: the
+ * curve alone, with the camera circling the point, so the break-up is seen
+ * flying on and does not run straight into a card.
+ */
+const MAP_TAIL = 1;
+/**
+ * While the map is up the rest of the cloud is not gone but faint behind it,
+ * and the other points keep their trails, so the curve keeps moving behind the
+ * still dots. These are how much of its strength each keeps (0 to 1).
+ */
+const GHOST_CLOUD = 0.18;
+const GHOST_OTHERS = 0.8;
+/**
+ * The view of the whole curve while the map is up: from GHOST_YAW round the
+ * attractor (face on), swaying GHOST_SWAY, looking down GHOST_TILT from
+ * GHOST_DIST away from its centre.
+ */
+const GHOST_YAW = 1.75;
+const GHOST_SWAY = 0.25;
+const GHOST_TILT = 0.25;
+const GHOST_DIST = 2.3;
+/**
  * How fast the camera flies while the map is fully up, against its speed in the
  * open cloud (1). It never stops: it eases down to this and back up with the
  * points, so the flight is one movement from the landing to the end.
@@ -116,7 +138,11 @@ function layoutOf(flags: boolean[]): { segs: Seg[]; total: number } {
     if (map) v += MAP_LEAD;
     const a = v;
     v += map ? MAP_LEN : STEP;
-    return { a, b: v, map };
+    const seg = { a, b: v, map };
+    // The map's own range ends where its points have gone; the curve then has
+    // MAP_TAIL to itself before the next card.
+    if (map) v += MAP_TAIL;
+    return seg;
   });
   return { segs, total: v };
 }
@@ -142,6 +168,7 @@ uniform vec2 uMapPx;
 uniform float uProg;
 uniform float uFade;
 uniform float uMorph;
+uniform float uGhost;
 varying vec4 vCol;
 varying float vKind;
 void main() {
@@ -181,7 +208,11 @@ void main() {
   // is left behind the shape.
   float isMap = step(0.5, aMap.z);
   float m = smoothstep(0.0, 1.0, clamp((uMorph - aMeta.x * 0.5) / 0.5, 0.0, 1.0)) * isMap;
-  a *= 1.0 - clamp(uMorph * 1.8, 0.0, 1.0) * (1.0 - isMap);
+  // While the map is up (uGhost) the rest of the cloud and the other points keep
+  // a faint trace of themselves, so the curve keeps moving behind the still dots.
+  // The yellow point does not: the map has its own.
+  float keep = kind > 2.5 ? uGhost * ${GHOST_OTHERS.toFixed(2)} : (kind > 1.5 ? 0.0 : uGhost * ${GHOST_CLOUD.toFixed(2)});
+  a *= 1.0 - clamp(uMorph * 1.8, 0.0, 1.0) * (1.0 - isMap) * (1.0 - keep);
   vec2 from = mix(ndc, aMap.xy, behind);
   vec2 pos = mix(from, aMap.xy, m);
   float mapSize = aMap.z > 1.5 ? uMapPx.y : uMapPx.x;
@@ -226,6 +257,8 @@ type Renderer = {
     shift: [number, number];
     /** 0 is the cloud, 1 is the shape (the map or the equation). */
     morph: number;
+    /** 1 while the map is up: the cloud and the other points stay faintly visible. */
+    ghost: number;
   }) => void;
   resize: (cssW: number, cssH: number) => void;
   /**
@@ -280,6 +313,7 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
     prog: gl.getUniformLocation(prog, "uProg"),
     fade: gl.getUniformLocation(prog, "uFade"),
     morph: gl.getUniformLocation(prog, "uMorph"),
+    ghost: gl.getUniformLocation(prog, "uGhost"),
   };
 
   const main = gl.createBuffer();
@@ -357,7 +391,7 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.bindBuffer(gl.ARRAY_BUFFER, mapBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
     },
-    draw({ eye, target, head, others, prog: progress, fade, shift, morph }) {
+    draw({ eye, target, head, others, prog: progress, fade, shift, morph, ghost }) {
       gl.clear(gl.COLOR_BUFFER_BIT);
       if (fade <= 0.002) return;
       viewProjection(vp, eye, target, w / h, fovY);
@@ -368,12 +402,14 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.uniform1f(loc.prog, progress);
       gl.uniform1f(loc.fade, fade);
       gl.uniform1f(loc.morph, morph);
+      gl.uniform1f(loc.ghost, ghost);
 
-      // Once every point is in place only the shape's own points are drawn.
+      // Once every point is in place only the shape's own points are drawn,
+      // unless the cloud is meant to stay faintly behind the map (ghost).
       bindMain();
-      gl.drawArrays(gl.POINTS, 0, morph >= 0.999 && targetCount > 0 ? targetCount : cloud.count);
+      gl.drawArrays(gl.POINTS, 0, morph >= 0.999 && targetCount > 0 && ghost <= 0 ? targetCount : cloud.count);
 
-      if (morph < 0.99) {
+      if (morph < 0.99 || ghost > 0) {
         for (let i = 0; i < othersN; i++) {
           othersData[i * FLOATS] = others[i * 3];
           othersData[i * FLOATS + 1] = others[i * 3 + 1];
@@ -382,7 +418,9 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
         bindOthers();
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, othersData);
         gl.drawArrays(gl.POINTS, 0, othersN);
+      }
 
+      if (morph < 0.99) {
         headData[0] = head[0];
         headData[1] = head[1];
         headData[2] = head[2];
@@ -692,7 +730,7 @@ export default function JourneyScene({
       if (v >= ZOOM * 0.6) {
         now = ids[ids.length - 1];
         for (let i = 0; i < segs.length; i++) {
-          if (v < segs[i].b - 0.2) {
+          if (v < segs[i].b + (segs[i].map ? MAP_TAIL : 0) - 0.2) {
             now = ids[i];
             break;
           }
@@ -732,6 +770,22 @@ export default function JourneyScene({
         sampleAt(cloud.look, idx, lookP);
         sampleAt(cloud.path, headIdx, headP);
         followerPoints(cloud, pathArcAt(cloud, u * PATH_SHARE) + HEAD_ARC, othersP);
+        // While the map is up the camera leaves the point and draws back to a
+        // face-on view of the whole curve, swaying a little as the point goes on,
+        // so the curve sits behind the card as a faint, slowly turning mark with
+        // the other points running through it.
+        const ghostOn = !useEq && mapCount > 0;
+        if (ghostOn && mapMorph > 0) {
+          const k = smooth01(mapMorph);
+          const yaw = GHOST_YAW + GHOST_SWAY * Math.sin(pathArcAt(cloud, u * PATH_SHARE) * 0.3);
+          const ring = Math.cos(GHOST_TILT) * GHOST_DIST;
+          eyeP[0] += (-Math.cos(yaw) * ring - eyeP[0]) * k;
+          eyeP[1] += (-Math.sin(yaw) * ring - eyeP[1]) * k;
+          eyeP[2] += (Math.sin(GHOST_TILT) * GHOST_DIST - eyeP[2]) * k;
+          lookP[0] *= 1 - k;
+          lookP[1] *= 1 - k;
+          lookP[2] *= 1 - k;
+        }
         // Land from outside: start pulled back along the view, close in as
         // the zoom ends.
         const back = 0.8 + 2.6 * (1 - smooth01((z - 0.4) / 0.6));
@@ -749,6 +803,16 @@ export default function JourneyScene({
         // or (a phone's map) nothing, with the cloud fading instead.
         const shapeOk = useEq ? eqCount > 0 : mapCount > 0;
         const morph = useEq ? eqMorph : mapMorph;
+        // The cloud stays faintly behind the map (not on a phone, where it fades).
+        const ghost = ghostOn ? 1 : 0;
+        // Where there is no card beside it (the stretch before the map, the map
+        // itself, and the stretch after it) the curve drifts from its place beside
+        // the cards towards the middle of the screen, then back as the next card
+        // arrives.
+        const alone = mapSeg
+          ? smooth01((v - (ZOOM + 0.1)) / 0.6) *
+            (1 - smooth01((v - (mapSeg.b + MAP_TAIL - 0.6)) / 0.5))
+          : 0;
         renderer.draw({
           eye: eyeP,
           target: lookP,
@@ -756,8 +820,9 @@ export default function JourneyScene({
           others: othersP,
           prog: headIdx / cloud.samples,
           fade: smooth01((z - 0.48) / 0.45) * (shapeOk ? 1 : 1 - morph),
-          shift: desktop ? [0.3, 0] : [0, 0.34],
+          shift: desktop ? [0.3 - 0.25 * alone, 0] : [0, 0.34],
           morph: shapeOk ? morph : 0,
+          ghost,
         });
       }
     };
