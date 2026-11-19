@@ -3,17 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import {
   drawPattern,
+  lorenzStrands,
   PATTERN_OPACITY,
   type PatternFocus,
   type PatternKind,
 } from "@/lib/patterns";
+import { startFlow } from "@/lib/pattern-flow";
 
 /**
  * One generated background pattern, behind a page's opening. The frame fills
  * its section and is masked (`.patt` in globals.css) so the pattern is strong
  * towards the right and gone before it reaches the text. The canvas inside is
  * drawn once, when the browser is idle after the page has painted, and drawn
- * again only if the frame changes size. Nothing moves.
+ * again only if the frame changes size. Nothing moves, except with `flow`.
  */
 export default function Pattern({
   kind,
@@ -22,6 +24,7 @@ export default function Pattern({
   focus,
   lazy = false,
   boost = 1,
+  flow = false,
   className = "",
 }: {
   kind: PatternKind;
@@ -38,10 +41,17 @@ export default function Pattern({
   lazy?: boolean;
   /** Multiplies the pattern's usual strength (PATTERN_OPACITY), up to full. */
   boost?: number;
+  /**
+   * Points travel along the drawing's own strands (lib/pattern-flow.ts). Only
+   * the Lorenz drawing has strands, so it is ignored for the rest, and it is
+   * never started with reduced motion.
+   */
+  flow?: boolean;
   className?: string;
 }) {
   const frame = useRef<HTMLSpanElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const flowCanvas = useRef<HTMLCanvasElement>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -53,6 +63,10 @@ export default function Pattern({
     let idle = 0;
     let drawn = "";
     let started = !lazy;
+    let stopFlow: (() => void) | undefined;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The scene fades the opening as you scroll away; the points stop with it.
+    const opening = el.closest<HTMLElement>("[data-intro-fade]");
 
     const draw = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -68,6 +82,19 @@ export default function Pattern({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       drawPattern(ctx, kind, W, H, seed, focus);
       setShown(true);
+
+      stopFlow?.();
+      stopFlow = undefined;
+      const fc = flowCanvas.current;
+      if (flow && kind === "lorenz" && fc && !still) {
+        const brass =
+          getComputedStyle(document.documentElement).getPropertyValue("--color-brass").trim() ||
+          "#f7ef96";
+        stopFlow = startFlow(fc, W, H, lorenzStrands(W, H, seed, focus), {
+          accent: brass,
+          opening: () => (opening ? parseFloat(opening.style.opacity || "1") : 1),
+        });
+      }
     };
 
     const schedule = () => {
@@ -104,8 +131,9 @@ export default function Pattern({
       ro.disconnect();
       window.clearTimeout(wait);
       if ("cancelIdleCallback" in window) window.cancelIdleCallback(idle);
+      stopFlow?.();
     };
-  }, [kind, seed, focus, lazy]);
+  }, [kind, seed, focus, lazy, flow]);
 
   return (
     <span
@@ -121,6 +149,9 @@ export default function Pattern({
         className="patt-canvas"
         style={{ opacity: Math.min(1, PATTERN_OPACITY[kind] * boost) }}
       />
+      {flow && kind === "lorenz" ? (
+        <canvas ref={flowCanvas} className="patt-canvas" />
+      ) : null}
     </span>
   );
 }

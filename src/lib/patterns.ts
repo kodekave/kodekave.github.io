@@ -76,7 +76,7 @@ function focusPoint(focus: PatternFocus | undefined, W: number, H: number): [num
 }
 
 /** The ink, as a CSS colour channel triple. */
-const INK = "31, 43, 39";
+export const INK = "31, 43, 39";
 const PAPER = "#f6f5ef";
 
 /** A small seeded random, so a page's pattern is the same on every load. */
@@ -210,7 +210,25 @@ function harmonograph(ctx: Ctx, W: number, H: number, seed: number, focus?: Patt
  * they fill out the two wings. It is the same system the homepage's scroll
  * journey flies through (lib/lorenz.ts), here as a flat drawing.
  */
-function lorenz(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
+/**
+ * A strand of the Lorenz drawing as data: its points (x then y, in CSS pixels)
+ * and the distance along it at each one. The drawing strokes them, and the
+ * home page's moving points ride along the same ones (lib/pattern-flow.ts).
+ */
+export type Strand = { xy: Float32Array; arc: Float32Array };
+
+const LORENZ_STRANDS = 5;
+const LORENZ_CHUNK = 24;
+/** Each strand's start, then 209 strokes of 24 steps. */
+const LORENZ_POINTS = 1 + Math.ceil(5000 / LORENZ_CHUNK) * LORENZ_CHUNK;
+
+/** The strands `lorenz` draws, for the same rectangle, seed and focus. */
+export function lorenzStrands(
+  W: number,
+  H: number,
+  seed: number,
+  focus?: PatternFocus
+): Strand[] {
   const r = rng(seed + 41);
   const narrow = W < 768;
   const anchor = focusPoint(focus, W, H);
@@ -236,25 +254,34 @@ function lorenz(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFoc
   };
   const at = (p: number[]): Pt => [cx + s * (p[0] * cos + p[1] * sin), cy - s * (p[2] - 24)];
 
+  const h = 0.006;
+  const strands: Strand[] = [];
+  for (let k = 0; k < LORENZ_STRANDS; k++) {
+    const p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
+    for (let i = 0; i < 900; i++) rk(p, h);
+    const xy = new Float32Array(LORENZ_POINTS * 2);
+    const arc = new Float32Array(LORENZ_POINTS);
+    [xy[0], xy[1]] = at(p);
+    for (let i = 1; i < LORENZ_POINTS; i++) {
+      rk(p, h);
+      [xy[i * 2], xy[i * 2 + 1]] = at(p);
+      arc[i] = arc[i - 1] + Math.hypot(xy[i * 2] - xy[i * 2 - 2], xy[i * 2 + 1] - xy[i * 2 - 1]);
+    }
+    strands.push({ xy, arc });
+  }
+  return strands;
+}
+
+function lorenz(ctx: Ctx, W: number, H: number, seed: number, focus?: PatternFocus) {
   ctx.lineWidth = 0.55;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.strokeStyle = `rgba(${INK}, 0.3)`;
-  const strands = 5;
-  const h = 0.006;
-  const chunk = 24;
-  for (let k = 0; k < strands; k++) {
-    const p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
-    for (let i = 0; i < 900; i++) rk(p, h);
-    let [px, py] = at(p);
-    for (let i = 0; i < 5000; i += chunk) {
+  for (const { xy } of lorenzStrands(W, H, seed, focus)) {
+    for (let i = 0; i + 1 < LORENZ_POINTS; i += LORENZ_CHUNK) {
       ctx.beginPath();
-      ctx.moveTo(px, py);
-      for (let j = 0; j < chunk; j++) {
-        rk(p, h);
-        [px, py] = at(p);
-        ctx.lineTo(px, py);
-      }
+      ctx.moveTo(xy[i * 2], xy[i * 2 + 1]);
+      for (let j = 1; j <= LORENZ_CHUNK; j++) ctx.lineTo(xy[(i + j) * 2], xy[(i + j) * 2 + 1]);
       ctx.stroke();
     }
   }

@@ -100,7 +100,7 @@ export default function HomePage() {
   const intro = (
     <section id="hero" data-intro className="journey-intro">
       <div data-intro-fade className="absolute inset-0">
-        <Pattern kind="lorenz" />
+        <Pattern kind="lorenz" flow />
       </div>
 
       <div className="intro-grid">
