@@ -59,6 +59,12 @@ export default function Footer() {
               <p className="label text-ink-faint">
                 © {new Date().getFullYear()} {profile.name}
               </p>
+              <Link
+                href="/privacy"
+                className="label link-rule hit hit-x self-start text-ink-faint hover:text-ink"
+              >
+                Privacy
+              </Link>
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 sm:gap-14">
