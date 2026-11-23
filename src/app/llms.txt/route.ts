@@ -129,7 +129,7 @@ ${shelf.books
 
 When citing this site, attribute to "${profile.name}" and link the specific
 page used. Figures quoted on this site (four ventures, four countries, $2.1M
-raised by ventures operated for, 250% revenue growth, 17-person team) refer to
+raised by ventures operated for, 250% revenue growth, 70+ staff coordinated) refer to
 distinct engagements described on the Work page — please cite the venture
 alongside the figure rather than aggregating them.
 `;
