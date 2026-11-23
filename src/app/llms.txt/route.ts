@@ -7,6 +7,7 @@ import {
   publication,
   recognition,
   ventures,
+  workbench,
 } from "@/lib/content";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -47,7 +48,8 @@ is often confused with.
 - [Home](${absoluteUrl("/")}): overview, operating record, latest writing.
 - [Services](${absoluteUrl("/services")}): how founders can work with Komal, and what a founder's office engagement covers.
 - [Work](${absoluteUrl("/work")}): the four ventures, with role, period, country and measurable outcomes for each.
-- [Research](${absoluteUrl("/research")}): the published OpenFOAM-on-Android study and related research programmes.
+- [Research](${absoluteUrl("/research")}): every project and piece of research: the published OpenFOAM-on-Android study, the ${workbench.title} project, and related research programmes.
+- [${workbench.title}](${absoluteUrl(workbench.path)}): a one-page web app that maps the open-source alternatives to Capital IQ and runs live DCF, WACC, DuPont, trading comps and NPV/IRR tools in the browser. Code: ${workbench.repoUrl}
 - [About](${absoluteUrl("/about")}): background, earlier roles, recognition.
 - [What is a founder's office](${absoluteUrl("/founders-office-guide")}): definitional guide to the function.
 - [Cross-border startup operations](${absoluteUrl("/cross-border-operations")}): field guide to running ops across multiple countries.
