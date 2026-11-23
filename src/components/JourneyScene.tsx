@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
-import Pattern from "./Pattern";
 import { EQUATION } from "@/lib/equation-points";
 import { cssUnit, onTheme } from "@/lib/theme";
 import {
@@ -32,8 +31,8 @@ export type SceneStep = {
  *
  *   1. The opening is pinned for ZOOM screens of scroll while the portrait zooms
  *      into the equation on the hoodie and fades, and the copy and the pattern
- *      behind it fall away first. When it is done the Lorenz drawing is left
- *      behind the page, fixed and faint, over the plus grid on the body.
+ *      behind it fall away first. After it the page is plain paper and the plus
+ *      grid on the body.
  *   2. A fixed canvas holds the Lorenz point cloud. It is only drawn around two
  *      anchors in the page: the map card (`[data-map-stage]`), where the points
  *      fly in and settle into the continents, and the equation slot
@@ -415,14 +414,12 @@ export default function JourneyScene({
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const backdrop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const track = root.current;
     const st = stage.current;
     const cv = canvas.current;
-    const back = backdrop.current;
-    if (!track || !st || !cv || !back) return;
+    if (!track || !st || !cv) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduce.matches) return;
@@ -588,7 +585,6 @@ export default function JourneyScene({
         ).toFixed(1)}px,0) scale(${sc.toFixed(4)})`;
         zoomEl.style.opacity = (1 - smooth01((z - 0.5) / 0.42)).toFixed(3);
       }
-      back.style.opacity = (0.3 * smooth01((z - 0.3) / 0.6)).toFixed(3);
       const nowIntro = z < 0.7;
       if (introEl && nowIntro !== introOn) {
         introOn = nowIntro;
@@ -767,7 +763,6 @@ export default function JourneyScene({
       delete track.dataset.scene;
       delete track.dataset.map;
       delete track.dataset.eq;
-      back.style.opacity = "";
       for (const el of [...fadeEls, ...(zoomEl ? [zoomEl] : [])]) {
         el.style.opacity = "";
         el.style.transform = "";
@@ -780,10 +775,6 @@ export default function JourneyScene({
 
   return (
     <div ref={root} className="journey" style={{ "--zoom": ZOOM } as CSSProperties}>
-      {/* The Lorenz drawing from the opening, fixed and faint behind the page. */}
-      <div ref={backdrop} aria-hidden="true" className="journey-backdrop">
-        <Pattern kind="lorenz" className="patt-backdrop" />
-      </div>
       <canvas ref={canvas} aria-hidden="true" className="journey-canvas" />
       <div className="journey-hero">
         <div ref={stage} className="journey-stage">

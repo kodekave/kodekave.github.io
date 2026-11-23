@@ -294,14 +294,13 @@ body {
  * By default, and for anyone without script or with reduced motion, the opening
  * fills the first screen and the sections follow, one under the next. Once the
  * script starts it sets data-scene="live": the opening is pinned for a screen of
- * scroll while the portrait zooms in and fades, and a fixed canvas and a faint,
- * fixed drawing sit behind the page. The sections themselves never change.
+ * scroll while the portrait zooms in and fades, and a fixed canvas sits behind
+ * the page. The sections themselves never change.
  */
 .journey {
   position: relative;
 }
 .journey-canvas,
-.journey-backdrop,
 .journey-cue {
   display: none;
 }
@@ -401,10 +400,9 @@ body {
   background: linear-gradient(to bottom, var(--color-ink-faint), transparent);
 }
 
-/* The two fixed layers behind the page: the point cloud, and the Lorenz drawing
-   from the opening, faint, which the script fades in as the opening goes. */
-.journey[data-scene="live"] .journey-canvas,
-.journey[data-scene="live"] .journey-backdrop {
+/* The point cloud's canvas, fixed behind the page; the cloud is drawn only
+   around the map and the equation. */
+.journey[data-scene="live"] .journey-canvas {
   display: block;
   position: fixed;
   top: 0;
@@ -415,26 +413,8 @@ body {
   height: 100lvh;
   pointer-events: none;
 }
-.journey[data-scene="live"] .journey-backdrop {
-  opacity: 0;
-}
-/* The drawing is the whole screen's, not the opening's fade to the right. */
-.patt.patt-backdrop {
-  -webkit-mask-image: radial-gradient(
-    ellipse 90% 80% at 62% 46%,
-    #000 0%,
-    rgba(0, 0, 0, 0.7) 55%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    ellipse 90% 80% at 62% 46%,
-    #000 0%,
-    rgba(0, 0, 0, 0.7) 55%,
-    transparent 100%
-  );
-}
 
-/* The page's plates give way to the drawing behind it while it is running. */
+/* The page's pattern plates give way while the scene is running. */
 html:has(.journey[data-scene="live"]) .trail {
   display: none;
 }
