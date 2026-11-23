@@ -29,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/founders-office-guide",
     "/cross-border-operations",
     "/fractional-coo-vs-founders-office",
+    "/privacy",
   ].map((path) => ({ url: absoluteUrl(path) }));
 
   const postRoutes: MetadataRoute.Sitemap = getPublishedPosts().map((post) => ({
