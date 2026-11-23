@@ -16,7 +16,7 @@ export const metadata = buildMetadata({
   path: "/services",
   title: "Work With Me: Founder's Office & GTM Operator for Startups",
   description:
-    "How founders work with me: founder's-office operations, go-to-market execution, cross-border market entry, and financial operations for early-stage companies.",
+    "How founders work with me: founder's-office operations, go-to-market execution, cross-border market entry, fundraise support, and AI consulting and integration for early-stage companies.",
 });
 
 const faqs = [
@@ -52,7 +52,7 @@ export default function ServicesPage() {
       provider: { "@id": PERSON_ID },
       url: absoluteUrl("/services"),
       description:
-        "Founder's-office operations, go-to-market execution, cross-border market entry and fundraise support for early-stage companies.",
+        "Founder's-office operations, go-to-market execution, cross-border market entry, fundraise support and AI consulting and integration for early-stage companies.",
       areaServed: [
         { "@type": "Country", name: "India" },
         { "@type": "Country", name: "United Kingdom" },
@@ -105,8 +105,9 @@ export default function ServicesPage() {
             A founder&rsquo;s office operator is the person a founder hands a
             half-formed idea to and trusts that it comes back as a working
             business. I do that work: go-to-market execution, cross-border
-            operations, financial operations, and fundraise support — owned
-            end to end, not advised on. Over six years I have done it for{" "}
+            operations, financial operations, fundraise support, and AI
+            consulting and integration — owned end to end, not advised on.
+            Over six years I have done it for{" "}
             <Link href="/work" className="ref">
               four ventures across four countries
             </Link>
