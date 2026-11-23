@@ -3,16 +3,21 @@ import { profile } from "@/lib/content";
 import NewsletterForm from "./NewsletterForm";
 
 /**
- * Footer navigation. Beyond usability this is the crawl path to the guide
- * pages, which are otherwise only reachable from in-body links.
+ * Footer navigation, in three groups so it stays short. Beyond usability this is
+ * the crawl path to the guide pages, which are otherwise only reachable from
+ * in-body links: they are the long-form written guides, so they stay in the
+ * footer as a group of their own.
  */
-const footerLinks = [
+const pages = [
+  { href: "/bookshelf", label: "Bookshelf" },
   { href: "/services", label: "Work with me" },
   { href: "/work", label: "Ventures" },
   { href: "/research", label: "Research" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Writing" },
-  { href: "/bookshelf", label: "Bookshelf" },
+];
+
+const guides = [
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
 ];
@@ -25,13 +30,16 @@ const elsewhere = [
   { href: "/feed.xml", label: "RSS", me: false },
 ];
 
+const linkClass =
+  "link-rule hit hit-x self-start py-[0.55rem] text-[0.9375rem] text-ink-soft hover:text-ink";
+
 /**
  * The newsletter closes every page: one centred line, one field, one yellow
  * button. Under it, the name, the pages, and the places she can be found.
  */
 export default function Footer() {
   return (
-    <footer className="border-t border-hair">
+    <footer className="relative border-t border-hair">
       <div id="newsletter" className="scroll-mt-20">
         <div className="mx-auto max-w-2xl px-6 py-20 text-center md:py-24">
           <p className="label label-dot justify-center text-ink-faint">
@@ -51,7 +59,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-hair">
-          <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 md:flex-row md:items-start md:justify-between md:px-10">
+          <div className="mx-auto grid max-w-6xl gap-x-12 gap-y-9 px-6 py-10 md:grid-cols-[minmax(0,1fr)_auto_auto_auto] md:px-10">
             <div className="flex flex-col gap-3">
               <Link href="/" className="font-display py-3 text-[1.25rem] leading-none">
                 Komal Kedarnath
@@ -67,19 +75,31 @@ export default function Footer() {
               </Link>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-2 sm:gap-14">
-              <nav aria-label="Footer" className="flex flex-col">
-                {footerLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="link-rule hit hit-x self-start py-[0.7rem] text-[0.9375rem] text-ink-soft hover:text-ink"
-                  >
+            <nav aria-label="Footer">
+              <p className="label text-ink-faint">Pages</p>
+              <div className="mt-2 grid grid-flow-col grid-rows-3 gap-x-10">
+                {pages.map((link) => (
+                  <Link key={link.href} href={link.href} className={linkClass}>
                     {link.label}
                   </Link>
                 ))}
-              </nav>
-              <nav aria-label="Elsewhere" className="flex flex-col">
+              </div>
+            </nav>
+
+            <nav aria-label="Guides">
+              <p className="label text-ink-faint">Guides</p>
+              <div className="mt-2 flex flex-col">
+                {guides.map((link) => (
+                  <Link key={link.href} href={link.href} className={linkClass}>
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+
+            <nav aria-label="Elsewhere">
+              <p className="label text-ink-faint">Elsewhere</p>
+              <div className="mt-2 grid grid-flow-col grid-rows-3 gap-x-10">
                 {elsewhere.map((link) => (
                   <a
                     key={link.label}
@@ -97,13 +117,13 @@ export default function Footer() {
                             : "noopener noreferrer",
                         }
                       : {})}
-                    className="link-rule hit hit-x self-start py-[0.7rem] text-[0.9375rem] text-ink-soft hover:text-ink"
+                    className={linkClass}
                   >
                     {link.label}
                   </a>
                 ))}
-              </nav>
-            </div>
+              </div>
+            </nav>
           </div>
         </div>
       </div>

@@ -218,7 +218,7 @@ export default function JourneyMap({
       else idle = setTimeout(play, 100) as unknown as number;
     } else {
       io = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting) && scene.dataset.scene !== "live") {
+        if (entries.some((e) => e.isIntersecting) && scene.dataset.map !== "cloud") {
           io?.disconnect();
           play();
         }

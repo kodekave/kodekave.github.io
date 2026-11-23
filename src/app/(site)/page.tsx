@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 import Arrow from "@/components/Arrow";
 import JourneyMap from "@/components/JourneyMap";
@@ -7,6 +6,7 @@ import LocalTime from "@/components/LocalTime";
 import Pattern from "@/components/Pattern";
 import PortraitCard from "@/components/PortraitCard";
 import { engagements, profile } from "@/lib/content";
+import { EQUATION } from "@/lib/equation-points";
 import { buildPlaces } from "@/lib/journey-places";
 import { getPublishedPosts } from "@/lib/posts";
 import { buildMetadata } from "@/lib/seo";
@@ -19,11 +19,12 @@ export const metadata = buildMetadata({
 });
 
 /**
- * The homepage as a one-page journey (see JourneyScene): the opening, then the
- * journey as a map the cloud's points form (the same card is /journey), what I
- * bring, the writing and the way to reach me, one after another as you scroll.
- * Anything longer than a line lives on its own page, and the figures live on
- * the Ventures page (/work).
+ * The homepage: the opening (the portrait zooms into the equation on the hoodie
+ * and fades, see JourneyScene), then a plain page that scrolls over the grid. The
+ * journey is a map the point cloud forms, then what I bring, the writing in a
+ * block, and the way to reach me, where the points condense into the equation.
+ * Anything longer than a line lives on its own page, and the figures live on the
+ * Ventures page (/work).
  *
  * Every word on it is already somewhere on the site; nothing here is new copy.
  */
@@ -35,65 +36,24 @@ const profiles = [
   { href: "https://zenodo.org/records/24120078", label: "Zenodo", me: false },
 ];
 
-/**
- * The header of a card: its place in the run of cards ("02/04") and its name,
- * set the same way as the map card's own header. The names are the ones on the
- * dot rail (see the steps below).
- */
-function CardLabel({
-  n,
+/** The first sentence of a longer line: enough to say what each thing is. */
+const firstSentence = (text: string) => text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text;
+
+/** One section's frame: the page's width, with room above and below. */
+function Frame({
   className = "",
   children,
 }: {
-  n: string;
   className?: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   return (
-    <p className={`label flex items-center gap-3 text-ink-faint ${className}`}>
-      <span className="text-brass-deep tabular">{n}</span>
-      <span>{children}</span>
-    </p>
-  );
-}
-
-/**
- * One stop on the journey. Shown as an ordinary section when the page is not
- * pinned, and as a panel beside the cloud when it is (`.journey-panel`).
- */
-function Step({
-  label,
-  bare = false,
-  wide = false,
-  children,
-}: {
-  label?: ReactNode;
-  /** No panel of its own: the content is already a panel. */
-  bare?: boolean;
-  /** The full width of the page, for the map. */
-  wide?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className="step-wrap mx-auto w-full max-w-6xl px-6 py-16 md:px-10 md:py-24">
-      <div
-        className={`step-body journey-panel${label ? " has-label" : ""}${
-          bare ? " is-bare" : ""
-        }${wide ? " is-wide" : ""}`}
-      >
-        {label}
-        <div className="step-main">{children}</div>
-      </div>
-    </div>
+    <div className={`mx-auto w-full max-w-6xl px-6 md:px-10 ${className}`}>{children}</div>
   );
 }
 
 export default function HomePage() {
   const posts = getPublishedPosts().slice(0, 4);
-  // The cards are numbered as a run ("01/04"): the map, what I bring, the
-  // writing (only when there are posts) and contact.
-  const total = posts.length > 0 ? 4 : 3;
-  const num = (i: number) => `${String(i).padStart(2, "0")}/${String(total).padStart(2, "0")}`;
   // ------------------------------------------------------- the opening
   // `data-zoom` is the portrait: the scroll zooms into the equation on the
   // hoodie. `data-intro-fade` is whatever falls away first.
@@ -155,148 +115,155 @@ export default function HomePage() {
     </section>
   );
 
-  // ---------------------------------------------------------- the stops
+  // ---------------------------------------------------------- the page
   const steps: SceneStep[] = [
     {
       // The journey, as one card: a world map of dots with the places worked,
-      // a list beside it and the details along the foot. In the scroll scene the
-      // cloud's points fly in to form the map (`map`), and break up again when
-      // you scroll on. The same card is the /journey page.
+      // a list beside it and the details along the foot. On a wide screen the
+      // point cloud flies in to form the map as the card arrives, and breaks up
+      // again as it leaves. The same card is the /journey page.
       id: "journey",
-      label: "Journey",
-      map: true,
       node: (
-        <Step bare wide>
+        <Frame className="py-16 md:py-24">
           <h2 className="sr-only">The journey</h2>
-          <JourneyMap places={buildPlaces()} cardNumber={num(1)} />
-        </Step>
+          <JourneyMap places={buildPlaces()} />
+        </Frame>
       ),
     },
     {
       id: "work-with-me",
-      label: "What I bring",
       node: (
-        <Step
-          label={
-            <CardLabel n={num(2)} className="lg:pt-1">
-              What I bring
-            </CardLabel>
-          }
-        >
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 className="step-title font-display text-3xl sm:text-4xl">What I bring</h2>
-            <Link
-              href="/services"
-              className="label link-rule hit text-ink-soft hover:text-ink"
-            >
-              How it works
-            </Link>
-          </div>
-          <ul className="reg-list mt-8">
-            {engagements.map((e) => (
-              <li
-                key={e.name}
-                className="flex items-baseline justify-between gap-6 border-t border-hair py-4"
+        <Frame className="py-16 md:py-24">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:gap-20">
+            <div>
+              <p className="label label-dot text-ink-faint">What I bring</p>
+              <h2 className="font-display mt-6 text-[clamp(1.9rem,3.6vw,2.7rem)] leading-[1.08]">
+                A founder&rsquo;s office, without hiring one.
+              </h2>
+              <Link
+                href="/services"
+                className="label link-rule hit mt-6 inline-block text-ink-soft hover:text-ink"
               >
-                <span className="reg-name font-display-text text-[1.25rem] leading-snug">
-                  {e.name}
-                </span>
-                <span className="label shrink-0 text-ink-faint">{e.stamp}</span>
-              </li>
-            ))}
-          </ul>
-        </Step>
+                How it works
+              </Link>
+            </div>
+            <ul className="reg-list">
+              {engagements.map((e) => (
+                <li key={e.name} className="border-t border-hair py-6">
+                  <div className="flex items-baseline justify-between gap-6">
+                    <span className="font-display-text text-[1.35rem] leading-snug">
+                      {e.name}
+                    </span>
+                    <span className="label shrink-0 text-ink-faint">{e.stamp}</span>
+                  </div>
+                  <p className="mt-2 max-w-[34em] leading-relaxed text-ink-soft">
+                    {firstSentence(e.summary)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Frame>
       ),
     },
     ...(posts.length > 0
       ? [
           {
             id: "writing",
-            label: "Latest writing",
             node: (
-              <Step
-                label={
-                  <CardLabel n={num(3)} className="lg:pt-1">
-                    Latest writing
-                  </CardLabel>
-                }
-              >
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 className="step-title font-display text-3xl sm:text-4xl">
-                    Latest writing
-                  </h2>
-                  <Link
-                    href="/blog"
-                    className="label link-rule hit text-ink-soft hover:text-ink"
-                  >
-                    All posts
-                  </Link>
-                </div>
-                <ul className="reg-list mt-8">
-                  {posts.map((post) => (
-                    <li key={post.slug} className="border-t border-hair">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="group flex flex-wrap items-baseline gap-x-6 gap-y-1 py-4 sm:flex-nowrap"
-                      >
-                        <time
-                          dateTime={post.published_at}
-                          className="label tabular w-full flex-none text-ink-faint sm:w-[6.4rem]"
+              <Frame className="py-16 md:py-24">
+                <div className="block-panel px-6 py-8 md:px-10 md:py-12">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h2 className="label label-dot text-ink-faint">Latest writing</h2>
+                    <Link
+                      href="/blog"
+                      className="label link-rule hit text-ink-soft hover:text-ink"
+                    >
+                      All posts
+                    </Link>
+                  </div>
+                  <ul className="reg-list mt-6">
+                    {posts.map((post) => (
+                      <li key={post.slug} className="border-t border-hair">
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          className="group grid gap-x-8 gap-y-1 py-5 sm:grid-cols-[6.4rem_minmax(0,1fr)]"
                         >
-                          {post.published_at.slice(0, 10)}
-                        </time>
-                        <span className="post-title font-display-text text-[1.0625rem] leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
-                          {post.title}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </Step>
+                          <time
+                            dateTime={post.published_at}
+                            className="label tabular text-ink-faint sm:pt-[0.35rem]"
+                          >
+                            {post.published_at.slice(0, 10)}
+                          </time>
+                          <span>
+                            <span className="font-display-text block text-[1.25rem] leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                              {post.title}
+                            </span>
+                            {post.excerpt ? (
+                              <span className="mt-1.5 block max-w-[40em] text-[0.9375rem] leading-relaxed text-ink-soft [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden">
+                                {post.excerpt}
+                              </span>
+                            ) : null}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Frame>
             ),
           },
         ]
       : []),
     {
+      // The close. Where the equation slot is, the point cloud condenses into
+      // the equation on the hoodie, which closes the loop with the opening.
       id: "contact",
-      label: "Contact",
       node: (
-        <Step bare>
-          <div className="callout px-6 py-16 text-center md:py-24">
-            <p className="label label-dot justify-center text-ink-faint">
-              <span className="text-brass-deep tabular">{num(total)}</span>
-              <span>Contact</span>
-            </p>
-            <h2 className="font-display mx-auto mt-7 max-w-2xl text-[clamp(2.4rem,5.6vw,4.4rem)] leading-[1.02]">
-              Building something? Let&rsquo;s talk.
-            </h2>
-            <div className="mt-10">
-              <a
-                href={`mailto:${profile.email}`}
-                className="btn btn-solid-paper"
-              >
-                Start a conversation
-                <Arrow className="btn-arrow" />
-              </a>
-            </div>
-          </div>
+        <Frame className="pb-24 pt-10 md:pb-28 md:pt-16">
+          <div className="contact-grid">
+            <div>
+              <div className="callout px-6 py-14 text-center md:py-20">
+                <p className="label label-dot justify-center text-ink-faint">
+                  <span>Contact</span>
+                </p>
+                <h2 className="font-display mx-auto mt-7 max-w-2xl text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.02] lg:text-[clamp(2rem,3.4vw,3.1rem)]">
+                  Building something? Let&rsquo;s talk.
+                </h2>
+                <div className="mt-10">
+                  <a href={`mailto:${profile.email}`} className="btn btn-solid-paper">
+                    Start a conversation
+                    <Arrow className="btn-arrow" />
+                  </a>
+                </div>
+              </div>
 
-          <ul className="profile-links label mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-ink-faint">
-            {profiles.map((p) => (
-              <li key={p.label}>
-                <a
-                  href={p.href}
-                  target="_blank"
-                  rel={p.me ? "me noopener noreferrer" : "noopener noreferrer"}
-                  className="link-rule hit hit-sm hover:text-ink"
-                >
-                  {p.label}
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Step>
+              <ul className="label mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-ink-faint">
+                {profiles.map((p) => (
+                  <li key={p.label}>
+                    <a
+                      href={p.href}
+                      target="_blank"
+                      rel={p.me ? "me noopener noreferrer" : "noopener noreferrer"}
+                      className="link-rule hit hit-sm hover:text-ink"
+                    >
+                      {p.label}
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Empty on purpose: the point cloud forms the equation here. */}
+            <div
+              data-eq-slot
+              aria-hidden="true"
+              className="eq-slot"
+              style={{ aspectRatio: EQUATION.aspect }}
+            />
+          </div>
+        </Frame>
       ),
     },
   ];
