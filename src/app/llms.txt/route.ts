@@ -39,9 +39,9 @@ Verified profiles: ${profile.sameAs.join(", ")}
 A personal site documenting six-plus years of founder's-office work across
 four countries. "Founder's office" here means the operator a founder hands a
 half-formed idea to and trusts it comes back as a working business — covering
-go-to-market execution, cross-border operations, financial operations and
-fundraising support, rather than the note-taking chief-of-staff role the term
-is often confused with.
+go-to-market execution, cross-border operations, financial operations,
+fundraising support and AI consulting and integration, rather than the
+note-taking chief-of-staff role the term is often confused with.
 
 ## Key pages
 

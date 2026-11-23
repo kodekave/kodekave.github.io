@@ -15,7 +15,7 @@ export const profile = {
     "A founder's-office operator and GTM strategist who has scaled four ventures across four countries — India, the Maldives, the US, and the UK — turning early-stage vision into go-to-market execution, revenue, and operating systems that hold.",
   /** One-sentence entity description, used in structured data. */
   schemaDescription:
-    "Founder's-office operator and GTM strategist with 6+ years building and scaling four early-stage ventures across India, the Maldives, the United States, and the United Kingdom — covering go-to-market execution, cross-border operations, financial operations, and fundraising support.",
+    "Founder's-office operator and GTM strategist with 6+ years building and scaling four early-stage ventures across India, the Maldives, the United States, and the United Kingdom — covering go-to-market execution, cross-border operations, financial operations, fundraising support, and AI consulting and integration.",
   email: "kmailstation@gmail.com",
   linkedin: "https://www.linkedin.com/in/komalkedarnath",
   location: "India",
@@ -35,6 +35,10 @@ export const profile = {
     "International Market Entry",
     "Startup Financial Operations",
     "Fundraising Support",
+    "Investor Readiness",
+    "Data Rooms",
+    "AI Consulting and Integration",
+    "OKRs",
     "Program Management",
     "Startup Scaling",
   ],
@@ -528,7 +532,7 @@ export function countryCode(country: string): string {
 }
 
 /**
- * The four shapes an engagement takes. Shared between /services and the
+ * The five shapes an engagement takes. Shared between /services and the
  * homepage summary, so the offer is described once.
  */
 export const engagements: {
@@ -583,6 +587,17 @@ export const engagements: {
       "Financial memos and operating models",
       "Investor-facing deck support and narrative pressure-testing",
       "Post-raise reporting cadence for new investors",
+    ],
+  },
+  {
+    name: "AI consulting and integration",
+    stamp: "Project",
+    summary:
+      "The newest part of the work: agent systems that let a small team run more. I build them into how the team already operates, and I fix the ledger first, because an agent is only as good as the records it works from.",
+    includes: [
+      "Agent systems for the recurring operating work a small team should not do by hand",
+      "Cleaning up the ledger and operating data before an agent touches them",
+      "Automated management reporting for leadership",
     ],
   },
 ];
