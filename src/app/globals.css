@@ -289,20 +289,19 @@ body {
 /* ------------------------------------------------------- the journey scene */
 
 /*
- * The homepage's one-page journey (components/JourneyScene.tsx).
+ * The homepage (components/JourneyScene.tsx): an opening, then a plain page.
  *
- * By default, and for anyone without script or with reduced motion, this is an
- * ordinary page: the opening fills the first screen and the sections follow, one
- * under the next. Once the script starts it sets data-scene="live" and the
- * stage is pinned: the track is tall, the stage sticks to the screen, and the
- * sections are laid over the canvas one at a time, faded by the scroll. The
- * opening has the same box either way, so nothing above the fold moves when
- * that happens.
+ * By default, and for anyone without script or with reduced motion, the opening
+ * fills the first screen and the sections follow, one under the next. Once the
+ * script starts it sets data-scene="live": the opening is pinned for a screen of
+ * scroll while the portrait zooms in and fades, and a fixed canvas and a faint,
+ * fixed drawing sit behind the page. The sections themselves never change.
  */
 .journey {
   position: relative;
 }
 .journey-canvas,
+.journey-backdrop,
 .journey-cue {
   display: none;
 }
@@ -313,8 +312,13 @@ body {
   justify-content: center;
   min-height: 100svh;
 }
+/* The page's sections sit above the fixed layers behind them. */
+.journey-flow {
+  position: relative;
+  z-index: 1;
+}
 .journey-step {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 5rem;
 }
 
 /*
@@ -366,35 +370,18 @@ body {
   }
 }
 
-/* A step with a label: the label in the left margin, as the sections were. */
-.step-body.has-label {
-  display: grid;
-  gap: 2.5rem 3rem;
-}
-@media (min-width: 1024px) {
-  .step-body.has-label {
-    grid-template-columns: 11rem minmax(0, 1fr);
-  }
-}
+/* --- live ------------------------------------------------------------------ */
 
-/* --- live: pinned ---------------------------------------------------------- */
-
-.journey[data-scene="live"] {
-  height: calc(var(--k) * 100svh);
+.journey[data-scene="live"] .journey-hero {
+  position: relative;
+  z-index: 1;
+  height: calc((1 + var(--zoom)) * 100svh);
 }
 .journey[data-scene="live"] .journey-stage {
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
-}
-.journey[data-scene="live"] .journey-canvas {
-  display: block;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 .journey[data-scene="live"] .journey-intro {
   position: absolute;
@@ -414,359 +401,92 @@ body {
   background: linear-gradient(to bottom, var(--color-ink-faint), transparent);
 }
 
-/* Each step is laid over the cloud, on the left, as a soft panel. */
-.journey[data-scene="live"] .journey-step {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  padding: 4.75rem 0 1.5rem;
-  opacity: 0;
-  pointer-events: none;
-  will-change: opacity, transform;
-}
-.journey[data-scene="live"] .step-wrap {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.journey[data-scene="live"] .step-body {
+/* The two fixed layers behind the page: the point cloud, and the Lorenz drawing
+   from the opening, faint, which the script fades in as the opening goes. */
+.journey[data-scene="live"] .journey-canvas,
+.journey[data-scene="live"] .journey-backdrop {
   display: block;
-  width: min(40rem, 100%);
-  max-height: calc(100svh - 6.5rem);
-  overflow: hidden;
-  padding: 1.6rem 1.75rem;
-  border: 1px solid var(--color-hair);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--color-paper) 86%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-}
-.journey[data-scene="live"] .step-body.is-bare {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-.journey[data-scene="live"] .step-body.has-label .step-main {
-  margin-top: 1.1rem;
-}
-
-.journey[data-scene="live"] .callout {
-  padding-block: 2.6rem;
-}
-
-/* The dot rail down the right edge: the sections, where you are, and a way to jump. */
-.journey-rail {
-  display: none;
-}
-@media (min-width: 768px) {
-  .journey[data-scene="live"] .journey-rail {
-    position: absolute;
-    top: 50%;
-    right: 0.9rem;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(-50%);
-  }
-}
-.journey-dot {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-}
-.journey-dot::before {
-  content: "";
-  width: 0.55rem;
-  height: 0.55rem;
-  border: 1px solid var(--color-ink);
-  border-radius: 50%;
-  background: transparent;
-  transition: transform 0.25s ease, background-color 0.25s ease;
-}
-.journey-dot[aria-current="true"]::before {
-  background: var(--color-ink);
-  transform: scale(1.3);
-}
-.journey-dot:hover::before {
-  background: var(--color-brass);
-}
-.journey-dot:focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: -2px;
-}
-.journey-dot-label {
-  position: absolute;
-  top: 50%;
-  right: 2rem;
-  padding: 0.2rem 0.55rem;
-  white-space: nowrap;
-  color: var(--color-ink);
-  background: color-mix(in srgb, var(--color-paper) 92%, transparent);
-  border: 1px solid var(--color-hair);
-  border-radius: 4px;
-  opacity: 0;
-  transform: translate(4px, -50%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.journey-dot:hover .journey-dot-label,
-.journey-dot:focus-visible .journey-dot-label {
-  opacity: 1;
-  transform: translate(0, -50%);
+.journey[data-scene="live"] .journey-backdrop {
+  opacity: 0;
 }
-@media (prefers-reduced-motion: reduce) {
-  .journey-dot::before,
-  .journey-dot-label {
-    transition: none;
-  }
+/* The drawing is the whole screen's, not the opening's fade to the right. */
+.patt.patt-backdrop {
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 80% at 62% 46%,
+    #000 0%,
+    rgba(0, 0, 0, 0.7) 55%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 80% at 62% 46%,
+    #000 0%,
+    rgba(0, 0, 0, 0.7) 55%,
+    transparent 100%
+  );
 }
 
-/* The closing links get a backing, so they stay readable over the cloud. */
-.journey[data-scene="live"] .profile-links {
-  width: fit-content;
-  margin-inline: auto;
-  padding: 0.35rem 1.2rem;
-  color: var(--color-ink);
-  background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-  border: 1px solid var(--color-hair);
-  border-radius: 999px;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-}
-.journey[data-scene="live"] .profile-links a {
-  display: inline-block;
-  padding: 0.45rem 0.1rem;
-}
-@media (max-width: 767px) {
-  .journey[data-scene="live"] .profile-links {
-    column-gap: 1.1rem;
-    padding-inline: 1rem;
-  }
+/* The page's plates give way to the drawing behind it while it is running. */
+html:has(.journey[data-scene="live"]) .trail {
+  display: none;
 }
 
 /*
- * The journey map inside the scene. The card is full width, with no panel of its
- * own. From a tablet up its own canvas is hidden and its background is clear:
- * the scene's point cloud flies into the dots of the map and sits there, so the
- * card is only furniture (the graticule, arcs, places, list and details) laid
- * over them. Its height is fixed so the map never shifts under the points. On a
- * phone the card keeps its own canvas and panel and the cloud simply fades.
+ * The map card. From a tablet up, once the cloud is running (data-map="cloud"),
+ * the card's own canvas is hidden and its background is clear: the cloud's points
+ * fly into the dots of the map and sit there, so the card is only furniture (the
+ * graticule, arcs, places, list and details) laid over them. On a phone, or
+ * without the cloud, the card draws its own dots.
  */
-.journey[data-scene="live"] .step-body.is-wide {
-  width: 100%;
-  max-height: none;
-  padding: 0;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
 @media (min-width: 768px) {
-  .journey[data-scene="live"] .journey-step[data-map] {
-    align-items: center;
-    padding: 4.5rem 0 1.25rem;
-  }
-  .journey[data-scene="live"] .jmap-canvas {
+  .journey[data-map="cloud"] .jmap-canvas {
     display: none;
   }
-  .journey[data-scene="live"] .jmap {
+  .journey[data-map="cloud"] .jmap {
     background: none;
   }
-  /* The map takes the height that is left once the bar, the padding and the
-     details are in, so the whole card always fits the screen. */
-  .journey[data-scene="live"] .jmap-stage {
-    width: min(
-      100%,
-      calc((100svh - 11.7rem - clamp(10.5rem, 28svh, 15.5rem)) * 2.375)
-    );
-    margin-inline: auto;
-  }
-  .journey[data-scene="live"] .jmap-detail {
-    height: clamp(10.5rem, 28svh, 15.5rem);
-    min-height: 0;
-    overflow-y: auto;
+  .journey[data-map="cloud"] .jmap-detail {
     background: color-mix(in srgb, var(--color-paper) 72%, transparent);
   }
-  .journey[data-scene="live"] .jstop {
-    padding: 0.7rem 0;
-  }
-  .journey[data-scene="live"] .jstop h3 {
-    font-size: 1.125rem;
-  }
-  .journey[data-scene="live"] .jstop p:not(.label) {
-    font-size: 0.875rem;
-    line-height: 1.45;
-  }
-  .journey[data-scene="live"] .jstop a {
-    margin-top: 0.3rem;
-  }
 }
 
-/* The contact card is narrower on a laptop, leaving the right of the screen for
-   the equation the cloud condenses into at the end. */
-@media (min-width: 1024px) {
-  .journey[data-scene="live"] .step-body.is-bare:not(.is-wide) {
-    width: min(33rem, 100%);
-  }
-  .journey[data-scene="live"] .callout {
-    padding-inline: 1.5rem;
-  }
-  .journey[data-scene="live"] .callout h2 {
-    font-size: clamp(2rem, 3.4vw, 3.1rem);
-  }
+/* The contact moment: the card, and where the equation forms beside it. */
+.contact-grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
 }
-
-/* A laptop or larger: the cards are a little bigger, with larger type. */
-@media (min-width: 1024px) {
-  .journey[data-scene="live"] .step-body {
-    width: min(47rem, 100%);
-    padding: 2.1rem 2.4rem;
-  }
-  .journey[data-scene="live"] .step-body.has-label .step-main {
-    margin-top: 1.4rem;
-  }
-  .journey[data-scene="live"] .step-title {
-    font-size: 2.6rem;
-  }
-  .journey[data-scene="live"] .reg-list li {
-    padding-block: 1.2rem;
-  }
-  .journey[data-scene="live"] .reg-name {
-    font-size: 1.5rem;
-  }
-  .journey[data-scene="live"] .post-title {
-    font-size: 1.25rem;
-  }
-  .journey[data-scene="live"] .callout {
-    padding-block: 3.2rem;
-  }
-}
-
-/* A screen that is not tall: tighten, and drop the secondary lines. */
-@media (max-height: 780px) {
-  .journey[data-scene="live"] .step-body {
-    width: min(42rem, 100%);
-  }
-  .journey[data-scene="live"] .step-title {
-    font-size: 2.1rem;
-  }
-  .journey[data-scene="live"] .reg-list li {
-    padding-block: 0.9rem;
-  }
-  .journey[data-scene="live"] .reg-name {
-    font-size: 1.25rem;
-  }
-  .journey[data-scene="live"] .callout {
-    padding-block: 2.6rem;
-  }
-  .journey[data-scene="live"] .step-body {
-    padding: 1.1rem 1.5rem;
-  }
-  .journey[data-scene="live"] .step-body.has-label .step-main {
-    margin-top: 0.6rem;
-  }
-}
-
-/* Below a laptop: the step is a panel at the foot of the screen, the cloud above. */
-@media (max-width: 1023px) {
-  .journey[data-scene="live"] .journey-step {
-    align-items: flex-end;
-    padding-top: 0;
-    padding-bottom: 0.9rem;
-  }
-  .journey[data-scene="live"] .step-body {
-    width: 100%;
-    max-height: 70svh;
-  }
-}
-
-/* A phone: closer rows, shorter lines, a single column of doors. */
-@media (max-width: 767px) {
-  .journey[data-scene="live"] .step-body {
-    max-height: 72svh;
-    padding: 1rem 1.1rem;
-  }
-  .journey[data-scene="live"] .step-body.has-label .step-main {
-    margin-top: 0.7rem;
-  }
-  .journey[data-scene="live"] .callout {
-    padding-block: 1.8rem;
-  }
-
-  /* The journey map card, closed up to fit a phone: the places as a 2 x 2
-     grid, the details as a short list, centred on the screen. */
-  .journey[data-scene="live"] .journey-step[data-map] {
-    align-items: center;
-    padding-bottom: 0;
-  }
-  .journey[data-scene="live"] .jmap-bar {
-    padding: 0.6rem 1rem;
-  }
-  .journey[data-scene="live"] .jmap-top {
-    gap: 0.7rem;
-    padding: 0.7rem 1rem 0.9rem;
-  }
-  .journey[data-scene="live"] .jmap-stage {
-    width: 28rem;
-  }
-  .journey[data-scene="live"] .jplaces {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 0.75rem;
-  }
-  .journey[data-scene="live"] .jplaces li:last-child .jplace {
-    border-bottom: 0;
-  }
-  .journey[data-scene="live"] .jplace {
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding: 0.5rem 0.55rem;
-  }
-  .journey[data-scene="live"] .jplace > :first-child {
-    display: none;
-  }
-  .journey[data-scene="live"] .jplace-name {
-    font-size: 1.0625rem;
-  }
-  .journey[data-scene="live"] .jmap-detail {
-    height: auto;
-    min-height: 0;
-    padding: 0.6rem 1rem 0.8rem;
-  }
-  .journey[data-scene="live"] .jmap-place,
-  .journey[data-scene="live"] .jstop a {
-    display: none;
-  }
-  .journey[data-scene="live"] .jstop {
-    grid-template-columns: 2.7rem minmax(0, 1fr);
-    gap: 0.6rem;
-    padding: 0.45rem 0;
-  }
-  .journey[data-scene="live"] .jstop h3 {
-    font-size: 1rem;
-    line-height: 1.25;
-  }
-  .journey[data-scene="live"] .jstop p:not(.label) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    margin-top: 0.1rem;
-    font-size: 0.8125rem;
-    line-height: 1.35;
-  }
-}
-
-/* The page-wide pattern plates give way to the cloud while it is running. */
-html:has(.journey[data-scene="live"]) .trail {
+.eq-slot {
   display: none;
+  width: 100%;
+}
+.journey[data-eq="cloud"] .eq-slot {
+  display: block;
+  order: -1;
+}
+@media (min-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: minmax(0, 33rem) minmax(0, 1fr);
+    gap: 4rem;
+  }
+  .journey[data-eq="cloud"] .eq-slot {
+    order: 0;
+  }
+}
+
+/* A block on the page: the writing, held in a soft panel. */
+.block-panel {
+  border: 1px solid var(--color-hair);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-paper) 80%, transparent);
 }
 
 /* ----------------------------------------------------------------- plates */

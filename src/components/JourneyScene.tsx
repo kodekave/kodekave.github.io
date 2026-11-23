@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import Pattern from "./Pattern";
 import { EQUATION } from "@/lib/equation-points";
 import { cssUnit, onTheme } from "@/lib/theme";
 import {
@@ -21,65 +22,37 @@ import { type LandCell, VIEW_COLS, landCells } from "@/lib/world-dots";
 
 export type SceneStep = {
   id: string;
-  /** The section's own name, for the dot rail. */
-  label: string;
   node: ReactNode;
-  /** This step is the map: the point cloud flies into it, then breaks up again. */
-  map?: boolean;
 };
 
 /**
- * The homepage as one scrolling journey.
+ * The homepage's opening, and the two places the point cloud appears.
  *
- * The page's own sections are the content. This component pins a stage to the
- * screen and lets the scroll drive it:
+ * The page is an ordinary page that scrolls. Two things are scripted:
  *
- *   1. the opening zooms into the equation on the hoodie in the portrait;
- *   2. the zoom lands in a 3D cloud of points, the Lorenz attractor, and from
- *      there the scroll flies the camera along one curve through it (the
- *      camera chases the scroll at a calm speed of its own, with a ceiling, so
- *      a fast scroll does not make the curve race; see FLIGHT_MAX);
- *   3. each section fades in and out in turn over the cloud;
- *   4. one step is the journey map: the cloud's points fly across the screen
- *      and settle into the continents, the card (places, arcs, list, details)
- *      appears on them and stays while you use it, and when you scroll on the
- *      map breaks back into the cloud and the flight carries on. While the map
- *      is up nothing of the cloud is left behind it, but the camera never
- *      stops: it flies on under the map (slower, unseen), so the points form
- *      the map and leave it while the curve is moving, as they do for the
- *      equation at the end;
- *   5. at the end the cloud condenses once more, into the equation on the
- *      hoodie, which closes the loop with the opening.
+ *   1. The opening is pinned for ZOOM screens of scroll while the portrait zooms
+ *      into the equation on the hoodie and fades, and the copy and the pattern
+ *      behind it fall away first. When it is done the Lorenz drawing is left
+ *      behind the page, fixed and faint, over the plus grid on the body.
+ *   2. A fixed canvas holds the Lorenz point cloud. It is only drawn around two
+ *      anchors in the page: the map card (`[data-map-stage]`), where the points
+ *      fly in and settle into the continents, and the equation slot
+ *      (`[data-eq-slot]`), where they condense into the equation on the hoodie.
+ *      The points aim at their anchor's box, which moves with the page, so the
+ *      shape scrolls with its card. Everywhere else the canvas is empty.
  *
- * A row of dots down the right edge names the sections and jumps between them.
- *
- * Without script, with reduced motion, or before it has started, the stage is
- * not pinned and the sections are an ordinary page, one under the next (see
- * `.journey` in globals.css). Everything is server-rendered and stays in the
- * page whichever way it is shown. The cloud is plain WebGL, built when the
- * browser is idle after load; if WebGL is missing the journey still runs, only
- * without the cloud. On a phone the cloud fades for the map and the card draws
- * its own dots instead (see JourneyMap), because the map there pans.
+ * Without script, with reduced motion, or before it has started, the opening is
+ * one screen and the rest follows it: everything is server-rendered. The cloud
+ * is plain WebGL, built when the browser is idle after load; if WebGL is missing
+ * the page still works, only without the cloud (the map card draws its own dots
+ * and the equation slot stays closed). On a phone the map card draws its own
+ * dots, because the map there pans.
  *
  * Scroll lengths below are in viewport heights.
  */
-const ZOOM = 1.1;
-const STEP = 1.1;
-/**
- * Flight before the map (after the zoom: the camera following the point through
- * the curve, with the other points moving), the points forming it, the hold, the
- * points breaking up.
- */
-const MAP_LEAD = 1.7;
-const MAP_FORM = 0.7;
-const MAP_HOLD = 1.1;
-const MAP_LEN = MAP_FORM * 2 + MAP_HOLD;
-/**
- * Scroll after the map has broken up and before the next card arrives: the
- * curve alone, with the camera circling the point, so the break-up is seen
- * flying on and does not run straight into a card.
- */
-const MAP_TAIL = 1;
+const ZOOM = 1;
+/** How much of the recorded curve's length the whole page scrolls through. */
+const PATH_SHARE = 0.14;
 /**
  * While the map is up the rest of the cloud is not gone but faint behind it,
  * and the other points keep their trails, so the curve keeps moving behind the
@@ -96,57 +69,11 @@ const GHOST_YAW = 1.75;
 const GHOST_SWAY = 0.25;
 const GHOST_TILT = 0.25;
 const GHOST_DIST = 2.3;
-/**
- * How fast the camera flies while the map is fully up, against its speed in the
- * open cloud (1). It never stops: it eases down to this and back up with the
- * points, so the flight is one movement from the landing to the end.
- */
-const MAP_PACE = 0.4;
-/**
- * How the camera flies along the curve. It does not follow the scroll one for
- * one: it chases the scroll at a speed of its own, with a ceiling, so a quick
- * flick of the wheel does not send the curve racing through space. The camera
- * takes its time and arrives calmly, at one smooth speed however fast you
- * scroll. FLIGHT_MAX is that ceiling in screens of scroll a second, GAIN how
- * hard it chases a gap (a second order follower, so it eases in and out), and
- * LAG how gently its speed changes. PATH_SHARE is how much of the recorded
- * curve's length the whole scroll flies through (the rest is only ever
- * cloud). The point is moved by distance along the curve, not by time (it
- * would otherwise speed up and slow down fivefold as it loops), so this sets
- * its one even speed: 0.14 is about 1.5 scene units a second at the fastest
- * flight (the camera rides the curve now, so the view swings with the point
- * and this keeps it from spinning too fast).
- */
-const FLIGHT_MAX = 0.7;
-const FLIGHT_GAIN = 2;
-const FLIGHT_LAG = 0.12;
-const PATH_SHARE = 0.14;
-/** A step fades in over IN, holds, and fades out over OUT before its end. */
-const FADE_IN = 0.3;
-const FADE_OUT_AT = 0.5;
-const FADE_OUT = 0.3;
 /** Where the equation sits in the portrait image, as fractions of its box. */
 const EQ_X = 0.375;
 const EQ_Y = 0.82;
 /** How much of the portrait's width the equation takes up. */
 const EQ_W = 0.49;
-
-type Seg = { a: number; b: number; map: boolean };
-
-function layoutOf(flags: boolean[]): { segs: Seg[]; total: number } {
-  let v = ZOOM;
-  const segs = flags.map((map) => {
-    if (map) v += MAP_LEAD;
-    const a = v;
-    v += map ? MAP_LEN : STEP;
-    const seg = { a, b: v, map };
-    // The map's own range ends where its points have gone; the curve then has
-    // MAP_TAIL to itself before the next card.
-    if (map) v += MAP_TAIL;
-    return seg;
-  });
-  return { segs, total: v };
-}
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 const smooth01 = (x: number) => {
@@ -180,6 +107,7 @@ uniform mat4 uVP;
 uniform vec2 uShift;
 uniform float uPx;
 uniform vec2 uMapPx;
+uniform vec2 uOff;
 uniform float uProg;
 uniform float uFade;
 uniform float uMorph;
@@ -230,8 +158,9 @@ void main() {
   // The yellow point does not: the map has its own.
   float keep = kind > 2.5 ? uGhost * ${GHOST_OTHERS.toFixed(2)} : (kind > 1.5 ? 0.0 : uGhost * ${GHOST_CLOUD.toFixed(2)});
   a *= 1.0 - clamp(uMorph * 1.8, 0.0, 1.0) * (1.0 - isMap) * (1.0 - keep);
-  vec2 from = mix(ndc, aMap.xy, behind);
-  vec2 pos = mix(from, aMap.xy, m);
+  vec2 tgt = aMap.xy + uOff * isMap;
+  vec2 from = mix(ndc, tgt, behind);
+  vec2 pos = mix(from, tgt, m);
   float mapSize = aMap.z > 1.5 ? uMapPx.y : uMapPx.x;
   float mapAlpha = aMap.z > 1.5 ? 0.75 : 0.3;
   size = mix(size, mapSize, m);
@@ -275,6 +204,8 @@ type Renderer = {
     morph: number;
     /** 1 while the map is up: the cloud and the other points stay faintly visible. */
     ghost: number;
+    /** Where the shape's box has moved to since the points were aimed at it (NDC). */
+    off: [number, number];
   }) => void;
   resize: (cssW: number, cssH: number) => void;
   /**
@@ -324,6 +255,7 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
     map: gl.getAttribLocation(prog, "aMap"),
     vp: gl.getUniformLocation(prog, "uVP"),
     shift: gl.getUniformLocation(prog, "uShift"),
+    off: gl.getUniformLocation(prog, "uOff"),
     px: gl.getUniformLocation(prog, "uPx"),
     mapPx: gl.getUniformLocation(prog, "uMapPx"),
     prog: gl.getUniformLocation(prog, "uProg"),
@@ -409,12 +341,13 @@ function createRenderer(canvas: HTMLCanvasElement, cloud: Cloud, mobile: boolean
       gl.bindBuffer(gl.ARRAY_BUFFER, mapBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
     },
-    draw({ eye, target, head, others, prog: progress, fade, shift, morph, ghost }) {
+    draw({ eye, target, head, others, prog: progress, fade, shift, morph, ghost, off }) {
       gl.clear(gl.COLOR_BUFFER_BIT);
       if (fade <= 0.002) return;
       viewProjection(vp, eye, target, w / h, fovY);
       gl.uniformMatrix4fv(loc.vp, false, vp);
       gl.uniform2f(loc.shift, shift[0], shift[1]);
+      gl.uniform2f(loc.off, off[0], off[1]);
       gl.uniform1f(loc.px, dpr * Math.min(1.25, Math.max(0.75, cssH / 900)));
       gl.uniform2f(loc.mapPx, pxInner * dpr, pxRim * dpr);
       gl.uniform1f(loc.prog, progress);
@@ -482,62 +415,29 @@ export default function JourneyScene({
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const flags = steps.map((s) => !!s.map).join(",");
-  const layout = useMemo(() => layoutOf(flags.split(",").map((f) => f === "true")), [flags]);
-  const { total } = layout;
+  const backdrop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const track = root.current;
     const st = stage.current;
     const cv = canvas.current;
-    if (!track || !st || !cv) return;
+    const back = backdrop.current;
+    if (!track || !st || !cv || !back) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduce.matches) return;
 
-    const { segs } = layout;
-    const mapIdx = segs.findIndex((s) => s.map);
-    const mapSeg = mapIdx >= 0 ? segs[mapIdx] : null;
-    const endSeg = segs[segs.length - 1];
-
-    /** How far the cloud has become the map at scroll position v (0 to 1). */
-    const mapMorphAt = (v: number) =>
-      mapSeg
-        ? Math.min(smooth01((v - mapSeg.a) / MAP_FORM), smooth01((mapSeg.b - v) / MAP_FORM))
-        : 0;
-    // How far along the curve the camera has flown at scroll position v: the
-    // scroll's own length, slowed a little (never to nothing) while the map is
-    // up. The cloud is away then, so the slowing is not seen, and the whole
-    // curve is still flown by the last step.
-    const PACE_N = 400;
-    const flownTable = new Float32Array(PACE_N + 1);
-    for (let i = 0; i < PACE_N; i++) {
-      const mid = ((i + 0.5) / PACE_N) * total;
-      flownTable[i + 1] =
-        flownTable[i] + (total / PACE_N) * (1 - (1 - MAP_PACE) * mapMorphAt(mid));
-    }
-    const flown = (v: number) => {
-      const f = clamp01(v / total) * PACE_N;
-      const i = Math.min(PACE_N - 1, Math.floor(f));
-      return flownTable[i] + (flownTable[i + 1] - flownTable[i]) * (f - i);
-    };
-
     const introEl = st.querySelector<HTMLElement>("[data-intro]");
     const fadeEls = Array.from(st.querySelectorAll<HTMLElement>("[data-intro-fade]"));
     const zoomEl = st.querySelector<HTMLElement>("[data-zoom]");
-    const stepEls = Array.from(st.querySelectorAll<HTMLElement>("[data-step]"));
-    const railEls = Array.from(st.querySelectorAll<HTMLElement>("[data-rail]"));
-    const ids = stepEls.map((el) => el.id);
-    const mapStepEl = mapSeg ? stepEls[mapIdx] : null;
-    const mapCard = mapStepEl?.querySelector<HTMLElement>(".jmap") ?? null;
-    const mapStageEl = mapStepEl?.querySelector<HTMLElement>("[data-map-stage]") ?? null;
+    const mapStageEl = track.querySelector<HTMLElement>("[data-map-stage]");
+    const eqSlotEl = track.querySelector<HTMLElement>("[data-eq-slot]");
 
     track.dataset.scene = "live";
 
-    // --- geometry ---------------------------------------------------------
+    // --- the opening's geometry ---------------------------------------------
     let vw = 1;
     let vh = 1;
-    let desktop = true;
     let eqX = 0;
     let eqY = 0;
     let tgtX = 0;
@@ -547,7 +447,6 @@ export default function JourneyScene({
     const measure = () => {
       vw = st.clientWidth;
       vh = st.clientHeight;
-      desktop = vw >= 1024;
       if (zoomEl) {
         const keep = zoomEl.style.transform;
         zoomEl.style.transform = "none";
@@ -556,14 +455,14 @@ export default function JourneyScene({
         zoomEl.style.transform = keep;
         eqX = r.left - s.left + EQ_X * r.width;
         eqY = r.top - s.top + EQ_Y * r.height;
-        tgtX = vw * (desktop ? 0.6 : 0.5);
-        tgtY = vh * (desktop ? 0.5 : 0.4);
+        tgtX = vw * 0.5;
+        tgtY = vh * 0.5;
         zoomScale = Math.max(2.2, (1.3 * 0.78 * vw) / (EQ_W * r.width));
         zoomEl.style.transformOrigin = `${EQ_X * 100}% ${EQ_Y * 100}%`;
       }
     };
 
-    // --- the cloud --------------------------------------------------------
+    // --- the cloud ----------------------------------------------------------
     let cloud: Cloud | null = null;
     let renderer: Renderer | null = null;
     const eyeP = [0, 0, 0];
@@ -571,7 +470,7 @@ export default function JourneyScene({
     const headP = [0, 0, 0];
     const othersP = new Float32Array(FOLLOWERS * FOLLOWER_TRAIL * 3);
 
-    // --- the shapes the cloud becomes: the map, then the equation -----------
+    // The shapes the cloud becomes: the map, then the equation.
     let cells: LandCell[] = [];
     let eqPts: Float32Array | null = null;
     /** How many points are set aside for each shape (0 when it is not formed). */
@@ -579,52 +478,45 @@ export default function JourneyScene({
     let eqCount = 0;
     let setAside = 0;
     let targets: Float32Array | null = null;
-    /** Which shape the points are currently aimed at. */
+    /** Which shape the points are currently aimed at, and where its box was. */
     let aimed: "map" | "eq" | null = null;
+    let baseLeft = 0;
 
+    /**
+     * Aim the points at a box in the page. Their targets are worked out as if the
+     * box's top were at the top of the screen, and `off` (see `apply`) slides them
+     * to wherever the box is now, so the shape follows the scroll.
+     */
     const placeTargets = (want: "map" | "eq") => {
-      if (!renderer || !targets) return;
+      const anchor = want === "map" ? mapStageEl : eqSlotEl;
+      if (!renderer || !targets || !anchor) return;
+      const cw = cv.clientWidth || vw;
+      const ch = cv.clientHeight || vh;
+      const r = anchor.getBoundingClientRect();
+      if (!r.width) return;
+      targets.fill(0);
       if (want === "map") {
-        // A phone has no points set aside for the map: its card draws its own.
-        if (!mapStageEl || !mapStepEl || !mapCount) {
-          aimed = "map";
-          return;
-        }
-        const keep = mapStepEl.style.transform;
-        mapStepEl.style.transform = "none";
-        const r = mapStageEl.getBoundingClientRect();
-        const s = st.getBoundingClientRect();
-        mapStepEl.style.transform = keep;
-        if (!r.width) return;
+        if (!mapCount) return;
         const cs = r.width / VIEW_COLS;
-        targets.fill(0);
         for (let k = 0; k < mapCount; k++) {
           const cell = cells[k];
-          targets[k * 3] = ((r.left - s.left + (cell.c + 0.5) * cs) / vw) * 2 - 1;
-          targets[k * 3 + 1] = 1 - ((r.top - s.top + (cell.r + 0.5) * cs) / vh) * 2;
+          targets[k * 3] = ((r.left + (cell.c + 0.5) * cs) / cw) * 2 - 1;
+          targets[k * 3 + 1] = 1 - (((cell.r + 0.5) * cs) / ch) * 2;
           targets[k * 3 + 2] = cell.coast ? 2 : 1;
         }
         renderer.setTargets(targets, mapCount, cs * 0.54, cs * 0.72);
-        aimed = "map";
-        return;
+      } else {
+        if (!eqPts || !eqCount) return;
+        for (let k = 0; k < eqCount; k++) {
+          targets[k * 3] = ((r.left + eqPts[k * 2] * r.width) / cw) * 2 - 1;
+          targets[k * 3 + 1] = 1 - ((eqPts[k * 2 + 1] * r.height) / ch) * 2;
+          targets[k * 3 + 2] = 2;
+        }
+        const px = r.width > 520 ? 2.4 : 2;
+        renderer.setTargets(targets, eqCount, px, px);
       }
-      if (!eqPts || !eqCount) return;
-      targets.fill(0);
-      // The equation sits to the right of the contact card on a wide screen,
-      // and above it on a narrow one.
-      const wEq = desktop ? vw * 0.4 : vw * 0.84;
-      const hEq = wEq / EQUATION.aspect;
-      const cx = desktop ? vw * 0.75 : vw * 0.5;
-      const cy = desktop ? vh * 0.5 : vh * 0.27;
-      for (let k = 0; k < eqCount; k++) {
-        const px = cx - wEq / 2 + eqPts[k * 2] * wEq;
-        const py = cy - hEq / 2 + eqPts[k * 2 + 1] * hEq;
-        targets[k * 3] = (px / vw) * 2 - 1;
-        targets[k * 3 + 1] = 1 - (py / vh) * 2;
-        targets[k * 3 + 2] = 2;
-      }
-      renderer.setTargets(targets, eqCount, desktop ? 2.4 : 2, desktop ? 2.4 : 2);
-      aimed = "eq";
+      baseLeft = r.left;
+      aimed = want;
     };
 
     // Start-up is split over two idle moments (the points, then the GL context),
@@ -642,10 +534,10 @@ export default function JourneyScene({
       const mobile = window.innerWidth < 768;
       const built = buildCloud(mobile ? 0.5 : 1);
       eqPts = equationPoints();
-      eqCount = EQUATION.count;
+      eqCount = eqSlotEl ? EQUATION.count : 0;
       // A phone does not form the map from the cloud (its map pans), but it does
       // form the equation; a wider screen forms both.
-      if (mapSeg && !mobile) {
+      if (mapStageEl && !mobile) {
         cells = landCells();
         mapCount = cells.length;
       }
@@ -657,34 +549,34 @@ export default function JourneyScene({
       cloud = built;
       renderer = createRenderer(cv, built, mobile);
       if (renderer) {
-        renderer.resize(st.clientWidth, st.clientHeight);
-        frame();
+        renderer.resize(cv.clientWidth, cv.clientHeight);
+        // The map card and the equation slot know the cloud is going to draw
+        // them (see `.journey[data-map]` and `[data-eq]` in globals.css).
+        if (mapCount > 0) track.dataset.map = "cloud";
+        if (eqCount > 0) track.dataset.eq = "cloud";
+        kick();
       }
     };
 
-    // --- scroll -> state --------------------------------------------------
-    let want = 0;
-    let cur = 0;
-    /** Where the camera is on the scroll's scale, and how fast it is going. */
-    let flight = 0;
-    let flightVel = 0;
-    let lastT = 0;
+    // --- scroll -> state ------------------------------------------------------
     let raf = 0;
-    const stepOn = stepEls.map(() => true);
+    let lastT = 0;
     let introOn = true;
-    let mapShown = false;
-    let railNow = "";
+    /** The cloud's own state, eased towards where the scroll says it should be. */
+    let morphS = 0;
+    let visS = 0;
+    let uS = 0;
 
     const setInert = (el: HTMLElement, on: boolean) => {
       (el as HTMLElement & { inert: boolean }).inert = !on;
       el.style.pointerEvents = on ? "auto" : "none";
     };
 
-    /** `v` is the scroll's position, `f` where the camera has got to (see FLIGHT_MAX). */
-    const apply = (v: number, f: number) => {
-      const z = clamp01(v / ZOOM);
-
-      // The opening.
+    /** Returns true while anything is still easing. */
+    const apply = (dt: number): boolean => {
+      // The opening: the copy and its pattern fall away, the portrait zooms into
+      // the equation and fades, and the Lorenz drawing is left behind the page.
+      const z = clamp01(-track.getBoundingClientRect().top / (ZOOM * vh));
       const copy = 1 - smooth01(z / 0.3);
       for (const el of fadeEls) el.style.opacity = copy.toFixed(3);
       if (zoomEl) {
@@ -696,265 +588,136 @@ export default function JourneyScene({
         ).toFixed(1)}px,0) scale(${sc.toFixed(4)})`;
         zoomEl.style.opacity = (1 - smooth01((z - 0.5) / 0.42)).toFixed(3);
       }
+      back.style.opacity = (0.3 * smooth01((z - 0.3) / 0.6)).toFixed(3);
       const nowIntro = z < 0.7;
       if (introEl && nowIntro !== introOn) {
         introOn = nowIntro;
         setInert(introEl, nowIntro);
       }
 
-      // The map: how far the cloud has become it, and how visible its card is.
-      let mapMorph = 0;
-      let mapUi = 0;
-      if (mapSeg) {
-        mapMorph = mapMorphAt(v);
-        // The card comes up while the last of the points are still settling.
-        mapUi =
-          smooth01((v - (mapSeg.a + MAP_FORM - 0.35)) / 0.4) *
-          smooth01((mapSeg.b - MAP_FORM + 0.35 - v) / 0.4);
-      }
-      // The equation: the cloud condenses into it as the last step arrives.
-      const eqMorph = smooth01((v - (endSeg.a - 0.3)) / 0.8);
-      // Between the two there is a stretch where the cloud is whole, and that is
-      // where the points are re-aimed from the map to the equation.
-      const useEq = v > (mapSeg ? mapSeg.b + 0.45 : ZOOM + 0.45);
+      if (!renderer || !cloud) return false;
 
-      // The steps: in, hold, out, with a clear gap between neighbours.
-      for (let i = 0; i < stepEls.length; i++) {
-        const sg = segs[i];
-        const el = stepEls[i];
-        if (sg.map) {
-          el.style.opacity = mapUi.toFixed(3);
-          el.style.transform = "none";
-          const on = mapUi > 0.45;
-          if (on !== stepOn[i]) {
-            stepOn[i] = on;
-            setInert(el, on);
-          }
-          continue;
-        }
-        const fin = smooth01((v - (sg.a - 0.1)) / FADE_IN);
-        const fout = i === stepEls.length - 1 ? 0 : smooth01((v - (sg.b - FADE_OUT_AT)) / FADE_OUT);
-        const o = fin * (1 - fout);
-        const dy = (1 - fin) * 18 - fout * 18;
-        el.style.opacity = o.toFixed(3);
-        el.style.transform = `translate3d(0,${dy.toFixed(1)}px,0)`;
-        const on = o > 0.45;
-        if (on !== stepOn[i]) {
-          stepOn[i] = on;
-          setInert(el, on);
-        }
-      }
+      const cw = cv.clientWidth || vw;
+      const ch = cv.clientHeight || vh;
+      const mR = mapStageEl && mapCount > 0 ? mapStageEl.getBoundingClientRect() : null;
+      const eR = eqSlotEl && eqCount > 0 ? eqSlotEl.getBoundingClientRect() : null;
+      const mapOk = !!mR && mR.width > 0;
+      const eqOk = !!eR && eR.width > 0;
+      // Each anchor's centre, in screens from the top of the viewport.
+      const mc = mapOk ? (mR.top + mR.height / 2) / ch : 9;
+      const ec = eqOk ? (eR.top + eR.height / 2) / ch : 9;
 
-      // The dot rail: which section is showing.
-      let now = "hero";
-      if (v >= ZOOM * 0.6) {
-        now = ids[ids.length - 1];
-        for (let i = 0; i < segs.length; i++) {
-          if (v < segs[i].b + (segs[i].map ? MAP_TAIL : 0) - 0.2) {
-            now = ids[i];
-            break;
-          }
-        }
-      }
-      if (now !== railNow) {
-        railNow = now;
-        for (const el of railEls) {
-          if (el.dataset.rail === now) el.setAttribute("aria-current", "true");
-          else el.removeAttribute("aria-current");
-        }
-      }
+      // The map: the points start to come in as it nears the bottom of the
+      // screen, are all in place by the time it is a little below the middle, are
+      // held while it is read, and break up as it leaves the top. The cloud is
+      // seen a little before and after, so points are never made or lost out of
+      // thin air.
+      const mapMorphT = mapOk ? smooth01((1.0 - mc) / 0.4) * smooth01((mc + 0.15) / 0.5) : 0;
+      const mapVisT = mapOk ? smooth01((1.4 - mc) / 0.4) * smooth01((mc + 0.5) / 0.35) : 0;
+      // The equation: the points condense into it and stay.
+      const eqMorphT = eqOk ? smooth01((1.1 - ec) / 0.5) : 0;
+      const eqVisT = eqOk ? smooth01((1.5 - ec) / 0.4) * smooth01((ec + 0.7) / 0.5) : 0;
 
-      // On a phone the card draws its own dots: tell it when it is revealed.
-      if (mapCard && mapCount === 0) {
-        if (mapUi > 0.25 && !mapShown) {
-          mapShown = true;
-          mapCard.dispatchEvent(new Event("jmap-show"));
-        } else if (mapUi < 0.02) {
-          mapShown = false;
-        }
+      // Aim at the map until it has gone by, then at the equation. The change is
+      // only made while the cloud is empty, so the points never jump.
+      const want: "map" | "eq" | null = mapOk && (!eqOk || mc > -0.6) ? "map" : eqOk ? "eq" : null;
+      if (want && (aimed === null || (aimed !== want && morphS < 0.02 && visS < 0.05))) {
+        placeTargets(want);
+      }
+      const a = aimed === "map" && !mapOk ? null : aimed === "eq" && !eqOk ? null : aimed;
+      const morphT = a === "eq" ? eqMorphT : a === "map" ? mapMorphT : 0;
+      const visT = a === "eq" ? eqVisT : a === "map" ? mapVisT : 0;
+
+      const k = 1 - Math.exp(-dt / 0.14);
+      morphS += (morphT - morphS) * k;
+      visS += (visT - visS) * k;
+      if (Math.abs(morphT - morphS) < 0.002) morphS = morphT;
+      if (Math.abs(visT - visS) < 0.002) visS = visT;
+
+      // The camera rides the curve as the page is scrolled, at an easy pace.
+      const maxY = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const uT = clamp01(window.scrollY / maxY);
+      uS += (uT - uS) * k;
+      if (Math.abs(uT - uS) < 0.0004) uS = uT;
+
+      const idx = indexAtShare(cloud, uS * PATH_SHARE);
+      const headIdx = indexAtShare(cloud, uS * PATH_SHARE, HEAD_ARC);
+      sampleAt(cloud.eye, idx, eyeP);
+      sampleAt(cloud.look, idx, lookP);
+      sampleAt(cloud.path, headIdx, headP);
+      followerPoints(cloud, pathArcAt(cloud, uS * PATH_SHARE) + HEAD_ARC, othersP);
+      // While the map is up the camera leaves the point and draws back to a
+      // face-on view of the whole curve, swaying a little as the point goes on,
+      // so the curve sits behind the card as a faint, slowly turning mark with
+      // the other points running through it.
+      const ghostOn = a === "map";
+      if (ghostOn && morphS > 0) {
+        const kk = smooth01(morphS);
+        const yaw = GHOST_YAW + GHOST_SWAY * Math.sin(pathArcAt(cloud, uS * PATH_SHARE) * 0.3);
+        const ring = Math.cos(GHOST_TILT) * GHOST_DIST;
+        eyeP[0] += (-Math.cos(yaw) * ring - eyeP[0]) * kk;
+        eyeP[1] += (-Math.sin(yaw) * ring - eyeP[1]) * kk;
+        eyeP[2] += (Math.sin(GHOST_TILT) * GHOST_DIST - eyeP[2]) * kk;
+        lookP[0] *= 1 - kk;
+        lookP[1] *= 1 - kk;
+        lookP[2] *= 1 - kk;
       }
 
-      // The cloud and its camera. The camera never stops: it flies on through
-      // the map, so the points form it, and leave it, while the curve moves.
-      if (renderer && cloud) {
-        const want2 = useEq ? "eq" : "map";
-        if (aimed !== want2) placeTargets(want2);
+      // Where the aimed box is now, against where it was when the points were
+      // aimed at it.
+      const ar = a === "eq" ? eR : a === "map" ? mR : null;
+      const off: [number, number] = ar ? [(2 * (ar.left - baseLeft)) / cw, (-2 * ar.top) / ch] : [0, 0];
 
-        const start = ZOOM * 0.8;
-        const u = clamp01((flown(f) - flown(start)) / Math.max(0.01, flown(total) - flown(start)));
-        // How far along the path the camera is, by distance, so the point goes
-        // at one even speed; the head is drawn a little further on.
-        const idx = indexAtShare(cloud, u * PATH_SHARE);
-        const headIdx = indexAtShare(cloud, u * PATH_SHARE, HEAD_ARC);
-        sampleAt(cloud.eye, idx, eyeP);
-        sampleAt(cloud.look, idx, lookP);
-        sampleAt(cloud.path, headIdx, headP);
-        followerPoints(cloud, pathArcAt(cloud, u * PATH_SHARE) + HEAD_ARC, othersP);
-        // While the map is up the camera leaves the point and draws back to a
-        // face-on view of the whole curve, swaying a little as the point goes on,
-        // so the curve sits behind the card as a faint, slowly turning mark with
-        // the other points running through it.
-        const ghostOn = !useEq && mapCount > 0;
-        if (ghostOn && mapMorph > 0) {
-          const k = smooth01(mapMorph);
-          const yaw = GHOST_YAW + GHOST_SWAY * Math.sin(pathArcAt(cloud, u * PATH_SHARE) * 0.3);
-          const ring = Math.cos(GHOST_TILT) * GHOST_DIST;
-          eyeP[0] += (-Math.cos(yaw) * ring - eyeP[0]) * k;
-          eyeP[1] += (-Math.sin(yaw) * ring - eyeP[1]) * k;
-          eyeP[2] += (Math.sin(GHOST_TILT) * GHOST_DIST - eyeP[2]) * k;
-          lookP[0] *= 1 - k;
-          lookP[1] *= 1 - k;
-          lookP[2] *= 1 - k;
-        }
-        // Land from outside: start pulled back along the view, close in as
-        // the zoom ends.
-        const back = 0.8 + 2.6 * (1 - smooth01((z - 0.4) / 0.6));
-        if (back > 0.001) {
-          const fx = lookP[0] - eyeP[0];
-          const fy = lookP[1] - eyeP[1];
-          const fz = lookP[2] - eyeP[2];
-          const fl = Math.hypot(fx, fy, fz) || 1;
-          eyeP[0] -= (fx / fl) * back;
-          eyeP[1] -= (fy / fl) * back;
-          eyeP[2] -= (fz / fl) * back;
-        }
+      renderer.draw({
+        eye: eyeP,
+        target: lookP,
+        head: headP,
+        others: othersP,
+        prog: headIdx / cloud.samples,
+        fade: visS,
+        shift: [0, 0],
+        morph: morphS,
+        ghost: ghostOn ? 1 : 0,
+        off,
+      });
 
-        // The shape being formed now, and how far it is: the map, the equation,
-        // or (a phone's map) nothing, with the cloud fading instead.
-        const shapeOk = useEq ? eqCount > 0 : mapCount > 0;
-        const morph = useEq ? eqMorph : mapMorph;
-        // The cloud stays faintly behind the map (not on a phone, where it fades).
-        const ghost = ghostOn ? 1 : 0;
-        // Where there is no card beside it (the stretch before the map, the map
-        // itself, and the stretch after it) the curve drifts from its place beside
-        // the cards towards the middle of the screen, then back as the next card
-        // arrives.
-        const alone = mapSeg
-          ? smooth01((v - (ZOOM + 0.1)) / 0.6) *
-            (1 - smooth01((v - (mapSeg.b + MAP_TAIL - 0.6)) / 0.5))
-          : 0;
-        renderer.draw({
-          eye: eyeP,
-          target: lookP,
-          head: headP,
-          others: othersP,
-          prog: headIdx / cloud.samples,
-          fade: smooth01((z - 0.48) / 0.45) * (shapeOk ? 1 : 1 - morph),
-          shift: desktop ? [0.3 - 0.25 * alone, 0] : [0, 0.34],
-          morph: shapeOk ? morph : 0,
-          ghost,
-        });
-      }
-    };
-
-    const read = () => {
-      const r = track.getBoundingClientRect();
-      return Math.min(total, Math.max(0, -r.top / vh));
-    };
-    const visible = () => {
-      const r = track.getBoundingClientRect();
-      return r.bottom > -vh * 0.5 && r.top < vh * 1.5;
+      return morphS !== morphT || visS !== visT || uS !== uT;
     };
 
     function frame(now?: number) {
       raf = 0;
-      want = read();
-      cur += (want - cur) * 0.2;
-      if (Math.abs(want - cur) < 0.0008) cur = want;
-
-      // The camera chases the scroll at a speed of its own: its speed follows the
-      // gap (capped), and eases towards that, so it starts and stops softly.
       const t = now ?? performance.now();
       const dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 1 / 60;
       lastT = t;
-      if (visible()) {
-        const aim = Math.max(-FLIGHT_MAX, Math.min(FLIGHT_MAX, (cur - flight) * FLIGHT_GAIN));
-        flightVel += (aim - flightVel) * (1 - Math.exp(-dt / FLIGHT_LAG));
-        flight += flightVel * dt;
-        if (Math.abs(cur - flight) < 0.002 && Math.abs(flightVel) < 0.01) {
-          flight = cur;
-          flightVel = 0;
-        }
-        apply(cur, flight);
-      } else {
-        // Off screen there is nothing to fly through: stay with the scroll.
-        flight = cur;
-        flightVel = 0;
-      }
-      if (cur !== want || flight !== cur) raf = requestAnimationFrame(frame);
+      const moving = apply(dt);
+      if (moving) raf = requestAnimationFrame(frame);
       else lastT = 0;
     }
-    const kick = () => {
+    function kick() {
       if (!raf) raf = requestAnimationFrame(frame);
-    };
+    }
 
-    // --- links to a step: "/#contact" and the like -------------------------
-    const goTo = (i: number, smoothly: boolean) => {
-      const r = track.getBoundingClientRect();
-      const top = window.scrollY + r.top;
-      const sg = segs[i];
-      const v =
-        i === ids.length - 1
-          ? total
-          : sg.map
-            ? sg.a + MAP_FORM + MAP_HOLD / 2
-            : sg.a + (sg.b - sg.a) / 2;
-      window.scrollTo({ top: top + v * vh, behavior: smoothly ? "smooth" : "auto" });
-    };
-    const goTop = (smoothly: boolean) => {
-      const r = track.getBoundingClientRect();
-      window.scrollTo({ top: window.scrollY + r.top, behavior: smoothly ? "smooth" : "auto" });
-    };
-    const onClick = (ev: MouseEvent) => {
-      if (ev.defaultPrevented || ev.button !== 0) return;
-      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-      const a = (ev.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
-      if (!a) return;
-      const url = new URL(a.href, window.location.href);
-      if (url.origin !== window.location.origin) return;
-      if (url.pathname.replace(/\/$/, "") !== window.location.pathname.replace(/\/$/, "")) return;
-      const hash = url.hash.slice(1);
-      const i = ids.indexOf(hash);
-      if (i < 0 && hash !== "hero") return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      window.history.replaceState(null, "", url.hash);
-      if (hash === "hero") goTop(true);
-      else goTo(i, true);
-    };
-    const onHash = () => {
-      const hash = window.location.hash.slice(1);
-      const i = ids.indexOf(hash);
-      if (i >= 0) goTo(i, false);
-      else if (hash === "hero") goTop(false);
-    };
-
-    // --- start ------------------------------------------------------------
+    // --- start --------------------------------------------------------------
     measure();
-    cur = want = flight = read();
-    apply(cur, flight);
+    apply(1 / 60);
 
     const onResize = () => {
       measure();
-      renderer?.resize(st.clientWidth, st.clientHeight);
+      renderer?.resize(cv.clientWidth, cv.clientHeight);
       if (aimed) placeTargets(aimed);
-      cur = want = flight = read();
-      flightVel = 0;
-      apply(cur, flight);
+      kick();
     };
     const ro = new ResizeObserver(onResize);
-    ro.observe(st);
-    // The card's map can change size on its own (a short screen shrinks it).
-    const mapRo = mapStageEl
-      ? new ResizeObserver(() => {
-          if (aimed === "map") placeTargets("map");
-          apply(cur, flight);
-        })
-      : null;
-    if (mapStageEl) mapRo?.observe(mapStageEl);
+    ro.observe(cv);
+    // The map card and the equation slot can change size on their own (a font
+    // loads, a screen is rotated): the points are aimed at them again.
+    const boxRo = new ResizeObserver(() => {
+      if (aimed) placeTargets(aimed);
+      kick();
+    });
+    if (mapStageEl) boxRo.observe(mapStageEl);
+    if (eqSlotEl) boxRo.observe(eqSlotEl);
     window.addEventListener("scroll", kick, { passive: true });
-    document.addEventListener("click", onClick, true);
-    window.addEventListener("hashchange", onHash);
     readPalette();
     const offTheme = onTheme(() => {
       readPalette();
@@ -973,9 +736,15 @@ export default function JourneyScene({
     if (document.readyState === "complete") begin();
     else window.addEventListener("load", begin, { once: true });
 
-    // A page opened on "/#contact" goes straight to that step.
-    if (ids.includes(window.location.hash.slice(1))) {
-      requestAnimationFrame(() => requestAnimationFrame(onHash));
+    // The opening is taller once the page is live, so a page opened on "/#contact"
+    // is taken to its section again.
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && hash !== "hero") {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() =>
+          document.getElementById(hash)?.scrollIntoView({ behavior: "instant" as ScrollBehavior })
+        )
+      );
     }
 
     const onReduce = () => {
@@ -986,11 +755,9 @@ export default function JourneyScene({
     return () => {
       offTheme();
       ro.disconnect();
-      mapRo?.disconnect();
+      boxRo.disconnect();
       window.removeEventListener("scroll", kick);
       window.removeEventListener("load", begin);
-      window.removeEventListener("hashchange", onHash);
-      document.removeEventListener("click", onClick, true);
       reduce.removeEventListener("change", onReduce);
       if (raf) cancelAnimationFrame(raf);
       if ("cancelIdleCallback" in window) window.cancelIdleCallback(idle);
@@ -998,48 +765,37 @@ export default function JourneyScene({
       disposed = true;
       renderer?.dispose();
       delete track.dataset.scene;
-      for (const el of [...fadeEls, ...stepEls, ...(zoomEl ? [zoomEl] : [])]) {
+      delete track.dataset.map;
+      delete track.dataset.eq;
+      back.style.opacity = "";
+      for (const el of [...fadeEls, ...(zoomEl ? [zoomEl] : [])]) {
         el.style.opacity = "";
         el.style.transform = "";
         el.style.pointerEvents = "";
         (el as HTMLElement & { inert: boolean }).inert = false;
       }
-      for (const el of railEls) el.removeAttribute("aria-current");
       if (introEl) (introEl as HTMLElement & { inert: boolean }).inert = false;
     };
-  }, [layout, total]);
+  }, []);
 
   return (
-    <div
-      ref={root}
-      className="journey"
-      style={{ "--k": total + 1 } as CSSProperties}
-    >
-      <div ref={stage} className="journey-stage">
-        <canvas ref={canvas} aria-hidden="true" className="journey-canvas" />
-        {intro}
+    <div ref={root} className="journey" style={{ "--zoom": ZOOM } as CSSProperties}>
+      {/* The Lorenz drawing from the opening, fixed and faint behind the page. */}
+      <div ref={backdrop} aria-hidden="true" className="journey-backdrop">
+        <Pattern kind="lorenz" className="patt-backdrop" />
+      </div>
+      <canvas ref={canvas} aria-hidden="true" className="journey-canvas" />
+      <div className="journey-hero">
+        <div ref={stage} className="journey-stage">
+          {intro}
+        </div>
+      </div>
+      <div className="journey-flow">
         {steps.map((s) => (
-          <section
-            key={s.id}
-            id={s.id}
-            data-step
-            data-map={s.map ? "" : undefined}
-            className="journey-step"
-          >
+          <section key={s.id} id={s.id} className="journey-step">
             {s.node}
           </section>
         ))}
-        {/* The dot rail: one dot a section, to see where you are and to jump. */}
-        <nav aria-label="Sections" className="journey-rail">
-          <a href="#hero" data-rail="hero" className="journey-dot">
-            <span className="journey-dot-label label">Top</span>
-          </a>
-          {steps.map((s) => (
-            <a key={s.id} href={`#${s.id}`} data-rail={s.id} className="journey-dot">
-              <span className="journey-dot-label label">{s.label}</span>
-            </a>
-          ))}
-        </nav>
       </div>
     </div>
   );
