@@ -25,11 +25,11 @@ Compliance comes first because each step blocks the next one, not because it is 
 
 ## 2. One source of truth for money, in one currency you trust
 
-One currency of record, one system, and the rate recorded at the moment of each transaction — that is the whole discipline. Managing a ~₹1 Cr monthly budget across currencies taught me this the hard way: if your billing and reporting live in five spreadsheets and three currencies, nobody — including the founder — actually knows the real number. Centralizing cross-border billing into one dashboard was the single highest-leverage thing I built in that role.
+One currency of record, one system, and the rate recorded at the moment of each transaction — that is the whole discipline. Managing a ~$120K monthly budget across currencies taught me this the hard way: if your billing and reporting live in five spreadsheets and three currencies, nobody — including the founder — actually knows the real number. Centralizing cross-border billing into one dashboard was the single highest-leverage thing I built in that role.
 
 ## 3. The team doesn't need you to have the answer — they need you to close the loop
 
-Most operational chaos in a distributed team is a follow-up problem, not a knowledge problem. Coordinating a 17-person multinational team in the Maldives, or a 6-person cross-border team for a robotics startup, taught me that people start things and someone has to make sure they finish. Across time zones that guarantee matters more than availability, because nobody can wait eight hours for an answer but everybody can wait for a reliable one.
+Most operational chaos in a distributed team is a follow-up problem, not a knowledge problem. Coordinating 70+ multinational staff in the Maldives, or a 6-person cross-border team for a robotics startup, taught me that people start things and someone has to make sure they finish. Across time zones that guarantee matters more than availability, because nobody can wait eight hours for an answer but everybody can wait for a reliable one.
 
 ## What I'd tell someone starting this kind of role tomorrow
 
