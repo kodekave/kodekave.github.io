@@ -328,6 +328,69 @@ export const publication = {
   zenodo: { downloads: 211, views: 180, asOf: "2026-11-11" },
 };
 
+/**
+ * Open CapIQ Workbench: a project rather than a paper. It lives in its own
+ * repository and GitHub Pages serves it from this domain at
+ * /open-capiq-workbench/, so it is linked to, not built here. The counts below
+ * are read off the workbench itself (its opening strip and its file list), so
+ * a change to the workbench means a change to them. Each tab's `id` is what
+ * the workbench's #hash selects.
+ */
+export const workbench = {
+  title: "Open CapIQ Workbench",
+  /** The page's path on this domain, and the repository behind it. */
+  path: "/open-capiq-workbench",
+  repoUrl: "https://github.com/kodekave/open-capiq-workbench",
+  summary:
+    "A one-page web app that does two things. It maps the open-source alternatives to S&P Capital IQ, and what you give up by leaving a paid terminal. It also runs the core MBA valuation methods live, so you can change any assumption and the result updates as you type.",
+  facts: {
+    tools: 5,
+    methods: 5,
+    dependencies: 0,
+    /** The repository holds the page itself, `index.html`, and a README. */
+    files: 1,
+  },
+  /** The workbench's tabs, in its own order, each with what it does. */
+  tabs: [
+    {
+      id: "landscape",
+      name: "The open-source stack",
+      detail:
+        "OpenBB, SEC EDGAR, FinanceToolkit, FinanceDatabase and yfinance, with each one's licence and limits, and what you give up against Capital IQ.",
+    },
+    {
+      id: "dcf",
+      name: "Discounted cash flow",
+      detail:
+        "Five years of free cash flow plus a terminal value, with a table of value per share for WACC against terminal growth.",
+    },
+    {
+      id: "wacc",
+      name: "CAPM and WACC",
+      detail:
+        "Cost of equity from the risk-free rate, beta and equity risk premium, weighted against after-tax debt. One click sends the result to the DCF.",
+    },
+    {
+      id: "dupont",
+      name: "DuPont analysis",
+      detail:
+        "Return on equity split into net margin, asset turnover and leverage, to show where the return comes from.",
+    },
+    {
+      id: "comps",
+      name: "Trading comparables",
+      detail:
+        "Peer median EV/EBITDA and P/E applied to a target company. The peer set is placeholder data.",
+    },
+    {
+      id: "npv",
+      name: "NPV, IRR and payback",
+      detail:
+        "A run of cash flows against a discount rate, with the accept or reject rule on the result.",
+    },
+  ],
+};
+
 export const journey = [
   {
     heading: "Where I am now",
