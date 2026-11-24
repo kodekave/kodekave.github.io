@@ -18,7 +18,10 @@ export const metadata = buildMetadata({
  * The privacy policy. Short because the site does very little: it has no
  * analytics, no cookies of its own and no third-party scripts, and the only
  * thing it stores is the visitor's light or dark choice, in their own browser.
- * If that changes (an analytics script, an embed, a form that posts somewhere),
+ * The one other company's server a page here calls is Google Fonts, from the
+ * Open CapIQ Workbench, which is its own repository served from this domain
+ * (so it is covered in its own section below). If that changes, or anything
+ * else is added (an analytics script, an embed, a form that posts somewhere),
  * this page has to change with it, and so does the date at the foot.
  */
 export default function PrivacyPage() {
@@ -62,9 +65,10 @@ export default function PrivacyPage() {
             <h2>What the site collects</h2>
             <p>
               Nothing that identifies you. The site has no analytics, no
-              advertising or tracking scripts and no cookies of its own, and it
-              loads nothing from other companies&rsquo; servers. Every file on
-              every page comes from this domain.
+              advertising or tracking scripts and no cookies of its own. Its
+              pages load nothing from other companies&rsquo; servers, and every
+              file comes from this domain. The one exception is the Open CapIQ
+              Workbench, a separate page on this domain, described below.
             </p>
 
             <h2>Where it is hosted</h2>
@@ -93,6 +97,26 @@ export default function PrivacyPage() {
             <p>
               The time on the home page is the time in India, worked out in your
               browser. The site doesn&rsquo;t look up where you are.
+            </p>
+
+            <h2>The Open CapIQ Workbench</h2>
+            <p>
+              The workbench, at komalkedarnath.wiki/open-capiq-workbench/, is a
+              separate page that lives in its own repository and is served from
+              this domain. It loads its two typefaces, IBM Plex Mono and
+              Newsreader, from Google Fonts. When you open it, your browser asks
+              Google&rsquo;s servers for those files, so Google sees your IP
+              address and browser details, under{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google&rsquo;s privacy policy
+              </a>
+              . Nothing else on the page contacts anyone. The calculations run
+              in your browser, what you type into them never leaves your device,
+              and the page stores nothing.
             </p>
 
             <h2>The newsletter</h2>
