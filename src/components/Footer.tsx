@@ -20,6 +20,9 @@ const pages = [
 const guides = [
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
+  // A separate GitHub Pages repo served under this domain, so it is a plain
+  // link: next/link would try to route it inside this app.
+  { href: "/dry-powder-dispatch/", label: "Dry Powder Dispatch", plain: true },
 ];
 
 const elsewhere = [
@@ -89,11 +92,17 @@ export default function Footer() {
             <nav aria-label="Guides">
               <p className="label text-ink-faint">Guides</p>
               <div className="mt-2 flex flex-col">
-                {guides.map((link) => (
-                  <Link key={link.href} href={link.href} className={linkClass}>
-                    {link.label}
-                  </Link>
-                ))}
+                {guides.map((link) =>
+                  link.plain ? (
+                    <a key={link.href} href={link.href} className={linkClass}>
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link key={link.href} href={link.href} className={linkClass}>
+                      {link.label}
+                    </Link>
+                  ),
+                )}
               </div>
             </nav>
 
