@@ -102,20 +102,15 @@
 }
 
 /*
- * The base layer under every page: a plus grid at about 3%. It is on the body
- * itself, so any section left without a background of its own shows it.
+ * The base layer under every page: plain paper.
  */
 body {
   background-color: var(--color-paper);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%231f2b27' stroke-opacity='.075' stroke-width='1'/%3E%3C/svg%3E");
   color: var(--color-ink);
   font-family: var(--font-sans-stack);
   font-size: 1.0625rem;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
-}
-:root[data-theme="dark"] body {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 13v6M13 16h6' stroke='%23ebeae2' stroke-opacity='.06' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 ::selection {
@@ -247,12 +242,12 @@ body {
   background: var(--color-panel);
   color: var(--color-on-panel);
 }
-/* Transparent on purpose: the plus grid on the body shows through. */
+/* Transparent on purpose: the paper of the body shows through. */
 .on-paper {
   background: transparent;
   color: var(--color-ink);
 }
-/* The soft grey panel between sections, see-through, so the plus grid and the
+/* The soft grey panel between sections, see-through, so the paper and the
    pattern trail run behind it instead of stopping at its edge. */
 .band {
   background: color-mix(in srgb, var(--color-mist) 55%, transparent);
@@ -460,13 +455,6 @@ html:has(.journey[data-scene="live"]) .trail {
   .journey[data-eq="cloud"] .eq-slot {
     order: 0;
   }
-}
-
-/* A block on the page: the writing, held in a soft panel. */
-.block-panel {
-  border: 1px solid var(--color-hair);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--color-paper) 80%, transparent);
 }
 
 /* ----------------------------------------------------------------- plates */
