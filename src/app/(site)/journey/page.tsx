@@ -11,7 +11,7 @@ export const metadata = buildMetadata({
   path: "/journey",
   title: "Journey: India, the Maldives, the US and the UK",
   description:
-    "Four ventures across India, the Maldives, the US and the UK in more than six years.",
+    "Four ventures across India, the Maldives, the US and the UK in more than six years, mapped place by place with the work done at each stop.",
 });
 
 /**

@@ -27,6 +27,10 @@ export const profile = {
     "https://www.linkedin.com/in/komalkedarnath",
     "https://github.com/kodekave",
     "https://orcid.org/0000-0003-4980-5945",
+    // Her own publication, in the three places it lives.
+    "https://dispatch.komalkedarnath.wiki/",
+    "https://komalkedarnath.substack.com",
+    "https://www.linkedin.com/newsletters/7531439608006488064/",
   ],
   knowsAbout: [
     "Founder's Office Operations",

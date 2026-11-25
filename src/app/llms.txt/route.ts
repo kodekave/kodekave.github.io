@@ -56,6 +56,7 @@ note-taking chief-of-staff role the term is often confused with.
 - [Fractional COO vs founder's office vs chief of staff](${absoluteUrl("/fractional-coo-vs-founders-office")}): comparison of the three roles.
 - [Writing](${absoluteUrl("/blog")}): all essays.
 - [Bookshelf](${absoluteUrl("/bookshelf")}): book recommendations.
+- [Dry Powder Dispatch](https://dispatch.komalkedarnath.wiki/): her free publication on startup funding rounds, fund closes and venture capital explainers, with every figure linked to its source. Also on Substack (https://komalkedarnath.substack.com) and LinkedIn.
 
 ## Ventures
 
