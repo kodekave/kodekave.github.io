@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TYCHO-6: Pressurised Lunar Crew Rover Concept, CAD and Engineering Package</title>
+<meta name="description" content="TYCHO-6 is a concept 6x6 pressurised two-crew lunar south-pole rover by Komal Kedarnath: parametric CAD, STEP and STL files, drawings, mass, power, thermal and mobility analysis, manuals, and an open GitHub repository.">
+<link rel="canonical" href="https://komalkedarnath.wiki/lunar-rover/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TYCHO-6: a pressurised lunar crew rover, designed in the open">
+<meta property="og:description" content="Concept CAD, blueprint-style 3D model, drawings, engineering analysis and manuals for a 6x6 pressurised south-pole rover.">
+<meta property="og:url" content="https://komalkedarnath.wiki/lunar-rover/">
+<meta property="og:image" content="https://komalkedarnath.wiki/lunar-rover/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#082a52">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="tycho.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"TechArticle","@id":"https://komalkedarnath.wiki/lunar-rover/#article","headline":"TYCHO-6: Pressurised Lunar Crew Rover Concept, CAD and Engineering Package","description":"Concept 6x6 pressurised two-crew lunar south-pole rover with parametric CAD, drawings, first-order engineering analysis, manuals and an open repository.","url":"https://komalkedarnath.wiki/lunar-rover/","datePublished":"2026-11-26","author":{"@id":"https://komalkedarnath.wiki/#person"},"image":"https://komalkedarnath.wiki/lunar-rover/img/og.jpg","about":["Lunar rover","Pressurised rover","Artemis","Moon surface mobility"],"isAccessibleForFree":true,"license":"https://www.apache.org/licenses/LICENSE-2.0","codeRepository":"https://github.com/kodekave/tycho-lunar-rover"},
+{"@type":"SoftwareSourceCode","name":"TYCHO-6 parametric CAD (CadQuery)","codeRepository":"https://github.com/kodekave/tycho-lunar-rover","programmingLanguage":"Python","author":{"@id":"https://komalkedarnath.wiki/#person"}},
+{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://komalkedarnath.wiki/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://komalkedarnath.wiki/research/"},{"@type":"ListItem","position":3,"name":"TYCHO-6 lunar rover","item":"https://komalkedarnath.wiki/lunar-rover/"}]}
+]}
+</script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/">&larr; komalkedarnath.wiki</a>
+  <nav aria-label="Sections">
+    <a href="#spec">Spec</a><a href="#architecture">Architecture</a><a href="#drawings">Drawings</a><a href="#analysis">Analysis</a><a href="#gaps">Gaps</a><a href="#product">Product</a><a href="#repo">Repository</a>
+  </nav>
+</header>
+
+<!-- ============================ HERO / VIEWER ============================ -->
+<section id="viewer" class="viewer" aria-label="Interactive 3D blueprint model of TYCHO-6">
+  <div id="viewer-canvas" class="canvas"><div id="overlay" class="overlay" aria-hidden="true"></div></div>
+  <div id="loading" class="loading">Loading CAD mesh (2.7 MB)&hellip;</div>
+
+  <div class="titleblock">
+    <p class="kicker">DWG TYC-000 &middot; REV A &middot; CONCEPT</p>
+    <h1>TYCHO<span>-6</span></h1>
+    <p class="sub">Pressurised crew rover for the lunar south pole. Six driven wheels, two crew, 15.5&nbsp;m&sup3; cabin, suit-port EVA. Drawn parametrically, published openly.</p>
+    <ul class="chips">
+      <li><b>7.0 m</b> long</li><li><b>4.7 m</b> wide deployed</li><li><b>6,044 kg</b> dry (CBE)</li><li><b>80 kWh</b> Li-S</li><li><b>87&ndash;133 km</b> range</li>
+    </ul>
+    <p class="hint">Drag to orbit. Click any part. Try <b>Explode</b> and <b>Section</b>.</p>
+  </div>
+
+  <aside class="panel" aria-label="Viewer controls">
+    <h2>Render</h2>
+    <div class="seg" role="group" aria-label="Render mode">
+      <button data-mode="blueprint" class="on" type="button">Blueprint</button><button data-mode="xray" type="button">X-ray</button><button data-mode="mesh" type="button">Mesh</button><button data-mode="solid" type="button">Solid</button>
+    </div>
+    <h2>View</h2>
+    <div class="seg" role="group" aria-label="Camera view">
+      <button data-view="iso" class="on" type="button">Iso</button><button data-view="front" type="button">Front</button><button data-view="side" type="button">Side</button><button data-view="top" type="button">Plan</button><button data-view="rear" type="button">Rear</button><button data-view="low" type="button">Low</button>
+    </div>
+    <h2>Explode <em id="explode-v">0%</em></h2>
+    <input id="explode" type="range" min="0" max="100" value="0" aria-label="Explode assembly">
+    <h2>Section <em id="clip-v">off</em></h2>
+    <div class="row"><select id="clip-axis" aria-label="Section plane axis"><option value="off">off</option><option value="y">Y (long.)</option><option value="x">X (cross)</option><option value="z">Z (plan)</option></select>
+    <input id="clip-pos" type="range" min="0" max="100" value="50" disabled aria-label="Section plane position"></div>
+    <h2>Subsystems</h2>
+    <div id="legend" class="legend"></div>
+    <label class="chk"><input id="opt-color" type="checkbox" checked> Colour by subsystem</label>
+    <label class="chk"><input id="opt-calls" type="checkbox" checked> Callouts</label>
+    <label class="chk"><input id="opt-dims" type="checkbox"> Dimensions</label>
+    <label class="chk"><input id="opt-rot" type="checkbox" checked> Auto-rotate</label>
+    <p class="mono small"><span id="stat-parts">0</span> parts &middot; <span id="stat-tris">0</span> triangles &middot; units mm</p>
+  </aside>
+
+  <div id="info" class="info" hidden>
+    <button id="info-close" type="button" aria-label="Close part card">&times;</button>
+    <p id="info-pn" class="mono"></p><h3 id="info-name"></h3><dl id="info-body"></dl>
+  </div>
+</section>
+
+<main>
+<noscript><p class="wrap note">The interactive 3D model needs JavaScript. The drawing sheets, analysis charts and repository links below work without it.</p></noscript>
+
+<!-- ============================ SUMMARY ============================ -->
+<section class="wrap lead">
+  <p class="eyebrow">01 / Why this exists</p>
+  <h2>A pressurised workhorse for the one place on the Moon everyone wants to go.</h2>
+  <p>The lunar south pole holds permanently shadowed craters that may hold water ice, and rims that see the Sun for most of the year. Reaching both means long drives at grazing sun angles, crossing 20&deg; slopes of fine regolith, and surviving a thermal range from about 120&deg;C to below &minus;230&deg;C. Unpressurised buggies are designed for hours. A crew that must work for days needs a shirt-sleeve cabin, a way to leave and re-enter without cycling an airlock, and a vehicle that can limp home on any one failure.</p>
+  <p>TYCHO-6 is my attempt to answer that as one coherent machine: <b>every number on this page traces to one parameter file</b>, the CAD is generated from that file, and the analysis reads the CAD&rsquo;s bill of materials. Change the wheel diameter and the drawings, mass, sinkage and range all move. It is a <b>concept</b>, not flight hardware. The whole package, STEP and STL files, drawings, calculations and manuals, is in an <a href="https://github.com/kodekave/tycho-lunar-rover">open repository</a>.</p>
+</section>
+
+<!-- ============================ SPEC ============================ -->
+<section id="spec" class="wrap">
+  <p class="eyebrow">02 / Specification</p>
+  <h2>Design point</h2>
+  <div class="grid3">
+    <table class="spec"><caption>Geometry</caption>
+      <tr><th>Length (arm stowed)</th><td>7,005 mm</td></tr><tr><th>Width, over wheels / arrays deployed</th><td>3,380 / 4,725 mm</td></tr><tr><th>Height, roof / mast + HGA deployed</th><td>3,200 / 4,587 mm</td></tr>
+      <tr><th>Wheelbase / track</th><td>4,400 / 2,900 mm</td></tr><tr><th>Wheel</th><td>&Oslash;1,200 &times; 480 mm</td></tr><tr><th>Ride height</th><td>480 nominal, 300&ndash;900 mm</td></tr>
+      <tr><th>Cabin</th><td>&Oslash;2.2 m, 15.5 m&sup3;</td></tr></table>
+    <table class="spec"><caption>Mass (first-order, CBE)</caption>
+      <tr><th>Dry mass</th><td>6,044 kg</td></tr><tr><th>Dry with 15 % growth</th><td>6,951 kg</td></tr><tr><th>Consumables</th><td>665 kg</td></tr><tr><th>Crew and suits (2)</th><td>430 kg</td></tr>
+      <tr><th>Payload capacity</th><td>800 kg</td></tr><tr><th>Gross vehicle mass</th><td>7,939 kg</td></tr><tr><th>Centre of gravity (X, Z)</th><td>&minus;140, 1,239 mm</td></tr></table>
+    <table class="spec"><caption>Performance (design intent)</caption>
+      <tr><th>Drive</th><td>6 hub motors, 6 kW cont / 15 kW peak</td></tr><tr><th>Speed</th><td>10 nominal, 20 km/h max</td></tr><tr><th>Climb (Bekker-Wong)</th><td>18&deg; at 20 % slip, 24&deg; at 40 %</td></tr>
+      <tr><th>Static tip angle (lateral)</th><td>49&deg; (operate to 25&deg;)</td></tr><tr><th>Range at 10 km/h</th><td>87 km battery, 133 km with sun</td></tr><tr><th>Crew</th><td>2 nominal, 4 emergency</td></tr><tr><th>Cabin pressure</th><td>70.3 kPa</td></tr></table>
+  </div>
+</section>
+
+<!-- ============================ ARCHITECTURE ============================ -->
+<section id="architecture" class="wrap">
+  <p class="eyebrow">03 / Architecture, subsystem by subsystem</p>
+  <h2>How it works</h2>
+  <p class="muted">All figures are concept-level (&plusmn;15&ndash;25 %), generated by <code>analysis/tycho_analysis.py</code>. Part numbers (TYC-xxx) match the model above and <code>bom/BOM_modelled_parts.csv</code>.</p>
+
+  <article class="sys" id="structures"><h3><span>3.1</span> Structure and pressure vessel</h3>
+    <p>The vehicle hangs from a <b>6 m CFRP spine</b> (TYC-110): a 1.2 m &times; 0.38 m closed box with 8 mm walls and five bulkheads, carrying the battery, water and the six suspension pivots. The cabin (TYC-210) is a &Oslash;2.2 m cylinder with elliptical caps, <b>6 mm isogrid-equivalent Al-Li 2195</b>, sitting on the spine so wheel loads never pass through the pressure shell.</p>
+    <p>Pressure is not what sizes the hull. At 70.3 kPa the hoop stress is <b>12.9 MPa</b>; a 1.5&times; proof or 2.0&times; burst case needs only 0.22&ndash;0.30 mm of aluminium. Thickness is set by <b>micrometeoroid protection, shell buckling and handling loads</b>. Buckling is checked with a classical cylinder formula and a 0.4 knockdown: 103 MPa critical against 4.75 MPa from a 6 g axial lander load. The Whipple stack (1.5 mm bumper, 100 mm gap, 3.2 mm wall) stops a <b>4.2 mm</b> aluminium particle at 15 km/s head-on and 6.7 mm at 60&deg; obliquity, using the hypervelocity ballistic-limit equation, to be verified by gas-gun test. The panoramic canopy (TYC-220) is a 34 mm fused-silica and polycarbonate laminate.</p></article>
+
+  <article class="sys" id="mobility"><h3><span>3.2</span> Mobility</h3>
+    <p>Six independent <b>wheel-leg modules</b>, each a NiTi superelastic mesh tyre (TYC-310) on a hub motor (TYC-320, 6 kW continuous, 15 kW peak, 1:30 planetary, 3,200 N&middot;m wheel torque), carried by double A-arms (TYC-340/341) and an <b>electromechanical ride-height actuator with 600 mm stroke</b> (TYC-350). Front and rear axles steer for &plusmn;35&deg; crab and tight turns; the middle axle is unsteered, so it scrubs in a point turn (a known gap, listed in the repository). Because every wheel can lift independently, the vehicle can kneel for crew access, level itself on a slope, and step a wheel over a rock instead of driving the whole chassis over it.</p>
+    <p>On soft regolith, the model (Bekker pressure-sinkage with Janosi-Hansen shear, simulant parameters) predicts <b>38 mm sinkage</b> per wheel at 2,144 N, a 215 mm contact patch and 20.8 kPa ground pressure. Rolling resistance is 0.134 for a rigid wheel; a compliant mesh tyre that spreads load is taken at 0.107. Each wheel delivers 941 N of thrust at 20 % slip, which caps the climb at <b>18.3&deg;</b>, rising to 24.4&deg; at 40 % slip. Static tip-over is gravity-independent: 49.5&deg; laterally with a 1,239 mm centre of gravity and 2.9 m track, so the operating limit is set at half of that.</p>
+    <figure><img src="img/chart-soil_mobility.webp" alt="Charts of wheel sinkage versus vehicle mass and climbable slope versus wheel slip" loading="lazy" width="1700" height="646"><figcaption>Sinkage and slope capability. The dashed line marks the design gross mass.</figcaption></figure></article>
+
+  <article class="sys" id="power"><h3><span>3.3</span> Power</h3>
+    <p>Four gimballed <b>2 m &times; 2 m GaAs triple-junction panels</b> (TYC-420, 16 m&sup2;) give 5.1 kW at normal incidence. At the pole the Sun sits within a few degrees of the horizon, so the arrays tilt to near-vertical and shade each other; the model applies 0.6 for self-shading and 0.88 for tracking, leaving <b>2.7 kW</b> effective, which is still below the 2.9 kW house load, so the battery is always the main source. An <b>80 kWh lithium-sulphur pack</b> (TYC-410, 235 kg allocated, 68 kWh usable) carries the rest. House loads total 2.9 kW; driving at 10 km/h on flat ground adds 4.9 kW, so a kilometre costs 0.78 kWh. That is <b>87 km on battery alone and 133 km with sun</b>; at 5 km/h on a 20&deg; slope the drive draws 10.1 kW.</p>
+    <figure><img src="img/chart-power_range.webp" alt="Charts of electrical load versus speed and slope, and range versus speed" loading="lazy" width="1700" height="646"><figcaption>Load and range. Dashed orange: effective polar solar input.</figcaption></figure></article>
+
+  <article class="sys" id="thermal"><h3><span>3.4</span> Thermal control</h3>
+    <p>A pumped single-phase loop at 285 K collects cabin, avionics, battery and motor heat and rejects it through two deployable honeycomb radiators (TYC-510), 2.4 m &times; 1.3 m each, two-sided, <b>12.5 m&sup2;</b> in total. Panels lean out from the roof shoulders so they look at cold sky rather than hot regolith. With emissivity 0.88 and an effective polar sink of 168 K the radiators reject <b>3.6 kW against a 2.9 kW design load (+25 % margin)</b>. At a warmer 230 K sink, capacity falls to 2.4 kW, so 450 L of water storage buffers about <b>37.6 MJ</b> of transient heat. Eight radioisotope heater units keep the battery and loop alive in survival mode.</p>
+    <figure><img src="img/chart-thermal_radiator.webp" alt="Chart of radiator heat rejection against effective sink temperature" loading="lazy" width="1105" height="646"><figcaption>Radiator capacity against sink temperature, including a 20 % dust-degradation case.</figcaption></figure></article>
+
+  <article class="sys" id="avionics"><h3><span>3.5</span> Avionics, navigation and comms</h3>
+    <p>There is no GNSS on the Moon, so the rover navigates by <b>visual-inertial odometry, LiDAR mapping and terrain matching</b> against orbital maps. A telescoping mast (TYC-610) carries four navigation cameras, a thermal imager and a star tracker (TYC-620); two LiDAR units (TYC-650) and four bumper cameras (TYC-660) watch for hazards. Flight computers are triple-redundant. A 1.04 m Ka-band dish (TYC-630) at 40 W gives 46.8 dBi and 61.8 dBW EIRP; over an 8,000 km slant path to a lunar relay (198.8 dB loss, G/T 17 dB/K) carrier-to-noise density is 106.6 dB-Hz, leaving <b>26.6 dB margin at 50 Mbps</b>. Throughput is set by the relay terminal, not the RF link.</p></article>
+
+  <article class="sys" id="eclss"><h3><span>3.6</span> Life support and radiation</h3>
+    <p>Stored gas is 80 kg of oxygen and 25 kg of nitrogen in four composite vessels (TYC-710), plus 450 L of water in three tanks (TYC-720). For two crew that is <b>40.7 days of oxygen</b> (1.68 kg/day metabolic plus leakage) and 54.9 days of water; with four crew in a rescue, 21.9 and 27.4 days. Lunar-surface dose measured by Chang&rsquo;e-4 is about 1.37 mSv/day. Taking 12 % credit for the hull and equipment gives <b>1.2 mSv/day, 16.9 mSv for a 14-day sortie</b>. The sleep racks wrap the water tanks to form a storm shelter; its g/cm&sup2; target is still to be confirmed by transport-code analysis.</p></article>
+
+  <article class="sys" id="eva"><h3><span>3.7</span> EVA and manipulation</h3>
+    <p>Two <b>suit-ports</b> (TYC-270) sit on the rear bulkhead: crew step into suits that stay outside, so no regolith enters the cabin and no airlock cycle is needed. A side hatch (TYC-280) is the backup entry. The nose carries a three-link sample arm (TYC-810 to 814) with a two-finger gripper and roughly 1.4 m of reach from the shoulder, and rails on the aft deck (TYC-820) hold sample boxes.</p></article>
+
+  <article class="sys" id="mass"><h3><span>3.8</span> Mass, centre of gravity and the honesty of the CAD</h3>
+    <p>The CAD contains 106 modelled solids; many are envelope shapes, so summing volume &times; density would give 16 t of nonsense. Every part therefore carries an <b>allocated mass</b> (engineering budget) and the BOM prints both. The 4,854 kg of modelled parts plus 1,190 kg of unmodelled items (harness, ECLSS equipment, fluid, outfitting) gives <b>6,044 kg dry</b>, ahead of a 15 % growth margin. This is the number the other analyses use.</p>
+    <figure><img src="img/chart-mass_budget.webp" alt="Bar chart of dry mass by subsystem" loading="lazy" width="1275" height="680"><figcaption>Dry mass by subsystem, 6,044 kg total. Cabin and structure dominate, as they should.</figcaption></figure></article>
+</section>
+
+<!-- ============================ DRAWINGS ============================ -->
+<section id="drawings" class="wrap wide">
+  <p class="eyebrow">04 / Drawings</p>
+  <h2>Hidden-line drawing sheets, generated from the CAD</h2>
+  <p class="muted">A1 sheets with title blocks, projected from the real B-rep with hidden-line removal. Paper-style PDFs and layered DXF files are in the repository.</p>
+  <div class="sheets">
+    <figure><a href="img/dwg-001.webp"><img src="img/dwg-001-thumb.webp" alt="General arrangement drawing: side, front, plan and isometric views with dimensions" loading="lazy" width="1400" height="989"></a><figcaption><b>TYC-DWG-001</b> General arrangement. Length 7,005, width 4,725 deployed, wheelbase 4,400.</figcaption></figure>
+    <figure><a href="img/dwg-002.webp"><img src="img/dwg-002-thumb.webp" alt="Longitudinal and cross sections of the pressure cabin" loading="lazy" width="1400" height="989"></a><figcaption><b>TYC-DWG-002</b> Longitudinal and cross sections of the pressure cabin.</figcaption></figure>
+    <figure><a href="img/dwg-003.webp"><img src="img/dwg-003-thumb.webp" alt="Mobility module drawing: wheel, hub motor, A-arms and ride-height actuator" loading="lazy" width="1400" height="989"></a><figcaption><b>TYC-DWG-003</b> Mobility module: tyre, hub drive, A-arms, actuator.</figcaption></figure>
+    <figure><a href="img/dwg-004.webp"><img src="img/dwg-004-thumb.webp" alt="Wheel assembly drawing with half section" loading="lazy" width="1400" height="989"></a><figcaption><b>TYC-DWG-004</b> Wheel assembly with half section.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================ ANALYSIS ============================ -->
+<section id="analysis" class="wrap">
+  <p class="eyebrow">05 / How the numbers were made</p>
+  <h2>One parameter file drives everything</h2>
+  <pre class="flow" aria-label="Pipeline diagram">params.py ──► CadQuery parts ──► STEP / STL / GLB / BOM ──► tycho_analysis.py ──► charts + results.json
+     │                    │                                          │
+     └──► drawings (HLR → SVG/PDF/DXF)                  └──► this page's 3D viewer + docs</pre>
+  <ul class="plain">
+    <li><b>Soil mechanics.</b> Bekker-Wong pressure-sinkage and Janosi-Hansen shear with lunar simulant parameters (kc 1.4 kN/m&sup2;, k&phi; 820 kN/m&sup3;, c 0.17 kPa, &phi; 35&deg;, K 18 mm).</li>
+    <li><b>Structures.</b> Thin-wall hoop stress, classical cylinder buckling with knockdown, hypervelocity ballistic limit.</li>
+    <li><b>Thermal.</b> Stefan-Boltzmann radiator sizing against an effective sink, with a transient storage buffer.</li>
+    <li><b>Comms.</b> Free-space path loss and carrier-to-noise budget for a Ka-band relay link.</li>
+  </ul>
+  <p class="note"><b>What this is not.</b> Nothing here has been built, tested or qualified. Treat every figure as a design target with &plusmn;15&ndash;25 % uncertainty and read the <a href="https://github.com/kodekave/tycho-lunar-rover/blob/main/docs/07-design-trades.md">trade studies</a> for what was rejected and why.</p>
+</section>
+
+<!-- ============================ KNOWN GAPS ============================ -->
+<section id="gaps" class="wrap">
+  <p class="eyebrow">06 / Where Rev A is weak</p>
+  <h2>What my own review found</h2>
+  <p>I had the design reviewed against its own numbers before publishing. These are the problems it turned up. They are tracked as change requests in the <a href="https://github.com/kodekave/tycho-lunar-rover/blob/main/docs/07-design-trades.md">trade studies</a> and <a href="https://github.com/kodekave/tycho-lunar-rover/blob/main/docs/06-fmea-hazard-analysis.md">FMEA</a>, not hidden.</p>
+  <ul class="plain">
+    <li><b>Thermal margin disappears while driving.</b> The +25 % radiator margin is against the 2.9 kW house load. Drive losses add about 1.1 kW at 10 km/h, giving a loop load near 4.0 kW against 3.6 kW of radiator capacity at a 168 K sink. Fixes: duty-cycle the drive, use the 37.6 MJ water buffer, or add radiator area.</li>
+    <li><b>Solar input never covers the house load.</b> Effective polar input is 2.7 kW, below 2.9 kW, and only if the arrays track. Fixed at the 22&deg; tilt drawn in the CAD they give about 1.2 kW. Gimbal range is a requirement, not an option.</li>
+    <li><b>Middle wheels do not steer.</b> Only the front and rear axles have steering actuators, so a point turn needs about 57&deg; of corner steer and scrubs the middle pair. A third steered axle costs about 22 kg.</li>
+    <li><b>The battery is optimistic.</b> 235 kg for 80 kWh implies about 340 Wh/kg at pack level. The trade study ranks Li-S last and proposes a Li-ion class baseline, which makes the battery heavier.</li>
+    <li><b>The mesh tyre benefit is assumed.</b> The 20 % lower compaction resistance in the soil model is a placeholder pending soil-bin tests. The trade studies for tyre type and suspension do not clearly favour the Rev A choice, so fallbacks are recorded.</li>
+    <li><b>Spares do not cover a wheel.</b> The 60 kg spares allocation is less than one 104 kg wheel module.</li>
+  </ul>
+</section>
+
+<!-- ============================ PRODUCT ============================ -->
+<section id="product" class="wrap">
+  <p class="eyebrow">07 / Product view</p>
+  <h2>If this were a product, this is how I would think about it</h2>
+  <p>I run founder&rsquo;s offices for a living: GTM, operations, fundraising. I know what a vehicle programme looks like from the business side, and I wanted to push one design all the way through an engineering lens <i>and</i> a product lens. This page does not announce a company, funding or customers. It is a published concept, so engineers, mission planners and operators can tell me where it is wrong.</p>
+  <div class="grid2">
+    <div class="card"><h3>The gap</h3><p>NASA picked three teams in 2024 for lunar terrain vehicle services worth up to <b>$4.6 billion</b>, and in May 2026 gave initial task orders to two of them, but those are unpressurised rovers. The pressurised option on the table is JAXA and Toyota&rsquo;s Lunar Cruiser: two crew, roughly 15 t operational, 15 km/h, about 26 km a day on preliminary figures. A mid-mass pressurised rover for the south pole sits between those two.</p></div>
+    <div class="card"><h3>The product</h3><p>A reusable, serviceable, six-wheel pressurised rover sold as a <b>service per sortie</b>, not as a one-off vehicle: delivery on a commercial lander, crew rotation, sample return, and a rescue variant that carries four. Variants share the spine, wheel modules and cabin.</p></div>
+    <div class="card"><h3>Stage gates</h3><p><b>G0</b> concept (this). <b>G1</b> soil-bin test of the mesh tyre and suspension kinematics, the biggest mobility risk. <b>G2</b> half-scale mobility prototype. <b>G3</b> full-scale analogue-terrain vehicle. <b>G4</b> flight-qualification path with a lander partner.</p></div>
+    <div class="card"><h3>Biggest risks</h3><p>Mesh-tyre life in abrasive regolith. Dust on radiators and seals. Mass growth. Polar illumination for a roof-mounted array. Suit-port seal life. The <a href="https://github.com/kodekave/tycho-lunar-rover/blob/main/docs/06-fmea-hazard-analysis.md">FMEA</a> lists the rest with mitigations.</p></div>
+  </div>
+  <p>The full product set, <a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/docs/product">founder letter, customer and market analysis, roadmap, business model, go-to-market, risk and funding plan</a>, is in the repository, with sources cited and every assumption labelled as one. Sources for the facts above: <a href="https://www.nasa.gov/news-release/nasa-selects-companies-to-advance-moon-mobility-for-artemis-missions">NASA</a>, <a href="https://www.mhi.com/business/products-services/space-defense/manned-space-exploration-iss-equipment/pressurized-rover">MHI</a>, <a href="https://arxiv.org/abs/2001.11028">Chang&rsquo;e-4 dosimetry</a>.</p>
+</section>
+
+<!-- ============================ REPO ============================ -->
+<section id="repo" class="wrap">
+  <p class="eyebrow">08 / The repository</p>
+  <h2>Everything is open</h2>
+  <div class="grid2">
+    <div>
+      <p>Parametric source, neutral exchange files, drawings, analysis, manuals and diagrams, under Apache-2.0. Rebuild the whole vehicle with one command.</p>
+      <p><a class="btn" href="https://github.com/kodekave/tycho-lunar-rover">github.com/kodekave/tycho-lunar-rover &nearr;</a></p>
+      <ul class="plain small">
+        <li><a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/cad/step">cad/step</a>: assembly and 48 per-part STEP files</li>
+        <li><a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/cad/stl">cad/stl</a> and <a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/cad/glb">cad/glb</a>: meshes</li>
+        <li><a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/drawings">drawings</a>: A1 sheets as PDF, SVG, DXF</li>
+        <li><a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/docs">docs</a>: requirements, ConOps, design description, ICD, test plan, FMEA, trades, operator and maintenance manuals</li>
+        <li><a href="https://github.com/kodekave/tycho-lunar-rover/tree/main/bom">bom</a>: parts, mass and power budgets</li>
+      </ul>
+    </div>
+    <pre class="tree" aria-label="Repository layout">tycho-lunar-rover/
+├─ cad/src/tycho/   params.py  parts.py  build.py
+├─ cad/step|stl|glb/  neutral exchange files
+├─ drawings/        paper, blueprint, dxf
+├─ analysis/        tycho_analysis.py  out/
+├─ bom/             modelled parts, mass budget
+├─ docs/            00-index … 09, product/
+├─ diagrams/        generated system diagrams
+└─ web/             this page's source</pre>
+  </div>
+</section>
+
+<footer class="wrap foot">
+  <p><b>Status: concept, Rev A, 2026-11-26. Not qualified, not for manufacture, not flight hardware.</b> Numbers are first-order engineering estimates. Design by <a href="/about/">Komal Kedarnath</a>. Code and CAD: Apache-2.0. Charts and drawings generated from the repository.</p>
+</footer>
+</main>
+<script type="module" src="tycho.js"></script>
+</body>
+</html>

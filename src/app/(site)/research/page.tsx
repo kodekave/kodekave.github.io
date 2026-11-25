@@ -14,9 +14,9 @@ import { absoluteUrl } from "@/lib/site";
 
 export const metadata = buildMetadata({
   path: "/research",
-  title: "Research: OpenFOAM on Android, Open CapIQ Workbench",
+  title: "Research: OpenFOAM on Android, Open CapIQ Workbench, TYCHO-6 Lunar Rover",
   description:
-    "Research and projects by Komal Kedarnath: OpenFOAM CFD on an Android phone (FOSSEE, IIT Bombay), and a browser workbench for open-source equity research and valuation.",
+    "Research and projects by Komal Kedarnath: OpenFOAM CFD on an Android phone (FOSSEE, IIT Bombay), a browser workbench for open-source equity research and valuation, and TYCHO-6, an open concept CAD and engineering package for a pressurised lunar rover.",
 });
 
 /**
@@ -74,8 +74,8 @@ export default function ResearchPage() {
         title={<>Research and projects.</>}
         lead={
           <>
-            One published study, a working tool, and the research programmes
-            around them.
+            One published study, a working tool, an open lunar-rover design, and
+            the research programmes around them.
           </>
         }
       />
@@ -239,12 +239,94 @@ export default function ResearchPage() {
         </div>
       </section>
 
+      {/* ---------------------------------------------- 03 · TYCHO-6 lunar rover */}
+      <section
+        id="tycho-6-lunar-rover"
+        className="on-paper relative scroll-mt-16 border-t border-hair"
+      >
+        <div className="mx-auto grid max-w-6xl gap-x-20 gap-y-16 px-6 py-20 md:px-10 md:py-28 lg:grid-cols-[1.15fr_0.85fr]">
+          <Reveal>
+            <SectionLabel n="03" className="text-ink-faint">
+              Project
+            </SectionLabel>
+            <h2 className="font-display mt-6 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.04]">
+              TYCHO-6, a lunar crew rover.
+            </h2>
+            <p className="font-read mt-6 text-xl italic text-ink-soft">
+              A pressurised six-wheel rover for the south pole, designed in the open.
+            </p>
+            <p className="label mt-3 text-ink-faint">
+              Project · Concept, Rev A · CAD, analysis, manuals · Apache-2.0
+            </p>
+            <p className="mt-7 max-w-xl text-lg leading-[1.65] text-ink-soft">
+              A concept 6x6 pressurised two-crew rover with parametric CAD, STEP
+              and STL files, drawing sheets, first-order mass, soil, power and
+              thermal analysis, operator and maintenance manuals, and the product
+              case. One parameter file drives the model, the drawings and the
+              numbers. Not built, not tested, not flight hardware.
+            </p>
+
+            <dl className="mt-10 grid max-w-xl grid-cols-2 border-t border-hair">
+              {[
+                { value: "6,044 kg", label: "Dry mass, first-order" },
+                { value: "87-133 km", label: "Range at 10 km/h" },
+                { value: "106", label: "Parts modelled in CAD" },
+                { value: "48", label: "Per-part STEP files" },
+              ].map((m) => (
+                <div
+                  key={m.label}
+                  className="border-b border-hair py-6 odd:border-r odd:pr-6 even:pl-6"
+                >
+                  <dt className="label text-ink-faint">{m.label}</dt>
+                  <dd className="font-display tabular mt-3 text-4xl leading-none">
+                    {m.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a href="/lunar-rover/" className="btn btn-solid-ink">
+                Open the 3D blueprint
+                <Arrow className="btn-arrow" />
+              </a>
+              <a
+                href="https://github.com/kodekave/tycho-lunar-rover"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ink"
+              >
+                Code and CAD on GitHub
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <a href="/lunar-rover/" className="block border border-hair">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/lunar-rover/img/og.jpg"
+                alt="Blueprint isometric drawing of the TYCHO-6 six-wheel pressurised lunar rover"
+                width={1200}
+                height={630}
+                loading="lazy"
+                className="h-auto w-full"
+              />
+            </a>
+            <p className="label mt-4 text-ink-faint">
+              Interactive viewer: orbit, explode, section, click any part.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---------------------------------------------- 03 · around the paper */}
       {related.length > 0 && (
         <section className="on-paper border-t border-hair">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
-              <SectionLabel n="03" className="text-ink-faint">
+              <SectionLabel n="04" className="text-ink-faint">
                 Programmes
               </SectionLabel>
               <h2 className="font-display mt-6 max-w-2xl text-[clamp(2rem,4.4vw,3rem)] leading-[1.06]">

@@ -50,6 +50,7 @@ note-taking chief-of-staff role the term is often confused with.
 - [Work](${absoluteUrl("/work")}): the four ventures, with role, period, country and measurable outcomes for each.
 - [Research](${absoluteUrl("/research")}): every project and piece of research: the published OpenFOAM-on-Android study, the ${workbench.title} project, and related research programmes.
 - [${workbench.title}](${absoluteUrl(workbench.path)}): a one-page web app that maps the open-source alternatives to Capital IQ and runs live DCF, WACC, DuPont, trading comps and NPV/IRR tools in the browser. Code: ${workbench.repoUrl}
+- [TYCHO-6 lunar rover](${absoluteUrl("/lunar-rover")}): a concept 6x6 pressurised two-crew lunar south-pole rover, with an interactive 3D blueprint model, A1 drawing sheets, first-order mass, soil, power and thermal analysis, and the full open CAD and documentation package. Code: https://github.com/kodekave/tycho-lunar-rover
 - [About](${absoluteUrl("/about")}): background, earlier roles, recognition.
 - [What is a founder's office](${absoluteUrl("/founders-office-guide")}): definitional guide to the function.
 - [Cross-border startup operations](${absoluteUrl("/cross-border-operations")}): field guide to running ops across multiple countries.
