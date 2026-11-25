@@ -20,9 +20,10 @@ const pages = [
 const guides = [
   { href: "/founders-office-guide", label: "Founder's office guide" },
   { href: "/cross-border-operations", label: "Cross-border ops" },
-  // A separate GitHub Pages repo served under this domain, so it is a plain
-  // link: next/link would try to route it inside this app.
-  { href: "/dry-powder-dispatch/", label: "Dry Powder Dispatch", plain: true },
+  // A separate site on its own subdomain, so it is a plain link: next/link
+  // would try to route it inside this app. Linked at its real address rather
+  // than the old /dry-powder-dispatch/ path, which only redirects there.
+  { href: "https://dispatch.komalkedarnath.wiki/", label: "Dry Powder Dispatch", plain: true },
 ];
 
 const elsewhere = [
