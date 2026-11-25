@@ -57,7 +57,7 @@ const plexMono = IBM_Plex_Mono({
  */
 /** The paper colour, so a phone's address bar matches the page. */
 export const viewport: Viewport = {
-  themeColor: "#f6f5ef",
+  themeColor: "#ffffff",
 };
 
 export const metadata: Metadata = {

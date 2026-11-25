@@ -98,7 +98,7 @@ export default function JourneyMap({
     const scene = card?.closest<HTMLElement>(".journey") ?? null;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // The dots are drawn in the theme's ink.
-    let ink = cssRgb("--color-ink", "31, 43, 39");
+    let ink = cssRgb("--color-ink", "14, 36, 25");
 
     // The dots are built only when they are first drawn, not at page load.
     let ready = false;
@@ -203,7 +203,7 @@ export default function JourneyMap({
     const ro = new ResizeObserver(size);
     ro.observe(box);
     const offTheme = onTheme(() => {
-      ink = cssRgb("--color-ink", "31, 43, 39");
+      ink = cssRgb("--color-ink", "14, 36, 25");
       if (W && H) paint(animating ? Math.min(1, (performance.now() - start) / 1800) : 1);
     });
 

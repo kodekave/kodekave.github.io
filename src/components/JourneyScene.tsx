@@ -90,8 +90,8 @@ const easeInOut = (x: number) => {
  * dark theme gets its own (see `readPalette`, called when the theme changes).
  */
 const palette = {
-  ink: [0.122, 0.169, 0.153] as [number, number, number],
-  deep: [0.333, 0.388, 0.227] as [number, number, number],
+  ink: [0.055, 0.141, 0.098] as [number, number, number],
+  deep: [0.106, 0.42, 0.27] as [number, number, number],
 };
 function readPalette() {
   palette.ink = cssUnit("--color-ink", palette.ink);
@@ -179,7 +179,7 @@ void main() {
   float r = length(gl_PointCoord - 0.5);
   if (r > 0.5) discard;
   if (vKind > 1.5 && vKind < 2.5) {
-    vec3 yellow = vec3(0.969, 0.937, 0.588);
+    vec3 yellow = vec3(0.914, 1.0, 0.243);
     vec3 c = mix(yellow, vCol.rgb, smoothstep(0.3, 0.36, r));
     float a = vCol.a * (1.0 - smoothstep(0.46, 0.5, r));
     gl_FragColor = vec4(c * a, a);

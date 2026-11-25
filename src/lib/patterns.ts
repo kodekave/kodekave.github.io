@@ -76,8 +76,8 @@ function focusPoint(focus: PatternFocus | undefined, W: number, H: number): [num
 }
 
 /** The ink, as a CSS colour channel triple. */
-export let INK = "31, 43, 39";
-let PAPER = "#f6f5ef";
+export let INK = "14, 36, 25";
+let PAPER = "#ffffff";
 
 /**
  * The page's ink and paper for the theme now showing (lib/theme.ts). Set it

@@ -92,8 +92,8 @@ export default function LostInCurve() {
     if (!canvas || !ctx) return;
 
     const css = getComputedStyle(document.documentElement);
-    const inkRaw = css.getPropertyValue("--color-ink").trim() || "#1f2b27";
-    const brass = css.getPropertyValue("--color-brass").trim() || "#f7ef96";
+    const inkRaw = css.getPropertyValue("--color-ink").trim() || "#0e2419";
+    const brass = css.getPropertyValue("--color-brass").trim() || "#e9ff3e";
     // "#rrggbb" to an "r,g,b" string so alphas can be set per stroke.
     const rgb = (hex: string) => {
       const h = hex.replace("#", "");

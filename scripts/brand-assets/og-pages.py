@@ -77,9 +77,8 @@ def map_grid() -> dict:
 
 
 def grid_uri() -> str:
-    """The plus grid under the paper, as the share card has it."""
-    tmpl = (HERE / "card.html.tmpl").read_text()
-    return re.search(r'url\("(data:image/svg\+xml[^"]+)"\)', tmpl).group(1)
+    """The cards have no grid: plain white paper. Kept so the template slot stays filled."""
+    return ""
 
 
 def posts() -> list[tuple[str, str, str]]:
