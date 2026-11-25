@@ -4,11 +4,10 @@
   @font-face { font-family: "NR"; src: url("{{NEWSREADER}}") format("woff2"); font-weight: 200 800; }
   @font-face { font-family: "PM"; src: url("{{PLEX}}") format("woff2"); font-weight: 400; }
   * { box-sizing: border-box; margin: 0; }
-  html, body { width: 1200px; height: 630px; overflow: hidden; background: #f6f5ef; }
-  /* Paper, with the site's plus grid at about 3%. */
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #ffffff; }
+  /* Plain white paper. */
   .card { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
-          background-color: #f6f5ef; color: #1f2b27;
-          background-image: url("{{GRID}}"); }
+          background-color: #ffffff; color: #0e2419; }
   /* The art on the right: the Lorenz butterfly (faded before it reaches the
      text) or, for the journey, the dot map. */
   .art { position: absolute; inset: 0; }
@@ -17,14 +16,14 @@
   .text { position: absolute; left: 0; top: 0; padding: 66px 72px 62px; width: 780px; height: 630px;
           display: flex; flex-direction: column; }
   .label { display: inline-flex; align-items: center; gap: 14px; font: 400 15px "PM", monospace;
-           letter-spacing: 0.12em; white-space: nowrap; text-transform: uppercase; color: #5e665f; }
-  .label::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #55633a;
-                   box-shadow: 0 0 0 4px rgba(247, 239, 150, .8); }
+           letter-spacing: 0.12em; white-space: nowrap; text-transform: uppercase; color: #4d6358; }
+  .label::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #1b6b45;
+                   box-shadow: 0 0 0 4px rgba(233, 255, 62, .85); }
   h1 { font: 300 {{TITLE_PX}}px/1.06 "NR", Georgia, serif; letter-spacing: -0.022em; margin-top: 40px; max-width: {{TITLE_W}}px; }
   .foot { margin-top: auto; }
-  .rule { width: 64px; height: 2px; background: #f7ef96; margin-bottom: 20px; box-shadow: 0 0 0 1px rgba(31,43,39,.18); }
+  .rule { width: 64px; height: 2px; background: #e9ff3e; margin-bottom: 20px; box-shadow: 0 0 0 1px rgba(14,36,25,.18); }
   .who { font: 400 25px "NR", Georgia, serif; letter-spacing: -0.01em; }
-  .url { font: 400 19px "PM", monospace; letter-spacing: 0.1em; color: #5e665f; margin-top: 10px; }
+  .url { font: 400 19px "PM", monospace; letter-spacing: 0.1em; color: #4d6358; margin-top: 10px; }
 </style>
 <div class="card">
   <div class="art {{ART_CLASS}}"><canvas id="a" width="2400" height="1260"></canvas></div>
@@ -59,7 +58,7 @@
       for (var i = 0; i < 3; i++) p[i] += (h / 6) * (a[i] + 2 * b[i] + 2 * cc[i] + e[i]);
     }
     function at(p) { return [cx + s * (p[0] * cos + p[1] * sin), cy - s * (p[2] - 24)]; }
-    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "rgba(31,43,39,0.34)";
+    ctx.lineWidth = 0.7 * K; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "rgba(14,36,25,0.34)";
     for (var k = 0; k < 5; k++) {
       var p = [(r() - 0.5) * 30, (r() - 0.5) * 36, 5 + r() * 40];
       for (var i = 0; i < 900; i++) rk(p, 0.006);
@@ -96,10 +95,10 @@
         var x = x0 + (col - c0 + 0.5) * cs, y = y0 + (r - r0 + 0.5) * cs, rad = pass ? cs * 0.36 : cs * 0.27;
         ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, Math.PI * 2);
       }
-      ctx.fillStyle = pass ? "rgba(31,43,39,0.72)" : "rgba(31,43,39,0.26)"; ctx.fill();
+      ctx.fillStyle = pass ? "rgba(14,36,25,0.72)" : "rgba(14,36,25,0.26)"; ctx.fill();
     }
     // The dotted route, in the order the places were worked.
-    ctx.fillStyle = "rgba(31,43,39,0.85)";
+    ctx.fillStyle = "rgba(14,36,25,0.85)";
     for (var i2 = 0; i2 < PLACES.length - 1; i2++) {
       var a = PLACES[i2], b = PLACES[i2 + 1];
       var x1 = px(a[0]), y1 = py(a[1]), x2 = px(b[0]), y2 = py(b[1]);
@@ -112,8 +111,8 @@
     for (var i3 = 0; i3 < PLACES.length; i3++) {
       var last = i3 === PLACES.length - 1;
       ctx.beginPath(); ctx.arc(px(PLACES[i3][0]), py(PLACES[i3][1]), (last ? 7 : 4.5) * K, 0, Math.PI * 2);
-      ctx.fillStyle = last ? "#f7ef96" : "#1f2b27"; ctx.fill();
-      if (last) { ctx.lineWidth = 1.4 * K; ctx.strokeStyle = "#1f2b27"; ctx.stroke(); }
+      ctx.fillStyle = last ? "#e9ff3e" : "#0e2419"; ctx.fill();
+      if (last) { ctx.lineWidth = 1.4 * K; ctx.strokeStyle = "#0e2419"; ctx.stroke(); }
     }
   }
 

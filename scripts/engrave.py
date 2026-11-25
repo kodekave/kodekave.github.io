@@ -46,7 +46,7 @@ OUT_DIR = "public/images"
 # The sketch is drawn in a near-black (a black sketch, with only a trace of the
 # site's green), and the paper under it is the page colour.
 INK_RGB = (13, 17, 15)
-PAPER_RGB = (246, 245, 239)
+PAPER_RGB = (255, 255, 255)
 # The dark page's version of the same drawing: light line on the dark page, the
 # page's own ink colour (see --color-ink in the dark theme).
 CHALK_RGB = (235, 234, 226)

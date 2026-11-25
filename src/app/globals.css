@@ -1,29 +1,33 @@
 @import "tailwindcss";
 
 /*
- * The founder palette: warm paper, one green-tinted ink, and a single yellow.
+ * The palette: plain white, one deep-forest ink, shades of green, and a single
+ * neon yellow.
  *
- * Paper is the page, `mist` the soft panel the nav, the cards and the callout
- * sit on, `chalk` the deepest of the three. Ink is the one dark: it sets every
- * word and it is the dark panel where a page needs one. Yellow (`brass`, the
- * name kept so older pages keep working) is a fill only, on the one button a
- * view asks you to press, never a text colour; the deep olive (`brass-deep`)
- * is the accent that is allowed to carry small text and the label dot.
+ * Paper is the page, pure white. `mist` is the soft panel the nav, the cards
+ * and the callout sit on and `chalk` the deepest of the three: both only a
+ * breath of green, so the page stays a plain white canvas. Ink is the one dark:
+ * it sets every word and it is the dark panel where a page needs one. The
+ * yellow (`brass`, the name kept so older pages keep working) is neon and a
+ * fill only, on the one button a view asks you to press, never a text colour;
+ * the forest green (`brass-deep`) is the accent that is allowed to carry small
+ * text and the label dot.
  *
  * Greys are one field at a percentage of the other, not picked hex values, so
- * the neutrals cannot drift off the palette. Contrast, measured: ink-faint on
- * paper 5.6:1 and on mist 5.1:1; brass-deep on paper 5.9:1.
+ * the neutrals cannot drift off the palette. Contrast, measured: ink on paper
+ * 16.3:1; ink-faint on paper 6.6:1 and on mist 6.1:1; brass-deep on paper
+ * 6.5:1 and on mist 6.0:1; ink on the yellow 14.7:1.
  */
 :root {
-  --color-ink: #1f2b27;
-  --color-paper: #f6f5ef;
-  --color-mist: #eceadf;
-  --color-chalk: #e1dfd2;
+  --color-ink: #0e2419;
+  --color-paper: #ffffff;
+  --color-mist: #f3f8f4;
+  --color-chalk: #e5eee8;
 
-  --color-brass: #f7ef96;
-  --color-brass-deep: #55633a;
+  --color-brass: #e9ff3e;
+  --color-brass-deep: #1b6b45;
   /* The ink on the yellow: the same dark in both themes, since the yellow is. */
-  --color-on-brass: #1f2b27;
+  --color-on-brass: #0e2419;
   /* The fill of a text field: white on the paper, a step above the page in the dark. */
   --color-field: #fff;
 
@@ -81,24 +85,23 @@
  * The dark theme: the same palette read the other way, set on <html> by the
  * toggle in the nav (see lib/theme.ts). Every surface already takes its colour
  * from the tokens above, so this is the whole of it. Page, soft panel and deep
- * panel step up in lightness the way paper, mist and chalk step down; the ink
- * is the warm paper itself, and the greys stay one field at a percentage of the
- * other. The yellow is a fill in both themes and keeps its dark text
- * (`on-brass`); the olive that carries small text is lifted so it holds on dark.
- * Contrast, measured: ink-faint on paper 8.3:1 and on mist 7.6:1; brass-deep
- * on paper 9.7:1 and on mist 9.0:1; on the panel, its text 12.9:1 and the
- * faintest 5.9:1.
+ * panel step up in lightness the way paper, mist and chalk step down, all
+ * deep green; the ink is a pale mint white, and the greys stay one field at a
+ * percentage of the other. The yellow is a fill in both themes and keeps its
+ * dark text (`on-brass`); the green that carries small text is lifted so it
+ * holds on dark. Contrast, measured: ink-faint on paper 8.9:1; brass-deep on
+ * paper 11.4:1 and on mist 10.5:1; ink on the panel 14.1:1.
  */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-ink: #ebeae2;
-  --color-paper: #101614;
-  --color-mist: #171f1c;
-  --color-chalk: #212a26;
-  --color-brass-deep: #b4c486;
-  --color-field: #1b2420;
-  --color-panel: #1c2622;
-  --color-on-panel: #ebeae2;
+  --color-ink: #e8f3ec;
+  --color-paper: #08140d;
+  --color-mist: #0e1d14;
+  --color-chalk: #16281d;
+  --color-brass-deep: #86dba6;
+  --color-field: #0e1d14;
+  --color-panel: #12251a;
+  --color-on-panel: #e8f3ec;
 }
 
 /*
@@ -935,17 +938,6 @@ h3 {
   border: 1px solid var(--color-hair);
   border-radius: 14px;
   background-color: var(--color-mist);
-  background-image: linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-ink) 5%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-ink) 5%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 14px 14px;
 }
 .jmap::before,
 .jmap::after {
@@ -1763,22 +1755,11 @@ h3 {
 
 /* ------------------------------------------------------ cards and callout */
 
-/* A soft panel on a faint 14px grid: the contact moment. */
+/* A soft plain panel: the contact moment. */
 .callout {
   border: 1px solid var(--color-hair);
   border-radius: 14px;
   background-color: var(--color-mist);
-  background-image: linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-ink) 6%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-ink) 6%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 14px 14px;
 }
 
 /* A ruled list: hairlines on each row, closed by one at the foot. */

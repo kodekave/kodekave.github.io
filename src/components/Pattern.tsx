@@ -82,7 +82,7 @@ export default function Pattern({
       const ctx = cv.getContext("2d");
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      setPatternColours(cssRgb("--color-ink", "31, 43, 39"), cssValue("--color-paper", "#f6f5ef"));
+      setPatternColours(cssRgb("--color-ink", "14, 36, 25"), cssValue("--color-paper", "#ffffff"));
       drawPattern(ctx, kind, W, H, seed, focus);
       setShown(true);
 
@@ -90,7 +90,7 @@ export default function Pattern({
       stopFlow = undefined;
       const fc = flowCanvas.current;
       if (flow && kind === "lorenz" && fc && !still) {
-        const brass = cssValue("--color-brass", "#f7ef96");
+        const brass = cssValue("--color-brass", "#e9ff3e");
         stopFlow = startFlow(fc, W, H, lorenzStrands(W, H, seed, focus), {
           accent: brass,
           opening: () => (opening ? parseFloat(opening.style.opacity || "1") : 1),

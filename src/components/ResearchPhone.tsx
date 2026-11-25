@@ -146,7 +146,7 @@ export default function ResearchPhone({ courant }: { courant: number }) {
 
     const cv = canvas.current;
     const ctx = cv?.getContext("2d") ?? null;
-    let ink: Ink = { wire: "#f6f5ef", dot: "#f7ef96" };
+    let ink: Ink = { wire: "#ffffff", dot: "#e9ff3e" };
     let clock = 0;
     let last = 0;
     let raf = 0;
