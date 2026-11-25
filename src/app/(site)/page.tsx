@@ -8,7 +8,6 @@ import PortraitCard from "@/components/PortraitCard";
 import { engagements, profile } from "@/lib/content";
 import { EQUATION } from "@/lib/equation-points";
 import { buildPlaces } from "@/lib/journey-places";
-import { getPublishedPosts } from "@/lib/posts";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -21,8 +20,7 @@ export const metadata = buildMetadata({
 /**
  * The homepage: the opening (the portrait zooms into the equation on the hoodie
  * and fades, see JourneyScene), then a plain page that scrolls over the grid. The
- * journey is a map the point cloud forms, then what I bring, the writing in a
- * block, and the way to reach me, where the points condense into the equation.
+ * journey is a map the point cloud forms, then what I bring, and the way to reach me, where the points condense into the equation.
  * Anything longer than a line lives on its own page, and the figures live on the
  * Ventures page (/work).
  *
@@ -53,7 +51,6 @@ function Frame({
 }
 
 export default function HomePage() {
-  const posts = getPublishedPosts().slice(0, 4);
   // ------------------------------------------------------- the opening
   // `data-zoom` is the portrait: the scroll zooms into the equation on the
   // hoodie. `data-intro-fade` is whatever falls away first.
@@ -166,55 +163,6 @@ export default function HomePage() {
         </Frame>
       ),
     },
-    ...(posts.length > 0
-      ? [
-          {
-            id: "writing",
-            node: (
-              <Frame className="py-16 md:py-24">
-                <div className="block-panel px-6 py-8 md:px-10 md:py-12">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="label label-dot text-ink-faint">Latest writing</h2>
-                    <Link
-                      href="/blog"
-                      className="label link-rule hit text-ink-soft hover:text-ink"
-                    >
-                      All posts
-                    </Link>
-                  </div>
-                  <ul className="reg-list mt-6">
-                    {posts.map((post) => (
-                      <li key={post.slug} className="border-t border-hair">
-                        <Link
-                          href={`/blog/${post.slug}`}
-                          className="group grid gap-x-8 gap-y-1 py-5 sm:grid-cols-[6.4rem_minmax(0,1fr)]"
-                        >
-                          <time
-                            dateTime={post.published_at}
-                            className="label tabular text-ink-faint sm:pt-[0.35rem]"
-                          >
-                            {post.published_at.slice(0, 10)}
-                          </time>
-                          <span>
-                            <span className="font-display-text block text-[1.25rem] leading-snug group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
-                              {post.title}
-                            </span>
-                            {post.excerpt ? (
-                              <span className="mt-1.5 block max-w-[40em] text-[0.9375rem] leading-relaxed text-ink-soft [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden">
-                                {post.excerpt}
-                              </span>
-                            ) : null}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Frame>
-            ),
-          },
-        ]
-      : []),
     {
       // The close. Where the equation slot is, the point cloud condenses into
       // the equation on the hoodie, which closes the loop with the opening.
