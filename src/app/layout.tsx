@@ -71,9 +71,11 @@ export const metadata: Metadata = {
   creator: profile.name,
   publisher: profile.name,
   // Omitted entirely when the token is unset, so no empty meta tag ships.
-  ...(GOOGLE_SITE_VERIFICATION
-    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
-    : {}),
+  // Bing Webmaster Tools proves ownership with a meta tag named msvalidate.01.
+  verification: {
+    ...(GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : {}),
+    other: { "msvalidate.01": "BE63E7A48BA043DECAA50540A8EB56F6" },
+  },
   robots: {
     index: true,
     follow: true,
