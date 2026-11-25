@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/work",
     "/journey",
     "/research",
+    "/lunar-rover",
     "/about",
     "/blog",
     "/bookshelf",
