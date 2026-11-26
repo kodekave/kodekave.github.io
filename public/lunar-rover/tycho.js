@@ -4,15 +4,15 @@ import * as THREE from "three";
 import { OrbitControls } from "./vendor/OrbitControls.js";
 
 const SUB = {
-  Structure:   { c: "#a8d4ff", label: "Structure" },
-  Cabin:       { c: "#f2f8ff", label: "Pressure cabin" },
-  Mobility:    { c: "#7fd6ff", label: "Mobility" },
-  Power:       { c: "#f7ef96", label: "Power" },
-  Thermal:     { c: "#ff9a76", label: "Thermal" },
-  Avionics:    { c: "#9dffb0", label: "Avionics and comms" },
-  ECLSS:       { c: "#cdb4ff", label: "Life support" },
-  EVA:         { c: "#ffcf7a", label: "EVA / suit-ports" },
-  Manipulator: { c: "#ff9ad5", label: "Arm and rails" },
+  Structure:   { c: "#1f64b8", label: "Structure" },
+  Cabin:       { c: "#1f64b8", label: "Pressure cabin" },
+  Mobility:    { c: "#1f64b8", label: "Mobility" },
+  Power:       { c: "#1f64b8", label: "Power" },
+  Thermal:     { c: "#1f64b8", label: "Thermal" },
+  Avionics:    { c: "#1f64b8", label: "Avionics and comms" },
+  ECLSS:       { c: "#1f64b8", label: "Life support" },
+  EVA:         { c: "#1f64b8", label: "EVA / suit-ports" },
+  Manipulator: { c: "#1f64b8", label: "Arm and rails" },
 };
 // explode vectors in metres, by part number; sy = side sign (+1 left / -1 right)
 const EX = (p, sy) => ({
@@ -49,8 +49,8 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.localClippingEnabled = true;
 canvasWrap.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("#082a52");
-scene.fog = new THREE.Fog("#082a52", 18, 46);
+scene.background = new THREE.Color("#ffffff");
+scene.fog = new THREE.Fog("#ffffff", 18, 46);
 const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
 camera.up.set(0, 0, 1);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -59,15 +59,15 @@ controls.minDistance = 4; controls.maxDistance = 40; controls.target.set(0, 0, 1
 controls.autoRotate = true; controls.autoRotateSpeed = 0.6;
 
 // ---- ground: blueprint grid + range rings
-const gridMat = new THREE.LineBasicMaterial({ color: 0x2f6bb0, transparent: true, opacity: 0.55 });
-const grid = new THREE.GridHelper(40, 40, 0x4d8fd6, 0x2a5f9c); grid.rotation.x = Math.PI / 2; grid.material.transparent = true; grid.material.opacity = 0.45;
+const gridMat = new THREE.LineBasicMaterial({ color: 0x1f64b8, transparent: true, opacity: 0.6 });
+const grid = new THREE.GridHelper(40, 40, 0x1f64b8, 0x1f64b8); grid.rotation.x = Math.PI / 2; grid.material.transparent = true; grid.material.opacity = 0.35;
 scene.add(grid);
 for (const r of [3, 6, 10, 15]) {
   const pts = []; for (let i = 0; i <= 128; i++) { const a = i / 128 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0.002)); }
   scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMat));
 }
 const axes = new THREE.Group();
-[["#ff7a7a", [1, 0, 0]], ["#9dffb0", [0, 1, 0]], ["#7fd6ff", [0, 0, 1]]].forEach(([c, d]) => {
+[["#1f64b8", [1, 0, 0]], ["#1f64b8", [0, 1, 0]], ["#1f64b8", [0, 0, 1]]].forEach(([c, d]) => {
   axes.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.2, -3.6, 0.01), new THREE.Vector3(-4.2 + d[0] * 1.2, -3.6 + d[1] * 1.2, 0.01 + d[2] * 1.2)]), new THREE.LineBasicMaterial({ color: c })));
 });
 scene.add(axes);
@@ -88,7 +88,7 @@ async function load() {
     const pos = new Float32Array(q.length);
     for (let i = 0; i < q.length; i += 3) for (let k = 0; k < 3; k++) pos[i + k] = (lo[k] + q[i + k] / 65535 * (hi[k] - lo[k])) / 1000;
     const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3)); g.setIndex(new THREE.BufferAttribute(idx, 1));
-    const fm = new THREE.MeshBasicMaterial({ color: 0x0a3568, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [plane] });
+    const fm = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [plane] });
     const fill = new THREE.Mesh(g, fm); fill.userData.part = p.id;
     const eg = new THREE.EdgesGeometry(g, p.pn === "TYC-311" || p.pn === "TYC-310" ? 30 : 22);
     const lm = new THREE.LineBasicMaterial({ color: SUB[p.sub].c, clippingPlanes: [plane], transparent: true });
@@ -122,9 +122,9 @@ function applyMode() {
   for (const p of parts) {
     p.fill.visible = m !== "mesh"; p.edges.visible = m !== "mesh";
     p.fm.depthWrite = true; p.fm.transparent = false; p.fm.opacity = 1;
-    if (m === "blueprint") p.fm.color.set(0x0a3568);
-    if (m === "xray") { p.fm.transparent = true; p.fm.opacity = 0.07; p.fm.depthWrite = false; p.fm.color.set(0x5aa8ff); }
-    if (m === "solid") p.fm.color.set(new THREE.Color(SUB[p.sub].c).multiplyScalar(0.5).lerp(new THREE.Color(0x0a3568), 0.4));
+    if (m === "blueprint") p.fm.color.set(0x1f64b8);
+    if (m === "xray") { p.fm.transparent = true; p.fm.opacity = 0.07; p.fm.depthWrite = false; p.fm.color.set(0x1f64b8); }
+    if (m === "solid") p.fm.color.set(0x2f7fd6);
     if (m === "mesh") {
       if (!p.wire) { p.wire = new THREE.LineSegments(new THREE.WireframeGeometry(p.g), new THREE.LineBasicMaterial({ color: SUB[p.sub].c, transparent: true, opacity: 0.55, clippingPlanes: [plane] })); p.grp.add(p.wire); }
       p.wire.visible = true;
@@ -147,13 +147,15 @@ renderer.domElement.addEventListener("pointerup", e => {
   if (state.mode === "mesh") parts.forEach(p => p.fill.visible = false);
   select(hits.length ? hits[0].object.userData.part : null);
 });
-function colorOf(p) { return state.color ? SUB[p.sub].c : "#eaf4ff"; }
+const filled = () => state.mode === "blueprint" || state.mode === "solid";
+function colorOf(p) { return filled() ? "#ffffff" : "#1f64b8"; }
 function select(id) {
   state.selected = id;
   for (const p of parts) {
     const on = p.id === id; const base = state.mode === "xray" ? 0.8 : 1;
-    p.lm.color.set(on ? "#ffe45e" : colorOf(p)); p.lm.opacity = id && !on ? base * 0.45 : base;
-    if (p.wire) p.wire.material.color.set(on ? "#ffe45e" : colorOf(p));
+    if (filled()) p.fm.color.set(on ? 0x0b2a52 : state.mode === "solid" ? 0x2f7fd6 : 0x1f64b8);
+    p.lm.color.set(on && !filled() ? "#0b2a52" : colorOf(p)); p.lm.opacity = id && !on ? base * 0.45 : base;
+    if (p.wire) p.wire.material.color.set(on ? "#0b2a52" : colorOf(p));
   }
   const card = $("#info"); if (!id) { card.hidden = true; return; }
   const p = parts.find(x => x.id === id); card.hidden = false;
@@ -193,7 +195,7 @@ document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click"
 const dimGroup = new THREE.Group(); dimGroup.visible = false; scene.add(dimGroup);
 const labels = []; const overlay = $("#overlay");
 function mkLabel(text, cls) { const e = document.createElement("div"); e.className = cls; e.textContent = text; overlay.appendChild(e); return e; }
-const dimMat = new THREE.LineBasicMaterial({ color: 0xf7ef96 });
+const dimMat = new THREE.LineBasicMaterial({ color: 0x1f64b8 });
 function dimLine(a, b, text) {
   const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b);
   dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([A, B]), dimMat));
